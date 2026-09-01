@@ -1,0 +1,145 @@
+{
+  "$schema": "https://airtable.com/developers/web/api/model/table-model",
+  "description": "Schema Airtable prêt à importer via POST /v0/meta/bases/{baseId}/tables pour le défi Eva PRO CRM prospects avec relance 7 jours.",
+  "base": {
+    "name": "Eva PRO - CRM Prospects"
+  },
+  "tables": [
+    {
+      "name": "SC_Prospects",
+      "description": "Prospects gérés par Eva PRO avec statut et relance à 7 jours",
+      "fields": [
+        {
+          "name": "Nom complet",
+          "type": "formula",
+          "options": {
+            "formula": "{Prenom} & \" \" & {Nom}"
+          }
+        },
+        {
+          "name": "Prenom",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Nom",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Entreprise",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Email",
+          "type": "email"
+        },
+        {
+          "name": "Telephone",
+          "type": "phoneNumber"
+        },
+        {
+          "name": "Statut",
+          "type": "singleSelect",
+          "options": {
+            "choices": [
+              { "name": "Nouveau", "color": "blueLight2" },
+              { "name": "En cours", "color": "orangeLight2" },
+              { "name": "Gagné", "color": "greenLight2" },
+              { "name": "Perdu", "color": "grayLight2" }
+            ]
+          }
+        },
+        {
+          "name": "Source",
+          "type": "singleSelect",
+          "options": {
+            "choices": [
+              { "name": "LinkedIn", "color": "blueLight2" },
+              { "name": "Recommandation", "color": "purpleLight2" },
+              { "name": "Site", "color": "tealLight2" },
+              { "name": "Autre", "color": "grayLight2" }
+            ]
+          }
+        },
+        {
+          "name": "Date entrée",
+          "type": "date",
+          "options": {
+            "dateFormat": { "name": "iso" }
+          }
+        },
+        {
+          "name": "Dernier contact",
+          "type": "date",
+          "options": {
+            "dateFormat": { "name": "iso" }
+          }
+        },
+        {
+          "name": "Prochaine relance",
+          "type": "formula",
+          "options": {
+            "formula": "IF(OR({Statut}='Nouveau',{Statut}='En cours'), DATEADD({Dernier contact}, 7, 'days'), BLANK())"
+          }
+        },
+        {
+          "name": "Jours restants",
+          "type": "formula",
+          "options": {
+            "formula": "IF({Prochaine relance}, DATETIME_DIFF({Prochaine relance}, TODAY(), 'days'), BLANK())"
+          }
+        },
+        {
+          "name": "Notes",
+          "type": "multilineText"
+        },
+        {
+          "name": "Montant potentiel",
+          "type": "currency",
+          "options": {
+            "precision": 2,
+            "symbol": "€"
+          }
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "tableName": "SC_Prospects",
+      "name": "Tous les prospects",
+      "type": "grid",
+      "sort": [{ "field": "Date entrée", "direction": "desc" }]
+    },
+    {
+      "tableName": "SC_Prospects",
+      "name": "À relancer",
+      "type": "grid",
+      "filter": {
+        "conjunction": "and",
+        "conditions": [
+          {
+            "conjunction": "or",
+            "conditions": [
+              { "field": "Statut", "operator": "is", "value": "Nouveau" },
+              { "field": "Statut", "operator": "is", "value": "En cours" }
+            ]
+          },
+          { "field": "Prochaine relance", "operator": "isOnOrBefore", "value": "today" }
+        ]
+      },
+      "sort": [{ "field": "Prochaine relance", "direction": "asc" }]
+    },
+    {
+      "tableName": "SC_Prospects",
+      "name": "Relances (Calendrier)",
+      "type": "calendar",
+      "dateField": "Prochaine relance"
+    },
+    {
+      "tableName": "SC_Prospects",
+      "name": "Pipeline (Kanban)",
+      "type": "kanban",
+      "groupField": "Statut"
+    }
+  ]
+}
