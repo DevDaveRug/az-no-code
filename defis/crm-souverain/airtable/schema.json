@@ -1,13 +1,13 @@
 {
   "$schema": "https://airtable.com/developers/web/api/model/table-model",
-  "description": "Schema Airtable prêt à importer via POST /v0/meta/bases/{baseId}/tables pour le défi Eva PRO CRM prospects avec relance 7 jours.",
+  "description": "Schema Airtable prêt à importer via POST /v0/meta/bases/{baseId}/tables pour le défi crm-souverain (relance 7 jours), origine Alegria Eva PRO.",
   "base": {
-    "name": "Eva PRO - CRM Prospects"
+    "name": "CRM Souverain"
   },
   "tables": [
     {
       "name": "SC_Prospects",
-      "description": "Prospects gérés par Eva PRO avec statut et relance à 7 jours",
+      "description": "Prospects avec statut et relance à 7 jours (defi crm-souverain, origine Alegria)",
       "fields": [
         {
           "name": "Nom complet",

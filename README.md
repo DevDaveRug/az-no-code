@@ -22,7 +22,7 @@ Chaque défi hebdo se livre AUSSI en code souverain dans [DevDaveRug/az-code](ht
 
 ```
 defis/
-  eva-pro-crm-relance/           # défi actuel, livraison 5/9/2026
+  crm-souverain/           # défi actuel, livraison 5/9/2026
     README.md                    # énoncé + livrables + timeline
     airtable/
       SPECS.md                   # tables, vues, formulaire, automatisation
@@ -39,7 +39,7 @@ defis/
 
 | Défi | Slug | Livraison | État |
 |---|---|---|---|
-| Eva PRO - CRM prospects avec relance 7 jours | `eva-pro-crm-relance` | 2026-09-05 | specs prêtes |
+| crm-souverain (issu défi Alegria Eva PRO, CRM Prospects relance 7 jours) | `crm-souverain` | 2026-09-05 | specs prêtes |
 
 ## Convention exemples
 
@@ -51,7 +51,7 @@ Domaines emails : `*.example` (RFC 2606, réservé aux exemples).
 
 ## Convention nommage
 
--> slug défi kebab-case (ex : `eva-pro-crm-relance`)
+-> slug défi kebab-case (ex : `crm-souverain`)
 
 -> tables préfixées par domaine : `SC_` (Sales Closer), `SB_` (Second Brain), `AZ_` (interne Alegria)
 
