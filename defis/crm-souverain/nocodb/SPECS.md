@@ -1,4 +1,4 @@
-# NocoDB - CRM prospects Eva PRO (self-host)
+# NocoDB - CRM Souverain (self-host)
 
 Équivalent souverain d'Airtable, à créer sur infra Coolify. Sert :
 
@@ -30,7 +30,7 @@ Instance à provisionner :
 
 ## Base
 
-Nom : `Eva PRO - CRM Prospects`
+Nom : `CRM Souverain`
 
 ## Table SC_Prospects
 
@@ -95,7 +95,7 @@ Champs visibles : Prenom, Nom, Entreprise, Email, Telephone, Source, Notes
 
 Champs cachés (default) : Statut = Nouveau, DateEntree = today, DernierContact = today
 
-URL publique : générée par NocoDB, à partager avec Eva PRO
+URL publique : générée par NocoDB, à partager avec un prospect
 
 ## Automatisation - option 1 : webhook natif NocoDB
 

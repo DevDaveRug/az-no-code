@@ -1,10 +1,10 @@
-# Airtable - CRM prospects Eva PRO
+# Airtable - CRM Souverain
 
 Structure complète prête à recréer manuellement dans Airtable en 15 minutes, ou à importer via API.
 
 ## Base
 
-Nom de la base : `Eva PRO - CRM Prospects`
+Nom de la base : `CRM Souverain`
 
 ## Table SC_Prospects
 
@@ -107,7 +107,7 @@ Champs cachés (auto-remplis) :
 
 Message post-soumission : "Prospect ajouté. Tu peux le suivre depuis la vue Tous les prospects."
 
-URL du formulaire : à partager avec Eva PRO ou intégrer sur un site.
+URL du formulaire : à partager avec un prospect ou intégrer sur un site.
 
 ## Automatisation
 
@@ -129,7 +129,7 @@ Déclencheur : At scheduled time
 
 Étape 2 - Send email :
 
-- To : email du owner (à saisir : `owner@exemple.com` ou l'email d'Eva PRO pour test)
+- To : email du owner (à saisir : `owner@exemple.com` ou l'email owner pour test (Eva PRO en démo))
 
 - Subject : `[CRM] {{count}} prospects à relancer cette semaine`
 

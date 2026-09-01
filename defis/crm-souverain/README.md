@@ -1,4 +1,4 @@
-# Défi Eva PRO - CRM prospects avec relance 7 jours
+# Défi crm-souverain (CRM Prospects avec relance 7 jours)
 
 ## Énoncé
 
@@ -40,7 +40,7 @@ Vendredi 5 septembre 2026
 
 ### Code (dans DevDaveRug/az-code)
 
--> `defis/eva-pro-crm-relance/` : MVP Next.js exécutable + déployable Vercel
+-> `defis/crm-souverain/` : MVP Next.js exécutable + déployable Vercel
 
 ## Convention exemples
 
@@ -62,7 +62,7 @@ Prénoms : Alice, Bob, Chloé, Emma (une par statut : Nouveau / En cours / Gagn�
 
 6. (Optionnel, pour bonus) Créer aussi la version NocoDB depuis `nocodb/SPECS.md`
 
-7. (Optionnel, pour bonus) Ouvrir le lien vivant Next.js (URL Vercel) déployé depuis `az-code/defis/eva-pro-crm-relance/`
+7. (Optionnel, pour bonus) Ouvrir le lien vivant Next.js (URL Vercel) déployé depuis `az-code/defis/crm-souverain/`
 
 ## État
 
