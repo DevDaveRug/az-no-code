@@ -1,9 +1,10 @@
 # Défi cr-rdv-formate (no-code)
 
-Version : 0.3.0
+Version : 0.4.0
 Livraison v0.1 : 2026-09-08 (specs)
 Livraison v0.2 : 2026-09-10 (runbook + seed CSV)
 Livraison v0.3 : 2026-09-10 (architecture bases connectables)
+Livraison v0.4 : 2026-09-10 (étend crm-souverain existant + Interface unifiée + 3 chemins d'usage)
 
 Compagnon no-code du défi Alegria Eva PRO du 8/9/2026 -- comptes rendus de RDV formatés en 2 colonnes.
 
@@ -11,7 +12,21 @@ Compagnon code souverain : [az-code/defis/cr-rdv-souverain](https://github.com/D
 
 Livrable central du défi (utilisable seul, hors Airtable) : [PROMPT_LLM.md](https://github.com/DevDaveRug/az-code/blob/main/defis/cr-rdv-souverain/PROMPT_LLM.md) -- prompt réutilisable à coller dans n'importe quelle IA.
 
-**Livrable construction rapide (10-15 min)** : [RUNBOOK.md](./RUNBOOK.md) v1.1.0 -- guide copy-paste pour monter la base Airtable `Sales Closer Souverain` connectée à **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end). Base multi-tables connectable dès le départ (`Prospects` + `CRs de RDV` + champ `Prospect` linké optionnel). Voir §XI du RUNBOOK pour l'architecture complète. Utilise le CSV `seed/crs-seed.csv` pour l'auto-détection des colonnes + 4 seeds de test.
+**Livrable construction (20 min)** : [RUNBOOK.md](./RUNBOOK.md) v1.2.0 -- guide copy-paste pour **étendre** la base Airtable existante `CRM Souverain` (livrée défi 1 avec correction Eva) en la renommant `Sales Closer Souverain` + ajout table `SC_CRs_de_RDV` + FK `Prospect` linkée vers `SC_Prospects` existante + Interface unifiée `Sales Closer Souverain` (rattrape défi 1 + livre défi 2). Connecté à **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end sur Julie Marchand + Karim Benhaddad). Voir §XII du RUNBOOK pour les 3 chemins d'usage, §XIII pour l'architecture complète. Utilise le CSV `seed/crs-seed.csv` pour l'auto-détection des colonnes + 4 seeds de test.
+
+## 3 chemins d'usage SB_WF10 (même workflow, 3 clients possibles)
+
+| Critère | Chemin A (Airtable) | Chemin B (Code) | Chemin C (Prompt seul) |
+|---|---|---|---|
+| Setup client | 20 min RUNBOOK | 0 (déjà déployé) | 30 sec copier-coller |
+| Interface | Airtable + Formulaire | Next.js + markdown + PDF | IA choisie par le client |
+| Persistance | Airtable | Neon Postgres | Aucune |
+| Rattachement CRM | oui (FK linkée) | oui (FK cross-schéma) | non |
+| PDF | non | oui | non |
+| Souveraineté | moyenne | forte | totale |
+| Coût par CR | ~0,001-0,005€ | ~0,001-0,005€ | plan gratuit IA |
+
+Détails complets dans [RUNBOOK §XII](./RUNBOOK.md#xii--les-3-chemins-dusage-sb_wf10-référence----même-workflow-3-clients).
 
 ## Objectif no-code
 
@@ -203,7 +218,9 @@ Pour un import semi-automatique : voir script `scripts/create-airtable-base.js` 
 
 ## Changelog
 
--> 0.3.0 -- 2026-09-10 (S133z-ccweb, Val David) : refonte "architecture bases connectables" -- base renommée `Sales Closer Souverain` (une seule pour toute la boîte-à-outils), table `Prospects` créée dès le RUNBOOK v1.1.0 (vide au démarrage, 4 champs), champ `Prospect` linké optionnel dans `CRs de RDV`. Section XI ajoutée dans le RUNBOOK détaillant le miroir no-code Airtable (une base multi-tables) / code Neon (une DB multi-schémas). Prépare l'ajout futur des autres briques (CRM, facturation) sans re-saisie ni migration.
+-> 0.4.0 -- 2026-09-10 (S133z-ccweb, Val David après Cor "ignore l'existant") : RUNBOOK v1.2.0 refondu pour ÉTENDRE la base `CRM Souverain` existante (défi 1 crm-souverain livré 2026-09-05 avec correction Eva : SC_Prospects 14 champs, 4 vues, formulaire, automation email récap, Interface `CRM Souverain` 4 pages) au lieu de créer une base from scratch. Base renommée -> `Sales Closer Souverain`, nouvelle table `SC_CRs_de_RDV` (convention SC_ + underscore cohérente avec SC_Prospects), FK `Prospect` linkée vers SC_Prospects existante. Nouvelle Étape 7 : Interface unifiée `Sales Closer Souverain` (rattrape défi 1 + livre défi 2). Section XII : 3 chemins d'usage SB_WF10 (A no-code Airtable / B code souverain / C prompt standalone) + tableau comparatif. Labels UI FR (Airtable de David en français). Origine : Cor David "un MetaCoach ne peut pas ignorer avant de parler" -> IDEE_claude_180 + IDEE_metacoach_179 (dr-context IDEAS_PRO PR#441).
+
+-> 0.3.0 -- 2026-09-10 (S133z-ccweb, Val David) : refonte "architecture bases connectables" -- base renommée `Sales Closer Souverain` (une seule pour toute la boîte-à-outils), table `Prospects` créée dès le RUNBOOK v1.1.0 (vide au démarrage, 4 champs), champ `Prospect` linké optionnel dans `CRs de RDV`. Section XI ajoutée dans le RUNBOOK détaillant le miroir no-code Airtable (une base multi-tables) / code Neon (une DB multi-schémas). **Obsolète v0.4.0** : cette version ignorait le défi 1 déjà livré.
 
 -> 0.2.0 -- 2026-09-10 (S133z-ccweb, Val David) : livraison v0.2 -- `RUNBOOK.md` (guide construction manuelle 10-15 min, Niveau 2 SB_WF10) + `seed/crs-seed.csv` (4 seeds fictifs pour import CSV auto-détection colonnes). Choix : template Airtable pur non livrable côté CC (pas de compte hôte), variante CSV + runbook préserve l'esprit "rapide côté toi".
 
