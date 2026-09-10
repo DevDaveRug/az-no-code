@@ -1,8 +1,9 @@
 # Défi cr-rdv-formate (no-code)
 
-Version : 0.2.0
+Version : 0.3.0
 Livraison v0.1 : 2026-09-08 (specs)
 Livraison v0.2 : 2026-09-10 (runbook + seed CSV)
+Livraison v0.3 : 2026-09-10 (architecture bases connectables)
 
 Compagnon no-code du défi Alegria Eva PRO du 8/9/2026 -- comptes rendus de RDV formatés en 2 colonnes.
 
@@ -10,7 +11,7 @@ Compagnon code souverain : [az-code/defis/cr-rdv-souverain](https://github.com/D
 
 Livrable central du défi (utilisable seul, hors Airtable) : [PROMPT_LLM.md](https://github.com/DevDaveRug/az-code/blob/main/defis/cr-rdv-souverain/PROMPT_LLM.md) -- prompt réutilisable à coller dans n'importe quelle IA.
 
-**Livrable construction rapide (10-15 min)** : [RUNBOOK.md](./RUNBOOK.md) -- guide copy-paste pour monter la base Airtable connectée à **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end). Utilise le CSV `seed/crs-seed.csv` pour l'auto-détection des colonnes + 4 seeds de test.
+**Livrable construction rapide (10-15 min)** : [RUNBOOK.md](./RUNBOOK.md) v1.1.0 -- guide copy-paste pour monter la base Airtable `Sales Closer Souverain` connectée à **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end). Base multi-tables connectable dès le départ (`Prospects` + `CRs de RDV` + champ `Prospect` linké optionnel). Voir §XI du RUNBOOK pour l'architecture complète. Utilise le CSV `seed/crs-seed.csv` pour l'auto-détection des colonnes + 4 seeds de test.
 
 ## Objectif no-code
 
@@ -201,6 +202,8 @@ Ce README **est** la spec. Le client (ou l'AZI) construit la base Airtable en su
 Pour un import semi-automatique : voir script `scripts/create-airtable-base.js` (à créer en v0.2 si demande utilisateurs).
 
 ## Changelog
+
+-> 0.3.0 -- 2026-09-10 (S133z-ccweb, Val David) : refonte "architecture bases connectables" -- base renommée `Sales Closer Souverain` (une seule pour toute la boîte-à-outils), table `Prospects` créée dès le RUNBOOK v1.1.0 (vide au démarrage, 4 champs), champ `Prospect` linké optionnel dans `CRs de RDV`. Section XI ajoutée dans le RUNBOOK détaillant le miroir no-code Airtable (une base multi-tables) / code Neon (une DB multi-schémas). Prépare l'ajout futur des autres briques (CRM, facturation) sans re-saisie ni migration.
 
 -> 0.2.0 -- 2026-09-10 (S133z-ccweb, Val David) : livraison v0.2 -- `RUNBOOK.md` (guide construction manuelle 10-15 min, Niveau 2 SB_WF10) + `seed/crs-seed.csv` (4 seeds fictifs pour import CSV auto-détection colonnes). Choix : template Airtable pur non livrable côté CC (pas de compte hôte), variante CSV + runbook préserve l'esprit "rapide côté toi".
 

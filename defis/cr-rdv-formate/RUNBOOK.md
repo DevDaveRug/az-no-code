@@ -1,10 +1,12 @@
-# RUNBOOK -- construction base Airtable CR-RDV Formaté
+# RUNBOOK -- construction base Airtable Sales Closer Souverain
 
-Version : 1.0.0
+Version : 1.1.0
 Date : 2026-09-10
 Statut : Actif -- livrable défi Alegria Eva PRO 2026-09-08
 
-> Guide copy-paste pour monter la base Airtable `CR-RDV Formaté` en 10-15 min, connectée au workflow n8n **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end).
+> Guide copy-paste pour monter la base Airtable `Sales Closer Souverain` en 10-15 min, connectée au workflow n8n **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end).
+>
+> **Architecture bases connectables (v1.1.0)** : une SEULE base par client regroupe toutes les briques de la boîte-à-outils souveraine (CR-RDV aujourd'hui, CRM demain, Facturation plus tard). Chaque brique = une table. Le champ `Prospect` linké permet de rattacher un CR à un prospect sans re-saisir. Détails architecture : §XI.
 >
 > Compagnon des specs complètes : [README.md](./README.md)
 >
@@ -16,9 +18,9 @@ Statut : Actif -- livrable défi Alegria Eva PRO 2026-09-08
 
 Au bout de ce runbook :
 
--> Base Airtable `CR-RDV Formaté` avec 1 table `CRs` (colonnes détectées auto à l'import CSV)
+-> Base Airtable `Sales Closer Souverain` avec 2 tables : `Prospects` (vide au démarrage, se remplit quand la brique CRM arrive) et `CRs de RDV` (le défi actuel, avec les 4 seeds)
 
--> 3 vues fonctionnelles : "Nouveaux à formater", "Récents", "À envoyer au client"
+-> 3 vues fonctionnelles sur `CRs de RDV` : "Nouveaux à formater", "Récents", "À envoyer au client"
 
 -> 1 formulaire public de saisie des notes brutes (URL partageable)
 
@@ -26,13 +28,15 @@ Au bout de ce runbook :
 
 -> 4 seeds fictifs prêts à re-formatter en un clic pour tester le pipeline complet
 
+-> 1 champ `Prospect` linké entre `CRs de RDV` et `Prospects` (optionnel, sert au rattachement futur sans re-saisie)
+
 ---
 
-## II- Étape 1 -- Import CSV (30 secondes)
+## II- Étape 1 -- Créer la base + import CSV (1 min)
 
 1- Ouvre [airtable.com](https://airtable.com) -> **Create a base** -> **Start from scratch**
 
-2- Nomme la base `CR-RDV Formaté`
+2- Nomme la base `Sales Closer Souverain` (une seule base pour toute la boîte-à-outils souveraine -- voir §XI)
 
 3- Dans la table par défaut (`Table 1`), clique sur l'entête -> **Import data** -> **CSV file**
 
@@ -40,13 +44,15 @@ Au bout de ce runbook :
 
 5- Airtable détecte les 6 colonnes (Notes brutes, Date RDV, Interlocuteur, Sujet, Statut, Modèle utilisé) -> **Import**
 
-6- Renomme la table `Table 1` en `CRs` (clic droit sur l'onglet -> Rename)
+6- Renomme la table `Table 1` en `CRs de RDV` (clic droit sur l'onglet -> Rename)
 
-À ce stade : 4 lignes visibles, toutes en `Statut = À formater`, sans `CR formaté` ni `dateRdv`/`interlocuteur`/`sujet` parsés par le LLM (ces champs seront écrits par l'automation).
+À ce stade : la table `CRs de RDV` contient 4 lignes toutes en `Statut = À formater`, sans `CR formaté` ni `dateRdv`/`interlocuteur`/`sujet` parsés par le LLM (ces champs seront écrits par l'automation).
 
 ---
 
-## III- Étape 2 -- Ajuster les types de champs (2 min)
+## III- Étape 2 -- Ajuster les types de champs + créer la table Prospects (4 min)
+
+### 2.a -- Ajuster les types de `CRs de RDV`
 
 Airtable détecte automatiquement mais 2 champs ont besoin d'être forcés :
 
@@ -63,6 +69,38 @@ Ajoute maintenant les 2 champs manquants (pour recevoir le retour du webhook SB_
 Optionnel (formule d'affichage) :
 
 -> Clic **+** -> nomme `Nom` -> type **Formula** -> colle : `IF({Interlocuteur}, {Interlocuteur} & " -- " & DATETIME_FORMAT({Date RDV}, "DD/MM/YYYY"), "CR du " & DATETIME_FORMAT(CREATED_TIME(), "DD/MM/YYYY HH:mm"))` -> déplace ce champ en 1ère position (drag & drop de l'entête).
+
+### 2.b -- Créer la table Prospects (vide au démarrage)
+
+Cette table reste vide tant que le client n'a pas la brique CRM. Elle sert d'ancrage pour le rattachement futur (voir §XI).
+
+1- En haut de la barre d'onglets tables (à côté de `CRs de RDV`), clique **+ Add or import** -> **Create empty table** -> nomme la table `Prospects`
+
+2- Renomme le champ `Name` par défaut en `Nom complet` (double-clic sur l'entête)
+
+3- Ajoute 3 champs simples (clic **+** en fin de tableau) :
+
+-> `Entreprise` -> type **Single line text**
+
+-> `Email` -> type **Email**
+
+-> `Téléphone` -> type **Phone number**
+
+Aucun seed à ajouter -- la table reste vide, c'est normal.
+
+### 2.c -- Ajouter le champ Prospect linké dans `CRs de RDV`
+
+Retour dans la table `CRs de RDV` :
+
+1- Clic **+** en fin de tableau -> nomme le champ `Prospect`
+
+2- Type -> **Link to another record** -> sélectionne la table `Prospects`
+
+3- **Allow linking to multiple records** -> **décoché** (un CR concerne un seul prospect)
+
+4- **Create**
+
+Le champ apparaît vide sur les 4 seeds -- normal, c'est le mode standalone. Il pourra être rempli plus tard quand la brique CRM sera montée.
 
 ---
 
@@ -82,7 +120,7 @@ Dans la barre latérale gauche (icône **Views**), clique sur **+ Create...** :
 
 1- Onglet **Automations** (en haut à droite) -> **Create automation** -> nomme `Formatage CR via SB_WF10`
 
-2- **Trigger** -> **When record enters view** -> Table `CRs` -> View `Nouveaux à formater`
+2- **Trigger** -> **When record enters view** -> Table `CRs de RDV` -> View `Nouveaux à formater`
 
 3- **Add action** -> **Send webhook request**
 
@@ -117,7 +155,7 @@ Content-Type: application/json
 
 5- **Test action** -> l'automation envoie la requête au webhook, tu vois la réponse n8n en direct (attends 5-10 sec, tu dois recevoir un JSON avec `crFormate`, `dateRdv`, `interlocuteur`, `sujet`, `modeleLlm`).
 
-6- **Add action** (après le webhook) -> **Update record** -> Table `CRs` -> Record `Trigger record` -> renseigne :
+6- **Add action** (après le webhook) -> **Update record** -> Table `CRs de RDV` -> Record `Trigger record` -> renseigne :
 
 -> `CR formaté` = valeur `crFormate` du step précédent
 
@@ -137,7 +175,7 @@ Content-Type: application/json
 
 ## VI- Étape 5 -- Créer le formulaire d'ajout (2 min)
 
-1- Retourne dans la table `CRs` -> sidebar gauche -> **+ Create...** -> **Form**
+1- Retourne dans la table `CRs de RDV` -> sidebar gauche -> **+ Create...** -> **Form**
 
 2- Nomme le formulaire `Prendre un CR`
 
@@ -159,7 +197,7 @@ Content-Type: application/json
 
 -> Trigger : `When form is submitted` -> Form `Prendre un CR`
 
--> Action : `Update record` -> Table `CRs` -> Record `Trigger record` -> `Statut` = `À formater`
+-> Action : `Update record` -> Table `CRs de RDV` -> Record `Trigger record` -> `Statut` = `À formater`
 
 -> **Turn on**
 
@@ -215,7 +253,7 @@ Le tout en no-code, tout dans Airtable, backend n8n mutualisé avec la version c
 
 Si le client veut aller plus loin (v0.2 du défi) :
 
--> Rattacher les CR à un prospect dans `crm-souverain` (Airtable ou version code) via champ `Prospect` linké
+-> Rattacher les CR à un prospect dans `crm-souverain` (Airtable ou version code) via champ `Prospect` linké -- déjà en place dès la v1.1.0 du RUNBOOK, il suffira de remplir la table `Prospects`
 
 -> Ajouter un champ `Envoyé le` + une automation "envoyer le CR par mail à l'interlocuteur" (Gmail/Brevo)
 
@@ -223,6 +261,76 @@ Si le client veut aller plus loin (v0.2 du défi) :
 
 ---
 
+## XI- Architecture bases connectables (référence)
+
+### Principe : isolation par défaut, rattachement optionnel via clé unique
+
+Chaque brique de la boîte-à-outils souveraine (CR-RDV aujourd'hui, CRM demain, Facturation plus tard) se livre seule ET peut se connecter aux autres sans re-saisie. Le client démarre par la brique qu'il veut, ajoute les autres à son rythme, sans jamais dupliquer un prospect.
+
+### Côté no-code Airtable
+
+**Une SEULE base par client** : `Sales Closer Souverain`. Toutes les briques cohabitent en tables séparées :
+
+| Table | Origine | État après ce runbook |
+|---|---|---|
+| `Prospects` | brique CRM (à venir) | vide (4 champs déclarés) |
+| `CRs de RDV` | ce défi | 4 seeds + champ `Prospect` linké |
+| `Entreprises` | crm-souverain v0.2 | non créée |
+| `Interactions` | crm-souverain v0.2 | non créée |
+| `Factures` | brique facturation (futur) | non créée |
+
+**Pourquoi une seule base multi-tables et pas plusieurs bases** :
+
+-> Airtable NE PERMET PAS de linker des enregistrements entre BASES différentes. Cross-base sync = plan Team payant (~24€/mois). Une seule base multi-tables = gratuit et relations natives.
+
+-> Le client qui démarre par CR-RDV SEUL a une table `Prospects` VIDE : zéro coût, zéro contrainte, zéro doublon. Le champ `Prospect` dans `CRs de RDV` reste optionnel.
+
+-> Quand la brique CRM arrive, il suffit de peupler `Prospects` -> les CRs existants peuvent être rattachés rétroactivement en 1 clic (dropdown searchable Airtable).
+
+**Isolation logique par vues** : chaque brique a ses propres vues nommées de façon claire (`CR - Nouveaux à formater`, `CRM - Prospects à relancer`, etc.). Le client qui n'utilise qu'une brique voit ses vues, ignore les autres.
+
+### Côté code souverain (Next.js + Neon)
+
+**Une SEULE base Neon `sales-closer-souverain`** partagée entre tous les projets Next.js de la boîte-à-outils. `DATABASE_URL` identique sur tous les projets Vercel.
+
+Isolation par **schémas PostgreSQL** :
+
+-> Schéma `crm` -> tables `crm.prospects`, `crm.entreprises`, `crm.interactions` (owned par `az-code/defis/crm-souverain`)
+
+-> Schéma `cr_rdv` -> table `cr_rdv.crs` avec FK optionnelle `prospect_id references crm.prospects(id) on delete set null` (owned par `az-code/defis/cr-rdv-souverain`)
+
+-> Chaque `schema.prisma` déclare `previewFeatures = ["multiSchema"]` + `schemas = ["<son propre schéma>"]` -> les migrations Prisma des différentes briques ne se marchent pas dessus.
+
+**Pourquoi ça marche** :
+
+-> Une seule DB Neon = une seule facture (scale-to-zero commun), un seul backup, une seule branche Neon pour tester
+
+-> Isolation logique via schémas = pas de collision, permissions différenciées possibles (rôle Neon par brique si besoin plus tard)
+
+-> Le champ `prospectId` (déjà dans le schema Prisma cr-rdv-souverain v0.1) devient une vraie FK -- reste NULL si `crm-souverain` pas déployé, aucune erreur
+
+-> Un seul `DATABASE_URL` à exporter en dev, à renseigner sur Vercel côté chaque projet
+
+### Miroir no-code / code
+
+| Niveau | No-code Airtable | Code souverain Neon |
+|---|---|---|
+| Conteneur | 1 base `Sales Closer Souverain` | 1 DB `sales-closer-souverain` |
+| Séparation par brique | tables (`Prospects`, `CRs de RDV`, ...) | schémas Postgres (`crm`, `cr_rdv`, ...) |
+| Lien inter-briques | `Link to another record` (Airtable natif) | FK PostgreSQL (Prisma multiSchema) |
+| Coût si standalone | 0€ (table vide autorisée) | 0€ (schéma vide autorisé) |
+| Migration standalone -> combo | remplir la table concernée | déployer la nouvelle brique + `prisma db push` |
+
+### Ce que ça change pour le défi actuel
+
+Le RUNBOOK v1.1.0 monte déjà l'infrastructure connectable (base `Sales Closer Souverain` + table `Prospects` vide + champ `Prospect` linké). Aucune migration ultérieure à prévoir : quand tu ajoutes la brique CRM (défi Alegria suivant probablement), tu peuples juste la table `Prospects` existante. Les CRs déjà générés se rattachent en 1 clic.
+
+Côté code : le schema Prisma de `cr-rdv-souverain` v0.1 contient déjà `prospectId` en FK optionnelle. Rien à changer -- il attendra `crm-souverain` en `cr_rdv` schema séparé, DATABASE_URL partagée.
+
+---
+
 ## Changelog
+
+-> 1.1.0 -- 2026-09-10 (S133z-ccweb, Val David) : refonte "architecture bases connectables" (Val David) -- base renommée `Sales Closer Souverain` (une seule pour toute la boîte-à-outils), table `Prospects` créée dès l'Étape 2.b (4 champs, vide au démarrage), champ `Prospect` linké ajouté dans `CRs de RDV` (Étape 2.c), section XI "Architecture bases connectables" détaillant le miroir no-code Airtable / code Neon. Impact temps côté toi : +2-3 min à l'Étape 2 (table vide + champ linké), reste inchangé.
 
 -> 1.0.0 -- 2026-09-10 (S133z-ccweb, Val David) : création. Runbook 10-15 min pour construction manuelle de la base Airtable connectée à SB_WF10 v1.1.0. Compagnon du CSV `seed/crs-seed.csv` (4 lignes fictives). Livrable défi Alegria Eva PRO 2026-09-08.
