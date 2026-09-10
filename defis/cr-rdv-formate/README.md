@@ -1,13 +1,16 @@
 # Défi cr-rdv-formate (no-code)
 
-Version : 0.1.0
-Livraison v0.1 : 2026-09-08
+Version : 0.2.0
+Livraison v0.1 : 2026-09-08 (specs)
+Livraison v0.2 : 2026-09-10 (runbook + seed CSV)
 
 Compagnon no-code du défi Alegria Eva PRO du 8/9/2026 -- comptes rendus de RDV formatés en 2 colonnes.
 
 Compagnon code souverain : [az-code/defis/cr-rdv-souverain](https://github.com/DevDaveRug/az-code/tree/main/defis/cr-rdv-souverain)
 
 Livrable central du défi (utilisable seul, hors Airtable) : [PROMPT_LLM.md](https://github.com/DevDaveRug/az-code/blob/main/defis/cr-rdv-souverain/PROMPT_LLM.md) -- prompt réutilisable à coller dans n'importe quelle IA.
+
+**Livrable construction rapide (10-15 min)** : [RUNBOOK.md](./RUNBOOK.md) -- guide copy-paste pour monter la base Airtable connectée à **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end). Utilise le CSV `seed/crs-seed.csv` pour l'auto-détection des colonnes + 4 seeds de test.
 
 ## Objectif no-code
 
@@ -198,5 +201,7 @@ Ce README **est** la spec. Le client (ou l'AZI) construit la base Airtable en su
 Pour un import semi-automatique : voir script `scripts/create-airtable-base.js` (à créer en v0.2 si demande utilisateurs).
 
 ## Changelog
+
+-> 0.2.0 -- 2026-09-10 (S133z-ccweb, Val David) : livraison v0.2 -- `RUNBOOK.md` (guide construction manuelle 10-15 min, Niveau 2 SB_WF10) + `seed/crs-seed.csv` (4 seeds fictifs pour import CSV auto-détection colonnes). Choix : template Airtable pur non livrable côté CC (pas de compte hôte), variante CSV + runbook préserve l'esprit "rapide côté toi".
 
 -> 0.1.0 -- 2026-09-08 (S133z-ccweb) : création. Specs Airtable (base + tables + vues + automations 2 niveaux) + 4 exemples fictifs + comparaison Niveau 1/2 + interface 3 pages. Défi Alegria Eva PRO semaine du 8/9.
