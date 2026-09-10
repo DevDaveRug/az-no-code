@@ -1,6 +1,6 @@
 # RUNBOOK -- extension base Airtable Sales Closer Souverain (défi 2 CR-RDV)
 
-Version : 1.2.0
+Version : 1.3.0
 Date : 2026-09-10
 Statut : Actif -- livrable défi Alegria Eva PRO 2026-09-08
 
@@ -64,11 +64,11 @@ Note : l'Interface Airtable existante garde son nom `CRM Souverain` pour l'insta
 
 ### 2.a -- Ajuster les types de `SC_CRs_de_RDV`
 
-Airtable détecte automatiquement mais 2 champs ont besoin d'être forcés :
+Airtable détecte automatiquement mais 1 champ a besoin d'être forcé :
 
 -> **Statut** -> clic entête -> **Personnaliser le type de champ** -> **Sélection unique** -> ajoute les 4 options : `À formater`, `Formaté`, `Envoyé au client`, `Erreur` (couleurs libres)
 
--> **Date RDV** -> clic entête -> **Personnaliser le type de champ** -> **Date** -> coche **Inclure un champ heure** -> **Enregistrer**
+-> **Date RDV** -> Airtable détecte le format ISO du CSV et inclut déjà le champ heure par défaut -> **rien à faire, passer à la suite** (vérifier que la case "Inclure un champ heure" est bien cochée si tu veux double-check).
 
 Ajoute maintenant les 2 champs manquants (pour recevoir le retour du webhook SB_WF10) :
 
@@ -92,6 +92,8 @@ Toujours dans `SC_CRs_de_RDV` :
 
 4- **Créer**
 
+**Note comportement Airtable** : à la création du champ lié, Airtable IMPOSE de choisir un champ de la table `SC_Prospects` à afficher en "lookup" dans `SC_CRs_de_RDV` (typiquement `Nom complet`). Tu peux le supprimer immédiatement après création si tu ne veux pas de colonne lookup redondante -- le lien fonctionne indépendamment (le nom du prospect s'affiche déjà dans le champ `Prospect` linké lui-même).
+
 Le champ apparaît vide sur les 4 seeds -- normal. Il pourra être rempli à l'usage : quand tu prendras un CR de RDV avec Emma Petit (par exemple), tu tapes son nom dans ce champ et le dropdown searchable Airtable propose l'entrée `SC_Prospects` existante -> 1 clic, rattachement fait, pas de re-saisie.
 
 ---
@@ -108,60 +110,144 @@ Dans la barre latérale gauche (icône **Vues**) de la table `SC_CRs_de_RDV`, cl
 
 ---
 
-## V- Étape 4 -- Monter l'automation webhook SB_WF10 (5 min)
+## V- Étape 4 -- Brancher SB_WF10 sur Airtable (10 min)
 
-1- Onglet **Automatisations** (en haut de la base) -> **Créer une automatisation** -> nomme `Formatage CR via SB_WF10`
+**Contexte important (v1.3.0)** : Airtable a déplacé l'action `Envoyer une requête webhook` sur le plan **Team payant (~24€/mois)** en 2024. Pour rester sur plan **Free**, on inverse la logique : au lieu qu'Airtable pousse vers n8n, c'est **n8n qui vient chercher dans Airtable**. Zéro action payante Airtable côté client.
+
+Deux options -- prendre l'Option A par défaut (plus rapide, plus propre) :
+
+### 5.A -- Option A : Airtable Trigger natif dans n8n (recommandé)
+
+**Principe** : n8n polle la table `SC_CRs_de_RDV` toutes les 1-5 min via l'API Airtable. Quand un enregistrement passe en `Statut = À formater`, n8n déclenche SB_WF10 automatiquement. Aucune automation Airtable requise côté client.
+
+**Setup côté Airtable (1 min)** :
+
+1- Ouvre ton compte Airtable -> **Profil** (icône en haut à droite) -> **Developer hub** -> **Personal access tokens** -> **Create new token**
+
+2- Nom : `n8n SB_WF10 CR-RDV`. Scopes : coche `data.records:read` + `data.records:write` + `schema.bases:read`. Access : coche la base `Sales Closer Souverain`. **Create**.
+
+3- Copie le token (`patXXXXXXXXXXXX`) -- il ne s'affiche qu'une fois. Range-le dans Bw sous `n8n Airtable PAT - SC Souverain`.
+
+**Setup côté n8n (5 min)** :
+
+1- Ouvre `sb-n8n.coolify.salescloser.fr` -> workflow **SB_WF10 CR-RDV formatage v1.1.0** -> duplique-le en **SB_WF10-2 CR-RDV via Airtable Trigger** (garde v1.1.0 intact au cas où).
+
+2- Dans le workflow dupliqué, remplace le node **Webhook** en tête par un node **Airtable Trigger** :
+
+-> Credentials : ajoute un nouveau credential Airtable API avec le PAT copié plus haut.
+
+-> Base : `Sales Closer Souverain`
+
+-> Table : `SC_CRs_de_RDV`
+
+-> Trigger On : **View** -> sélectionne la vue `Nouveaux à formater`
+
+-> Poll Every : `1 minute` (ou `5 minutes` pour économiser les crédits Airtable API)
+
+-> **Additional Fields** -> **Return Fields** -> sélectionne `Notes brutes` + `Airtable record ID` (obligatoire pour update ensuite)
+
+3- Après le node **Extraction** existant, ajoute un dernier node **Airtable** (action, pas trigger) :
+
+-> Operation : **Update record**
+
+-> Base : `Sales Closer Souverain`
+
+-> Table : `SC_CRs_de_RDV`
+
+-> Record ID : `{{ $('Airtable Trigger').item.json.id }}`
+
+-> Fields to update :
+
+   -> `CR formaté` : `{{ $json.crFormate }}`
+
+   -> `Date RDV` : `{{ $json.dateRdv }}`
+
+   -> `Interlocuteur` : `{{ $json.interlocuteur }}`
+
+   -> `Sujet` : `{{ $json.sujet }}`
+
+   -> `Statut` : `Formaté`
+
+   -> `Modèle utilisé` : `{{ $json.modeleLlm }}`
+
+4- **Save** + **Activate** le workflow SB_WF10-2.
+
+**Test** : passe à l'Étape 5 pour le formulaire, puis Étape 6 pour le test end-to-end. Tu verras les 4 seeds se formater en 1-5 min (délai de polling).
+
+### 5.B -- Option B : Email trigger (fallback pur no-code Airtable Free)
+
+Si l'Option A t'ennuie (générer un PAT, dupliquer le workflow), Airtable Free permet d'**envoyer un email** en action d'automation. n8n a un node **IMAP Email Trigger** natif qui peut écouter une boîte mail dédiée.
+
+**Setup côté Airtable (3 min)** :
+
+1- Onglet **Automatisations** -> **Créer une automatisation** -> nomme `CR à formater -> email vers n8n`
 
 2- **Déclencheur** -> **Lorsqu'un enregistrement entre dans une vue** -> Table `SC_CRs_de_RDV` -> Vue `Nouveaux à formater`
 
-3- **Ajouter une action** -> **Envoyer une requête webhook**
+3- **Ajouter une action** -> **Envoyer un e-mail** (action Free native)
 
-4- Configure l'action :
+-> **À** : `cr-rdv-formatage@davidruggieri.com` (adresse dédiée à créer côté ta boîte mail, voir §prérequis ci-dessous)
 
-**Méthode** : `POST`
+-> **Objet** : `CR_A_FORMATER::{{ Enregistrement déclencheur -> Airtable record ID }}`
 
-**URL** :
-
-```
-https://sb-n8n.coolify.salescloser.fr/webhook/cr-rdv-format
-```
-
-(vérifie l'URL exacte du webhook SB_WF10 dans ton n8n -> workflow "SB_WF10 CR-RDV formatage v1.1.0" -> node `Webhook` -> onglet **Production URL**)
-
-**En-têtes (Headers)** :
+-> **Corps (Body)** : mets uniquement le contenu suivant, tel quel (le corps sera parsé par n8n) :
 
 ```
-X-Webhook-Secret: <valeur du secret Bw "n8n Webhook Secret - CR-RDV">
-Content-Type: application/json
+notesBrutes:::
+{{ Enregistrement déclencheur -> Notes brutes }}
+:::notesBrutes
+
+modeleLlm: anthropic/claude-sonnet-5
 ```
 
-**Corps (Body)** (type `JSON`) :
+4- **Activer**.
 
-```json
-{
-  "notesBrutes": "<clic 'Insérer une valeur' -> Enregistrement déclencheur -> Notes brutes>",
-  "modeleLlm": "anthropic/claude-sonnet-5",
-  "airtableRecordId": "<clic 'Insérer une valeur' -> Enregistrement déclencheur -> Airtable record ID>"
-}
+**Prérequis boîte mail** : créer un alias `cr-rdv-formatage@davidruggieri.com` (Ionos, gratuit -- redirige vers ta boîte principale OU vers une boîte dédiée que n8n peut interroger via IMAP).
+
+**Setup côté n8n (5 min)** :
+
+1- Duplique **SB_WF10 v1.1.0** en **SB_WF10-3 CR-RDV via Email Trigger**.
+
+2- Remplace le node **Webhook** par un node **Email Trigger (IMAP)** :
+
+-> Credentials : IMAP de la boîte dédiée (`imap.ionos.fr` port 993, TLS).
+
+-> Format : simple
+
+-> Custom Filter : `SUBJECT "CR_A_FORMATER::"` (n'écoute que ces emails-là)
+
+3- Ajoute juste après un node **Function** pour parser le corps :
+
+```javascript
+const body = $json.text || $json.textPlain || '';
+const notesMatch = body.match(/notesBrutes:::\n([\s\S]*?)\n:::notesBrutes/);
+const modeleMatch = body.match(/modeleLlm:\s*(.+)/);
+const recordIdMatch = $json.subject.match(/CR_A_FORMATER::(rec[\w]+)/);
+
+return [{
+  json: {
+    notesBrutes: notesMatch ? notesMatch[1].trim() : '',
+    modeleLlm: modeleMatch ? modeleMatch[1].trim() : 'anthropic/claude-sonnet-5',
+    airtableRecordId: recordIdMatch ? recordIdMatch[1] : ''
+  }
+}];
 ```
 
-5- **Tester l'action** -> l'automation envoie la requête au webhook, tu vois la réponse n8n en direct (attends 5-10 sec, tu dois recevoir un JSON avec `crFormate`, `dateRdv`, `interlocuteur`, `sujet`, `modeleLlm`).
+4- Le reste du workflow (OpenRouter formatage + extraction + assemblage) reste identique. En fin, ajoute un node **Airtable Update Record** (comme Option A step 3) pour écrire le CR formaté dans la ligne d'origine (identifiée par `airtableRecordId` extrait de l'objet).
 
-6- **Ajouter une action** (après le webhook) -> **Mettre à jour un enregistrement** -> Table `SC_CRs_de_RDV` -> Enregistrement `Enregistrement déclencheur` -> renseigne :
+5- **Save** + **Activate**.
 
--> `CR formaté` = valeur `crFormate` du step précédent
+**Comparaison des 2 options** :
 
--> `Date RDV` = valeur `dateRdv`
-
--> `Interlocuteur` = valeur `interlocuteur`
-
--> `Sujet` = valeur `sujet`
-
--> `Statut` = `Formaté` (valeur fixe)
-
--> `Modèle utilisé` = valeur `modeleLlm`
-
-7- **Activer** en haut à droite de la page automatisation.
+| Critère | Option A (Airtable Trigger n8n) | Option B (Email IMAP) |
+|---|---|---|
+| Setup Airtable | 1 min (juste le PAT) | 3 min (automation email) |
+| Setup n8n | 5 min | 5 min |
+| Délai de traitement | 1-5 min (polling) | 30 sec - 2 min (email delivery) |
+| Dépendance externe | API Airtable (fiable) | Boîte mail Ionos + IMAP (2 points de panne) |
+| Coût | 0€ (dans crédits API Airtable Free) | 0€ (alias Ionos gratuit) |
+| Débogabilité | Bonne (logs n8n Airtable) | Moyenne (chercher dans les emails) |
+| Recommandé | **OUI** (par défaut) | Fallback si PAT Airtable bloqué |
 
 ---
 
@@ -395,6 +481,8 @@ Isolation par **schémas PostgreSQL** :
 ---
 
 ## Changelog
+
+-> 1.3.0 -- 2026-09-10 (S133z-ccweb, Cor David après tests Airtable en cours) : 3 corrections. (a) Étape 2.a : `Date RDV` -- l'import CSV avec format ISO inclut déjà le champ heure par défaut, plus rien à forcer (David a vérifié). (b) Étape 2.b : clarification -- Airtable IMPOSE un champ lookup à la création du champ lié, on peut le supprimer immédiatement (précision ajoutée). (c) **Étape 4 refondue** -- `Envoyer une requête webhook` Airtable est passé sur plan Team (~24€/mois) en 2024, donc suppression complète. Remplacé par 2 options gratuites : Option A (recommandée) Airtable Trigger natif dans n8n (polling API, PAT Airtable requis, workflow SB_WF10-2), Option B fallback Email trigger (Airtable envoie un email vers alias Ionos, n8n IMAP trigger l'écoute, workflow SB_WF10-3). Tableau comparatif A vs B ajouté. Origine : Cor David S133z-ccweb "il n'y a pas d'action qui parle de webhook, Airtable veut leur solution payante".
 
 -> 1.2.0 -- 2026-09-10 (S133z-ccweb, Val David après Cor "ignore l'existant") : refonte complète après reconnaissance que crm-souverain (défi 1) était déjà livré avec base `CRM Souverain` + table `SC_Prospects` (14 champs, correction Eva : Emma Petit / Alice Martin / Bob Durand / Chloé Dubois) + 4 vues + formulaire + automation email récap + Interface `CRM Souverain` (4 pages). Le RUNBOOK v1.2.0 **étend** cette base existante (renommage `CRM Souverain` -> `Sales Closer Souverain`, ajout table `SC_CRs_de_RDV`, FK Prospect vers SC_Prospects). Nouvelle Étape 7 : Interface unifiée `Sales Closer Souverain` (rattrape défi 1 + livre défi 2). Nouvelle section XII : 3 chemins d'usage SB_WF10 (A no-code Airtable / B code souverain / C prompt standalone). Section XIII (ex-XI) : architecture bases connectables mise à jour avec vrais objets existants. Labels UI adaptés en français (Airtable de David en FR). Impact temps toi : 20 min (10 min étapes 1-6 + 10 min Étape 7 Interface).
 
