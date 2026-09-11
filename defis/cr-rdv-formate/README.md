@@ -1,10 +1,11 @@
 # Défi cr-rdv-formate (no-code)
 
-Version : 0.4.0
+Version : 0.5.0
 Livraison v0.1 : 2026-09-08 (specs)
 Livraison v0.2 : 2026-09-10 (runbook + seed CSV)
 Livraison v0.3 : 2026-09-10 (architecture bases connectables)
 Livraison v0.4 : 2026-09-10 (étend crm-souverain existant + Interface unifiée + 3 chemins d'usage)
+Livraison v0.5 : 2026-09-10 (Airtable Trigger n8n + Email fallback, contourne le passage payant du webhook Airtable)
 
 Compagnon no-code du défi Alegria Eva PRO du 8/9/2026 -- comptes rendus de RDV formatés en 2 colonnes.
 
@@ -12,7 +13,7 @@ Compagnon code souverain : [az-code/defis/cr-rdv-souverain](https://github.com/D
 
 Livrable central du défi (utilisable seul, hors Airtable) : [PROMPT_LLM.md](https://github.com/DevDaveRug/az-code/blob/main/defis/cr-rdv-souverain/PROMPT_LLM.md) -- prompt réutilisable à coller dans n'importe quelle IA.
 
-**Livrable construction (20 min)** : [RUNBOOK.md](./RUNBOOK.md) v1.2.0 -- guide copy-paste pour **étendre** la base Airtable existante `CRM Souverain` (livrée défi 1 avec correction Eva) en la renommant `Sales Closer Souverain` + ajout table `SC_CRs_de_RDV` + FK `Prospect` linkée vers `SC_Prospects` existante + Interface unifiée `Sales Closer Souverain` (rattrape défi 1 + livre défi 2). Connecté à **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end sur Julie Marchand + Karim Benhaddad). Voir §XII du RUNBOOK pour les 3 chemins d'usage, §XIII pour l'architecture complète. Utilise le CSV `seed/crs-seed.csv` pour l'auto-détection des colonnes + 4 seeds de test.
+**Livrable construction (25 min)** : [RUNBOOK.md](./RUNBOOK.md) v1.3.0 -- guide copy-paste pour **étendre** la base Airtable existante `CRM Souverain` (livrée défi 1 avec correction Eva) en la renommant `Sales Closer Souverain` + ajout table `SC_CRs_de_RDV` + FK `Prospect` linkée vers `SC_Prospects` existante + Interface unifiée `Sales Closer Souverain` (rattrape défi 1 + livre défi 2). Connecté à **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end sur Julie Marchand + Karim Benhaddad). Voir §XII du RUNBOOK pour les 3 chemins d'usage, §XIII pour l'architecture complète. Utilise le CSV `seed/crs-seed.csv` pour l'auto-détection des colonnes + 4 seeds de test.
 
 ## 3 chemins d'usage SB_WF10 (même workflow, 3 clients possibles)
 
@@ -217,6 +218,8 @@ Ce README **est** la spec. Le client (ou l'AZI) construit la base Airtable en su
 Pour un import semi-automatique : voir script `scripts/create-airtable-base.js` (à créer en v0.2 si demande utilisateurs).
 
 ## Changelog
+
+-> 0.5.0 -- 2026-09-10 (S133z-ccweb, Cor David après test Airtable en cours) : RUNBOOK v1.3.0 -- 3 corrections. (a) Étape 2.a : Date RDV heure déjà incluse par défaut à l'import CSV (skip). (b) Étape 2.b : précision comportement du champ lié (lookup imposé à créer puis supprimable). (c) **Étape 4 entièrement refondue** -- retrait de l'action `Envoyer une requête webhook` (passée sur plan Team payant Airtable en 2024), remplacée par 2 options gratuites : Option A recommandée = Airtable Trigger natif dans n8n (polling API, PAT Airtable, workflow SB_WF10-2), Option B fallback = Email trigger (Airtable envoie email vers alias Ionos, n8n IMAP écoute, workflow SB_WF10-3). Tableau comparatif A vs B ajouté. Impact temps toi : 25 min (au lieu de 20).
 
 -> 0.4.0 -- 2026-09-10 (S133z-ccweb, Val David après Cor "ignore l'existant") : RUNBOOK v1.2.0 refondu pour ÉTENDRE la base `CRM Souverain` existante (défi 1 crm-souverain livré 2026-09-05 avec correction Eva : SC_Prospects 14 champs, 4 vues, formulaire, automation email récap, Interface `CRM Souverain` 4 pages) au lieu de créer une base from scratch. Base renommée -> `Sales Closer Souverain`, nouvelle table `SC_CRs_de_RDV` (convention SC_ + underscore cohérente avec SC_Prospects), FK `Prospect` linkée vers SC_Prospects existante. Nouvelle Étape 7 : Interface unifiée `Sales Closer Souverain` (rattrape défi 1 + livre défi 2). Section XII : 3 chemins d'usage SB_WF10 (A no-code Airtable / B code souverain / C prompt standalone) + tableau comparatif. Labels UI FR (Airtable de David en français). Origine : Cor David "un MetaCoach ne peut pas ignorer avant de parler" -> IDEE_claude_180 + IDEE_metacoach_179 (dr-context IDEAS_PRO PR#441).
 
