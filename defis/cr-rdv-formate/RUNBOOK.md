@@ -1,6 +1,6 @@
 # RUNBOOK -- extension base Airtable Sales Closer Souverain (défi 2 CR-RDV)
 
-Version : 1.5.2
+Version : 1.5.3
 Date : 2026-09-11
 Statut : Actif -- livrable défi Alegria Eva PRO 2026-09-08
 
@@ -212,7 +212,9 @@ Sur `Airtable Trigger` :
 
 -> **Additional Fields** :
 
-   -> **Formula** (déjà pré-remplie par le template) : `={{ ["Date création", "Notes brutes"] }}` -- retourne les 2 champs pour chaque record picked up
+   -> **Fields** : **laisser VIDE** -- n8n retourne tous les fields de la vue par défaut, ce qui inclut `Notes brutes`, `Date création`, et le reste. Le node Preparer + Assembler en aval ne lisent que `Notes brutes` + `id`, le reste passe silencieusement.
+
+   -> **Formula** : **laisser VIDE** -- ce champ est un `filterByFormula` Airtable (filtre de records), pas un sélecteur de fields. Y mettre un array n8n `["Date création", "Notes brutes"]` déclenche une 422 à l'activation du workflow (mais passe silencieusement en Fetch Test Event, faux positif traître -- piège corrigé S133z-ccweb).
 
    -> **View ID** : `Nouveaux à formater` (déjà pré-rempli par le template)
 
@@ -506,6 +508,8 @@ Isolation par **schémas PostgreSQL** :
 ---
 
 ## Changelog
+
+-> 1.5.3 -- 2026-09-11 (S133z-ccweb, Cor David "SB_WF10-2 accepte pas d'être publiée -- 422 à l'activation") : PATCH -- correction §V.4.d Additional Fields : Fields ET Formula laissés VIDES (au lieu de Formula pré-remplie avec array v1.5.2). Le champ Formula est un `filterByFormula` Airtable (filtre de records), pas un sélecteur de fields ; y mettre un array n8n `["Date création", "Notes brutes"]` déclenche une 422 à l'activation du workflow (piège traître : passe silencieusement en Fetch Test Event). Correction alignée avec dr-context PR#449 v1.1.1 (retrait de la clé `formula` du template JSON). Test end-to-end reste validé sur les 4 seeds -- n8n retourne tous les fields de la vue par défaut, le Preparer + Assembler ne lisent que ce dont ils ont besoin.
 
 -> 1.5.2 -- 2026-09-11 (S133z-ccweb, Cor David "pense à corriger les docs et le json du WF avec ces corrections !") : bulletproof de l'Étape 4 après debug live de 5 pièges de config n8n Airtable v2.1 découverts en session : (a) §III.2.a : nom du champ Airtable = `Date création` (accent aigu safe) au lieu de `Créé le` (encoding fragile) ; (b) §V.4.c : URL raw pointe vers `260911_PrOu_SB_WF10-2-cr-rdv-airtable-trigger-v1_1_0.json` (bump v1.0.0 -> v1.1.0 dans dr-context PR#449) ; (c) §V.4.d Trigger Field = `Date création` (au lieu de `Trigger On : View`) ; (d) §V.4.d Additional Fields = Formula avec array `={{ ["Date création", "Notes brutes"] }}` (au lieu de Fields single input buggé) ; (e) §V.4.d Update Record = Map Automatically + Columns to match on = `id` (au lieu de Record ID + fields customisés en Manual buggé) ; (f) §V.4.f note ajoutée pointant vers README dr-context §VI Troubleshooting pour la duplication manuelle. Test end-to-end validé sur 4 seeds Marie Dupont / Karim Bouziane / Chloé Renaud / JP Huber -> passés en Statut = Formaté avec CR formaté rempli.
 
