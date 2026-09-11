@@ -1,6 +1,6 @@
 # RUNBOOK -- extension base Airtable Sales Closer Souverain (défi 2 CR-RDV)
 
-Version : 1.5.1
+Version : 1.5.3
 Date : 2026-09-11
 Statut : Actif -- livrable défi Alegria Eva PRO 2026-09-08
 
@@ -74,7 +74,9 @@ Ajoute maintenant les 2 champs manquants (pour recevoir le retour du workflow SB
 
 -> Clic **+** en fin de tableau -> nomme `CR formaté` -> type **Texte long** -> coche **Activer le formatage enrichi (rich text)**
 
--> Clic **+** -> nomme `Créé le` -> type **Date de création**
+-> Clic **+** -> nomme `Date création` -> type **Date de création**
+
+   Note : le nom `Date création` (avec accent aigu sur le `é`) est safe côté API Airtable. Les noms `Créé le` (avec espace + majuscule + accent + minuscule) ont eu des soucis d'encoding en session S133z-ccweb (débug live) -- prend `Date création` par défaut.
 
 Optionnel (formule d'affichage) :
 
@@ -144,12 +146,12 @@ Airtable a déplacé l'action `Envoyer une requête webhook` sur le plan **Team 
 
 ### 4.c -- Importer le template SB_WF10-2 depuis dr-context (30 sec)
 
-Le workflow **SB_WF10-2 CR-RDV via Airtable Trigger v1.0.0** est fourni comme template JSON prêt à l'emploi dans `dr-context` (dérivé de SB_WF10 v1.1.0 avec Airtable Trigger + Update Record déjà câblés) :
+Le workflow **SB_WF10-2 CR-RDV via Airtable Trigger v1.1.0** est fourni comme template JSON prêt à l'emploi dans `dr-context` (dérivé de SB_WF10 v1.1.0 avec Airtable Trigger + Update Record déjà câblés, **bulletproof après debug live 5 pièges S133z**) :
 
 **URL raw GitHub** :
 
 ```
-https://raw.githubusercontent.com/DevDaveRug/dr-context/main/docs/DR/DR_Professionnel/Pr_Outils/PrOu_SecondBrain/PrOuSb_Workflows/260911_PrOu_SB_WF10-2-cr-rdv-airtable-trigger-v1_0_0.json
+https://raw.githubusercontent.com/DevDaveRug/dr-context/main/docs/DR/DR_Professionnel/Pr_Outils/PrOu_SecondBrain/PrOuSb_Workflows/260911_PrOu_SB_WF10-2-cr-rdv-airtable-trigger-v1_1_0.json
 ```
 
 Import dans ton n8n :
@@ -204,11 +206,17 @@ Sur `Airtable Trigger` :
 
 -> **Table** : `SC_CRs_de_RDV`
 
--> **Trigger On : View** : `Nouveaux à formater`
+-> **Trigger Field** : `Date création` (le nom du champ Airtable créé à l'Étape 2.a -- le template pré-remplit cette valeur)
 
--> **Poll Every** : `1 minute` (ou `5 minutes` pour économiser le quota Airtable API sur plan Free -- voir §X)
+-> **Poll Times** : `Every Minute` par défaut du template (ou passe à `Every X Minutes` = `5` pour économiser le quota Airtable API sur plan Free -- voir §X)
 
--> **Return Fields** : coche `Notes brutes` (obligatoire pour lecture)
+-> **Additional Fields** :
+
+   -> **Fields** : **laisser VIDE** -- n8n retourne tous les fields de la vue par défaut, ce qui inclut `Notes brutes`, `Date création`, et le reste. Le node Preparer + Assembler en aval ne lisent que `Notes brutes` + `id`, le reste passe silencieusement.
+
+   -> **Formula** : **laisser VIDE** -- ce champ est un `filterByFormula` Airtable (filtre de records), pas un sélecteur de fields. Y mettre un array n8n `["Date création", "Notes brutes"]` déclenche une 422 à l'activation du workflow (mais passe silencieusement en Fetch Test Event, faux positif traître -- piège corrigé S133z-ccweb).
+
+   -> **View ID** : `Nouveaux à formater` (déjà pré-rempli par le template)
 
 Sur `Airtable Update Record` :
 
@@ -216,9 +224,11 @@ Sur `Airtable Update Record` :
 
 -> **Table** : même `SC_CRs_de_RDV`
 
--> **Record ID** : laisser tel quel (`={{ $json.airtableRecordId }}` -- résolu automatiquement par le node Assembler)
+-> **Mapping Column Mode** : `Map Automatically` (déjà par défaut du template v1.1.0)
 
--> **Fields** : les 6 colonnes (`CR formaté`, `Date RDV`, `Interlocuteur`, `Sujet`, `Statut`, `Modèle utilisé`) sont déjà mappées par le template
+-> **Columns to match on** : `id` (déjà par défaut du template) -- n8n extrait la clé `id` du JSON entrant (produite par le node Assembler) pour matcher la ligne à mettre à jour
+
+-> Aucun mapping manuel de colonnes à configurer : le node auto-map les 6 clés (`CR formaté`, `Date RDV`, `Interlocuteur`, `Sujet`, `Statut`, `Modèle utilisé`) vers les colonnes Airtable homonymes. Le node Assembler du template émet directement ces noms exacts.
 
 ### 4.e -- Activation + test (30 sec)
 
@@ -233,6 +243,8 @@ Pour forcer un test immédiat sans attendre le polling : sur le node `Airtable T
 ### 4.f -- Alternative : duplication manuelle depuis SB_WF10 (pour comprendre chaque node)
 
 Cette alternative est utile si tu veux comprendre chaque node en le construisant à la main (utile pédagogiquement), OU si tu as déjà SB_WF10 v1.1.0 monté avec des credentials OpenRouter que tu veux réutiliser.
+
+**Attention** : si tu prends ce chemin, applique les **5 corrections listées dans le README dr-context** (`260911_PrOu_SB_WF10-2-README.md` §VI Troubleshooting) sinon tu vas re-vivre le debug live de la session S133z-ccweb (30 min perdues sur des pièges d'UI n8n Airtable v2.1). Résumé des 5 pièges à connaître : (a) `Trigger Field` = `Date création` (pas `createdTime`) ; (b) `Additional Fields > Formula` (array) au lieu de `Fields` (single input) ; (c) node Assembler émet directement les noms Airtable + `id` top-level ; (d) node Update Record en `Map Automatically` (pas Manual) ; (e) filtre vue `Nouveaux à formater` inclut aussi `Statut vide`.
 
 1- Importe d'abord SB_WF10 v1.1.0 (si pas déjà présent) depuis :
 
@@ -496,6 +508,10 @@ Isolation par **schémas PostgreSQL** :
 ---
 
 ## Changelog
+
+-> 1.5.3 -- 2026-09-11 (S133z-ccweb, Cor David "SB_WF10-2 accepte pas d'être publiée -- 422 à l'activation") : PATCH -- correction §V.4.d Additional Fields : Fields ET Formula laissés VIDES (au lieu de Formula pré-remplie avec array v1.5.2). Le champ Formula est un `filterByFormula` Airtable (filtre de records), pas un sélecteur de fields ; y mettre un array n8n `["Date création", "Notes brutes"]` déclenche une 422 à l'activation du workflow (piège traître : passe silencieusement en Fetch Test Event). Correction alignée avec dr-context PR#449 v1.1.1 (retrait de la clé `formula` du template JSON). Test end-to-end reste validé sur les 4 seeds -- n8n retourne tous les fields de la vue par défaut, le Preparer + Assembler ne lisent que ce dont ils ont besoin.
+
+-> 1.5.2 -- 2026-09-11 (S133z-ccweb, Cor David "pense à corriger les docs et le json du WF avec ces corrections !") : bulletproof de l'Étape 4 après debug live de 5 pièges de config n8n Airtable v2.1 découverts en session : (a) §III.2.a : nom du champ Airtable = `Date création` (accent aigu safe) au lieu de `Créé le` (encoding fragile) ; (b) §V.4.c : URL raw pointe vers `260911_PrOu_SB_WF10-2-cr-rdv-airtable-trigger-v1_1_0.json` (bump v1.0.0 -> v1.1.0 dans dr-context PR#449) ; (c) §V.4.d Trigger Field = `Date création` (au lieu de `Trigger On : View`) ; (d) §V.4.d Additional Fields = Formula avec array `={{ ["Date création", "Notes brutes"] }}` (au lieu de Fields single input buggé) ; (e) §V.4.d Update Record = Map Automatically + Columns to match on = `id` (au lieu de Record ID + fields customisés en Manual buggé) ; (f) §V.4.f note ajoutée pointant vers README dr-context §VI Troubleshooting pour la duplication manuelle. Test end-to-end validé sur 4 seeds Marie Dupont / Karim Bouziane / Chloé Renaud / JP Huber -> passés en Statut = Formaté avec CR formaté rempli.
 
 -> 1.5.1 -- 2026-09-11 (S133z-ccweb, Cor David "N8N-COOLIFY-SETUP.md absent du clone") : fix dette technique cachée v1.5.0 §V.4.b -- le fichier `N8N-COOLIFY-SETUP.md` était référencé avec "(à créer si absent)" mais n'existait pas. Créé dans dr-context (PR#448) sous le nom code_archi `260911_PrOu_N8N-COOLIFY-SETUP.md` (guide 20 min : VPS 4-6€/mois + Coolify one-click + HTTPS auto + n8n déployé, illimité en volume). Chemin corrigé dans le RUNBOOK §V.4.b.
 
