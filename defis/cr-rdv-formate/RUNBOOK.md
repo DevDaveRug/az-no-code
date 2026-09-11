@@ -1,10 +1,10 @@
 # RUNBOOK -- extension base Airtable Sales Closer Souverain (défi 2 CR-RDV)
 
-Version : 1.4.0
-Date : 2026-09-10
+Version : 1.5.0
+Date : 2026-09-11
 Statut : Actif -- livrable défi Alegria Eva PRO 2026-09-08
 
-> Guide copy-paste pour étendre la base Airtable existante **`CRM Souverain`** (défi 1 crm-souverain livré 2026-09-05, avec correction Eva) en y ajoutant la table CR-RDV connectée au workflow n8n **SB_WF10 v1.1.0** (Niveau 2, accents FR + année 2026 validés end-to-end sur Julie Marchand + Karim Benhaddad).
+> Guide copy-paste pour étendre la base Airtable existante **`CRM Souverain`** (défi 1 crm-souverain livré 2026-09-05, avec correction Eva) en y ajoutant la table CR-RDV connectée au workflow n8n **SB_WF10-2 v1.0.0** (dérivé de SB_WF10 v1.1.0, adapté Airtable Trigger + Update Record -- importable en 30 sec via URL raw GitHub, Niveau 2, accents FR + année 2026 validés end-to-end sur Julie Marchand + Karim Benhaddad).
 >
 > **Architecture bases connectables (v1.1.0+)** : une SEULE base par client regroupe toutes les briques de la boîte-à-outils souveraine. Le défi 1 a livré `SC_Prospects` (14 champs, 4 vues, formulaire, automation email récap lundi 9h, 4 seeds réels Emma Petit / Alice Martin / Bob Durand / Chloé Dubois, Interface Airtable `CRM Souverain` avec 4 pages). Le défi 2 ajoute la table `SC_CRs_de_RDV` + rebranding base en `Sales Closer Souverain` + Interface unifiée. Détails §XII.
 >
@@ -110,9 +110,9 @@ Dans la barre latérale gauche (icône **Vues**) de la table `SC_CRs_de_RDV`, cl
 
 ---
 
-## V- Étape 4 -- Brancher SB_WF10 sur Airtable via n8n Airtable Trigger (15 min)
+## V- Étape 4 -- Brancher SB_WF10-2 sur Airtable via n8n Airtable Trigger (6 min via import JSON)
 
-### 4.a -- Pourquoi cette approche (contexte v1.4.0)
+### 4.a -- Pourquoi cette approche (contexte v1.5.0)
 
 Airtable a déplacé l'action `Envoyer une requête webhook` sur le plan **Team payant (~24€/mois)** en 2024. Pour rester sur plan **Free**, on inverse la logique : au lieu qu'Airtable pousse vers n8n, c'est **n8n qui vient chercher dans Airtable** via son node `Airtable Trigger` natif (polling API). Zéro action payante Airtable côté client. **n8n est accessible en no-code** via 2 chemins :
 
@@ -142,83 +142,121 @@ Airtable a déplacé l'action `Envoyer une requête webhook` sur le plan **Team 
 
 -> **Create** -> copie le token `patXXXXXXXXXXXX` (il ne s'affiche qu'une fois), range dans Bw sous `n8n Airtable PAT - SC Souverain`
 
-### 4.c -- Importer le workflow SB_WF10 dans ton n8n (5 min)
+### 4.c -- Importer le template SB_WF10-2 depuis dr-context (30 sec)
 
-Le workflow n8n **SB_WF10** est fourni comme template exportable JSON dans `dr-context` (source de vérité maintenue par David) :
+Le workflow **SB_WF10-2 CR-RDV via Airtable Trigger v1.0.0** est fourni comme template JSON prêt à l'emploi dans `dr-context` (dérivé de SB_WF10 v1.1.0 avec Airtable Trigger + Update Record déjà câblés) :
 
-**URL raw GitHub** : `https://raw.githubusercontent.com/DevDaveRug/dr-context/main/docs/DR/DR_Professionnel/Pr_Outils/PrOu_SecondBrain/PrOuSb_Workflows/260910_PrOu_SB_WF10-cr-rdv-formatage-v1_1_0.json`
+**URL raw GitHub** :
+
+```
+https://raw.githubusercontent.com/DevDaveRug/dr-context/main/docs/DR/DR_Professionnel/Pr_Outils/PrOu_SecondBrain/PrOuSb_Workflows/260911_PrOu_SB_WF10-2-cr-rdv-airtable-trigger-v1_0_0.json
+```
 
 Import dans ton n8n :
 
 1- Ouvre ton n8n (`n8n.cloud` ou ton self-host) -> **+ New workflow**
 
-2- Menu (3 points en haut à droite) -> **Import from URL** -> colle l'URL raw ci-dessus -> **Import**
+2- Menu 3 points (haut droite) -> **Import from URL** -> colle l'URL raw ci-dessus -> **Import**
 
-3- Le workflow apparaît avec 6 nodes : `Webhook` -> `Preparer prompts + inputs` (Code JavaScript) -> `OpenRouter formatage` -> `OpenRouter extraction` -> `Assembler réponse` -> `Respond to webhook`
+3- Le workflow apparaît avec 6 nodes déjà câblés :
 
-### 4.d -- Adapter le workflow pour Airtable Trigger (5 min)
+`Airtable Trigger` -> `Preparer prompts + inputs` -> `OpenRouter formatage CR` -> `OpenRouter extraction metadonnees` -> `Assembler valeurs Airtable` -> `Airtable Update Record`
 
-1- **Remplace le node `Webhook`** en tête par un node **Airtable Trigger** (clic droit sur `Webhook` -> Delete, puis + à gauche du node suivant -> Search "Airtable Trigger") :
+Alternative si l'import URL ne marche pas (versions anciennes de n8n) : télécharge le JSON en local (bouton `Raw` sur GitHub -> Ctrl+S), puis Menu 3 points -> **Import from File** -> sélectionne le `.json`.
 
--> Credentials : **+ Create New** -> saisis ton PAT Airtable (`patXXXXXX`) -> Save
+### 4.d -- Configurer les credentials + Base/Table/View (5 min)
 
--> Base : sélectionne `Sales Closer Souverain`
+Le template contient des placeholders explicites à remplacer via l'UI n8n :
 
--> Table : `SC_CRs_de_RDV`
+**1- Credentials Airtable (sur les nodes `Airtable Trigger` ET `Airtable Update Record`)**
 
--> Trigger On : **View** -> sélectionne la vue `Nouveaux à formater`
+-> Clic sur le node `Airtable Trigger` -> section **Credentials** -> **Create New**
 
--> Poll Every : `1 minute` (ou `5 minutes` pour économiser les crédits Airtable API)
+-> Type : **Airtable Token API**
 
--> **Additional Fields** -> **Return Fields** : coche `Notes brutes`
+-> Colle ton PAT Airtable (`patXXXXXXXXXXXX` de l'Étape 4.b.4)
 
-2- **Node `Preparer prompts + inputs`** (Code JavaScript) : adapte la première ligne pour lire depuis Airtable Trigger au lieu du webhook body :
+-> Nomme le credential : `Airtable PAT - Sales Closer Souverain`
+
+-> **Save**
+
+-> Retourne sur le node `Airtable Update Record` -> le même credential apparaît dans le dropdown -> sélectionne-le (un seul credential pour les 2 nodes).
+
+**2- Credentials OpenRouter (sur les nodes `OpenRouter formatage CR` ET `OpenRouter extraction metadonnees`)**
+
+-> Clic sur le node `OpenRouter formatage CR` -> section **Credentials** -> **Create New**
+
+-> Type : **OpenRouter API**
+
+-> Colle ta clé OpenRouter (`sk-or-v1-XXX` de l'Étape 4.b.3)
+
+-> Nomme : `OpenRouter API`
+
+-> **Save**
+
+-> Retourne sur le node `OpenRouter extraction metadonnees` -> sélectionne le même credential dans le dropdown.
+
+**3- Base + Table + View (sur les 2 nodes Airtable)**
+
+Sur `Airtable Trigger` :
+
+-> **Base** : sélectionne `Sales Closer Souverain` dans le dropdown (n8n liste tes bases via ton PAT)
+
+-> **Table** : `SC_CRs_de_RDV`
+
+-> **Trigger On : View** : `Nouveaux à formater`
+
+-> **Poll Every** : `1 minute` (ou `5 minutes` pour économiser le quota Airtable API sur plan Free -- voir §X)
+
+-> **Return Fields** : coche `Notes brutes` (obligatoire pour lecture)
+
+Sur `Airtable Update Record` :
+
+-> **Base** : même `Sales Closer Souverain`
+
+-> **Table** : même `SC_CRs_de_RDV`
+
+-> **Record ID** : laisser tel quel (`={{ $json.airtableRecordId }}` -- résolu automatiquement par le node Assembler)
+
+-> **Fields** : les 6 colonnes (`CR formaté`, `Date RDV`, `Interlocuteur`, `Sujet`, `Statut`, `Modèle utilisé`) sont déjà mappées par le template
+
+### 4.e -- Activation + test (30 sec)
+
+1- Menu haut droite -> **Save** (Ctrl+S) -> nom du workflow : `SB_WF10-2 CR-RDV via Airtable Trigger v1.0.0` (déjà positionné par le template)
+
+2- Toggle **Active** (haut droite) -> vert
+
+3- **Test end-to-end** : dans Airtable, ouvre la vue `Nouveaux à formater` de `SC_CRs_de_RDV` -> tu vois les 4 seeds -> attends 1-5 min (délai polling) -> les 4 lignes passent en `Statut = Formaté` avec `CR formaté` rempli, accents FR complets, année 2026 correcte.
+
+Pour forcer un test immédiat sans attendre le polling : sur le node `Airtable Trigger` -> bouton **Execute node** (play) -> déclenche manuellement une passe complète sur les records matchant la vue.
+
+### 4.f -- Alternative : duplication manuelle depuis SB_WF10 (pour comprendre chaque node)
+
+Cette alternative est utile si tu veux comprendre chaque node en le construisant à la main (utile pédagogiquement), OU si tu as déjà SB_WF10 v1.1.0 monté avec des credentials OpenRouter que tu veux réutiliser.
+
+1- Importe d'abord SB_WF10 v1.1.0 (si pas déjà présent) depuis :
+
+```
+https://raw.githubusercontent.com/DevDaveRug/dr-context/main/docs/DR/DR_Professionnel/Pr_Outils/PrOu_SecondBrain/PrOuSb_Workflows/260910_PrOu_SB_WF10-cr-rdv-formatage-v1_1_0.json
+```
+
+2- Duplique-le en `SB_WF10-2 CR-RDV via Airtable Trigger` (Menu -> Duplicate)
+
+3- Remplace le node `Webhook` en tête par un node **Airtable Trigger** (config identique à 4.d.3 sur `Airtable Trigger`)
+
+4- Adapte le node `Preparer prompts + inputs` (Code JavaScript) pour lire depuis `$json.fields` (structure Airtable) au lieu de `$json.body` (structure Webhook) -- la première ligne devient :
 
 ```javascript
-const body = $json.fields || $json;
-const notesBrutes = String(body['Notes brutes'] || '').trim();
+const fields = $json.fields || $json;
+const notesBrutes = String(fields['Notes brutes'] || fields.notesBrutes || '').trim();
 const modeleLlm = 'anthropic/claude-sonnet-5';
 ```
 
-3- **Node `OpenRouter formatage`** et **`OpenRouter extraction`** : credentials **+ Create New** OpenRouter API -> saisis ta clé `sk-or-v1-XXX` -> Save
+5- Remplace le node `Respond to webhook` final par un node **Airtable Update Record** (config identique à 4.d.3 sur `Airtable Update Record`), avec mapping des 6 fields sur les valeurs sortantes du node Assembler.
 
-4- **Remplace le node `Respond to webhook`** final par un node **Airtable** (action, pas trigger) :
+6- Save + Active.
 
--> Operation : **Update record**
-
--> Base : `Sales Closer Souverain`
-
--> Table : `SC_CRs_de_RDV`
-
--> Record ID : `{{ $('Airtable Trigger').item.json.id }}`
-
--> Fields to update :
-
-   -> `CR formaté` : `{{ $json.crFormate }}`
-
-   -> `Date RDV` : `{{ $json.dateRdv }}`
-
-   -> `Interlocuteur` : `{{ $json.interlocuteur }}`
-
-   -> `Sujet` : `{{ $json.sujet }}`
-
-   -> `Statut` : `Formaté`
-
-   -> `Modèle utilisé` : `{{ $json.modeleLlm }}`
-
-5- Menu haut droite -> **Save** (Ctrl+S) -> nomme `SB_WF10-2 CR-RDV via Airtable Trigger` -> **Active** (toggle vert en haut).
-
-### 4.e -- Note pour David / power users (n8n existant sb-n8n.coolify.salescloser.fr)
-
-Si tu as déjà le workflow SB_WF10 v1.1.0 monté dans ton n8n avec les credentials OpenRouter en place :
-
-1- Duplique-le en `SB_WF10-2 CR-RDV via Airtable Trigger` (Menu -> Duplicate)
-
-2- Applique les étapes 4.d.1 + 4.d.4 (remplacer node Webhook par Airtable Trigger + remplacer node Respond par Update Record Airtable) -- les autres nodes (Preparer, OpenRouter formatage/extraction, Assembler) restent tels quels avec l'adaptation 4.d.2 sur le node Preparer
-
-3- Save + Active
-
-Temps setup : 5 min au lieu de 15 (tu réutilises tes credentials existants).
+Temps setup : ~10 min (versus 30 sec via l'import template). Les deux méthodes aboutissent au même workflow fonctionnel. Voir aussi le README compagnon : `dr-context/docs/DR/DR_Professionnel/Pr_Outils/PrOu_SecondBrain/PrOuSb_Docs/260911_PrOu_SB_WF10-2-README.md`.
 
 ---
 
@@ -328,7 +366,7 @@ Le tout en no-code, tout dans Airtable + n8n (Airtable Free + n8n Cloud tier fre
 
 -> **Débutants** -> Chemin C (Prompt standalone) -> ils collent [PROMPT_LLM.md](https://github.com/DevDaveRug/az-code/blob/main/defis/cr-rdv-souverain/PROMPT_LLM.md) dans leur ChatGPT/Claude/Mistral existant. Setup 30 sec, 0€, aucun outil à installer.
 
--> **Ambitieux** -> Chemin A (Airtable + n8n) -> ils suivent ce RUNBOOK avec leur propre compte n8n gratuit. Setup 30-45 min total (10 min prérequis + 15 min Étape 4 + Étapes 5-7 Airtable), 0€ récurrent, ~5€ OpenRouter au démarrage. Ils apprennent le vrai stack souverain (Airtable + n8n + OpenRouter) = compétence transférable à N autres cas d'usage.
+-> **Ambitieux** -> Chemin A (Airtable + n8n) -> ils suivent ce RUNBOOK avec leur propre compte n8n gratuit. Setup 20-25 min total (10 min prérequis + 6 min Étape 4 via import JSON SB_WF10-2 + Étapes 5-7 Airtable), 0€ récurrent, ~5€ OpenRouter au démarrage. Ils apprennent le vrai stack souverain (Airtable + n8n + OpenRouter) = compétence transférable à N autres cas d'usage.
 
 **Rappel Alegria** : comme pour le défi 1, tu partages sur Dd Alegria l'interface v2 comme partage de réussite, ET tu rappelles dans un autre salon les autres livrables (RUNBOOK, PROMPT_LLM.md portable, code souverain Next.js, SB_WF10 workflow n8n, 3 chemins d'usage §XII).
 
@@ -370,7 +408,7 @@ Public cible : Eva PRO, formateurs Alegria, entrepreneurs no-code.
 
 Flow : Airtable formulaire `Prendre un CR` -> automation Airtable **Send webhook** -> **SB_WF10** -> réponse JSON -> automation Airtable **Update record** -> ligne mise à jour dans `SC_CRs_de_RDV`.
 
-Setup : 15 min via ce RUNBOOK. Coût : ~0,001-0,005€/CR (OpenRouter) + plan Airtable Free suffit jusqu'à 25 CR/mois.
+Setup : 6 min via ce RUNBOOK (import JSON template SB_WF10-2 + config credentials). Coût : ~0,001-0,005€/CR (OpenRouter) + plan Airtable Free suffit jusqu'à 25 CR/mois.
 
 Livrable client : URL Interface `Sales Closer Souverain` + URL formulaire `Prendre un CR`.
 
@@ -400,7 +438,7 @@ Livrable client : le fichier PROMPT_LLM.md, portable et réutilisable N fois.
 
 | Critère | Chemin A (Airtable) | Chemin B (Code) | Chemin C (Prompt seul) |
 |---|---|---|---|
-| Setup client | 15 min RUNBOOK | 0 (déjà déployé) | 30 sec (copier-coller) |
+| Setup client | 6 min (import JSON SB_WF10-2 + credentials) | 0 (déjà déployé) | 30 sec (copier-coller) |
 | Interface | Interface Airtable native + Formulaire | Page Next.js + rendu markdown + PDF | L'IA choisie par le client |
 | Persistance des CRs | Airtable | Neon Postgres | Aucune (à copier ailleurs) |
 | Rattachement prospect CRM | oui (FK linkée SC_Prospects) | oui (FK cr_rdv.prospect_id -> crm.prospects) | non |
@@ -458,6 +496,8 @@ Isolation par **schémas PostgreSQL** :
 ---
 
 ## Changelog
+
+-> 1.5.0 -- 2026-09-11 (S133z-ccweb, Val David "y a t-il possibilité d'importer un json") : bascule §V (Étape 4) sur l'**import JSON template SB_WF10-2** comme méthode par défaut, unifiée pour élèves Alegria débutants ET David / power users. §4.c réduit à 30 sec (import URL raw GitHub du template `260911_PrOu_SB_WF10-2-cr-rdv-airtable-trigger-v1_0_0.json` dans `dr-context`). §4.d = configuration credentials Airtable + OpenRouter + Base/Table/View via UI n8n (5 min). §4.e = activation + test (30 sec). Ancienne procédure de remplacement de nodes (v1.4.0 §4.d) déplacée en §4.f "alternative duplication manuelle" pour ceux qui veulent comprendre chaque node. Section IX chemin A élèves ambitieux : setup passe de 30-45 min à 20-25 min total. Section XII chemin A + tableau comparatif : setup client passe de 15 min à 6 min. Compagnon dr-context : PR#447 (template JSON SB_WF10-2 v1.0.0 + README `260911_PrOu_SB_WF10-2-README.md`).
 
 -> 1.4.0 -- 2026-09-10 (S133z-ccweb, Val David "Option A + n8n gratuit pour élèves Alegria") : refonte Étape 4 complète intégrant corrections v1.3.0 (jamais mergée) + pivot pédagogique. (a) Étape 2.a : Date RDV heure déjà par défaut à l'import CSV, skip la manip. (b) Étape 2.b : précision Airtable IMPOSE un lookup à la création du champ lié, supprimable ensuite. (c) Étape 4 refondue en Option A only (Airtable Trigger natif dans n8n) avec 2 sous-cas : (4.b-d) élève Alegria débutant qui crée son propre compte n8n gratuit (n8n Cloud tier free ou self-host Coolify) + PAT Airtable + clé OpenRouter, importe le workflow template SB_WF10 v1.1.0 depuis dr-context via URL raw GitHub ; (4.e) David / power users avec n8n existant qui dupliquent SB_WF10 en SB_WF10-2 en 5 min. Option B (Email trigger) retirée du corps principal (fallback documenté sur demande). Section IX mise à jour : élèves Alegria ont 2 chemins accessibles selon niveau (C débutants prompt standalone, A ambitieux Airtable + n8n). Impact temps toi : 30-45 min setup complet (versus 20 min v1.2.0 avec webhook payant), 0€ récurrent, ~5€ OpenRouter au démarrage.
 
