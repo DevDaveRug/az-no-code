@@ -1,6 +1,6 @@
 # RUNBOOK -- extension base Airtable Sales Closer Souverain (défi 2 CR-RDV)
 
-Version : 1.5.0
+Version : 1.5.1
 Date : 2026-09-11
 Statut : Actif -- livrable défi Alegria Eva PRO 2026-09-08
 
@@ -128,7 +128,7 @@ Airtable a déplacé l'action `Envoyer une requête webhook` sur le plan **Team 
 
 -> Débutants -> `https://n8n.cloud` -> Sign up -> tier free automatique
 
--> Avancés self-host -> voir `dr-context/docs/DR/DR_Professionnel/Pr_Outils/PrOu_SecondBrain/PrOuSb_Docs/N8N-COOLIFY-SETUP.md` (à créer si absent)
+-> Avancés self-host -> voir `dr-context/docs/DR/DR_Professionnel/Pr_Outils/PrOu_SecondBrain/PrOuSb_Docs/260911_PrOu_N8N-COOLIFY-SETUP.md` (guide 20 min : VPS 4-6€/mois + Coolify one-click + HTTPS auto + n8n déployé, illimité en volume)
 
 3- **Compte OpenRouter** (LLM au token) -> `https://openrouter.ai` -> Sign up -> **Credits** -> charge 5€ (couvre ~1000-5000 CR selon modèle). Copie la clé API `sk-or-v1-XXX`, range dans Bw sous `OpenRouter API Key`.
 
@@ -496,6 +496,8 @@ Isolation par **schémas PostgreSQL** :
 ---
 
 ## Changelog
+
+-> 1.5.1 -- 2026-09-11 (S133z-ccweb, Cor David "N8N-COOLIFY-SETUP.md absent du clone") : fix dette technique cachée v1.5.0 §V.4.b -- le fichier `N8N-COOLIFY-SETUP.md` était référencé avec "(à créer si absent)" mais n'existait pas. Créé dans dr-context (PR#448) sous le nom code_archi `260911_PrOu_N8N-COOLIFY-SETUP.md` (guide 20 min : VPS 4-6€/mois + Coolify one-click + HTTPS auto + n8n déployé, illimité en volume). Chemin corrigé dans le RUNBOOK §V.4.b.
 
 -> 1.5.0 -- 2026-09-11 (S133z-ccweb, Val David "y a t-il possibilité d'importer un json") : bascule §V (Étape 4) sur l'**import JSON template SB_WF10-2** comme méthode par défaut, unifiée pour élèves Alegria débutants ET David / power users. §4.c réduit à 30 sec (import URL raw GitHub du template `260911_PrOu_SB_WF10-2-cr-rdv-airtable-trigger-v1_0_0.json` dans `dr-context`). §4.d = configuration credentials Airtable + OpenRouter + Base/Table/View via UI n8n (5 min). §4.e = activation + test (30 sec). Ancienne procédure de remplacement de nodes (v1.4.0 §4.d) déplacée en §4.f "alternative duplication manuelle" pour ceux qui veulent comprendre chaque node. Section IX chemin A élèves ambitieux : setup passe de 30-45 min à 20-25 min total. Section XII chemin A + tableau comparatif : setup client passe de 15 min à 6 min. Compagnon dr-context : PR#447 (template JSON SB_WF10-2 v1.0.0 + README `260911_PrOu_SB_WF10-2-README.md`).
 
