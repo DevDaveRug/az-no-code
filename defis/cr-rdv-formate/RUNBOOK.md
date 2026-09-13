@@ -1,7 +1,7 @@
 # RUNBOOK -- extension base Airtable Sales Closer Souverain (défi 2 CR-RDV)
 
-Version : 1.5.3
-Date : 2026-09-11
+Version : 1.5.4
+Date : 2026-09-12
 Statut : Actif -- livrable défi Alegria Eva PRO 2026-09-08
 
 > Guide copy-paste pour étendre la base Airtable existante **`CRM Souverain`** (défi 1 crm-souverain livré 2026-09-05, avec correction Eva) en y ajoutant la table CR-RDV connectée au workflow n8n **SB_WF10-2 v1.0.0** (dérivé de SB_WF10 v1.1.0, adapté Airtable Trigger + Update Record -- importable en 30 sec via URL raw GitHub, Niveau 2, accents FR + année 2026 validés end-to-end sur Julie Marchand + Karim Benhaddad).
@@ -106,7 +106,9 @@ Dans la barre latérale gauche (icône **Vues**) de la table `SC_CRs_de_RDV`, cl
 
 -> **Vue Grille** nommée `Nouveaux à formater` -> filtre `Statut est À formater`
 
--> **Vue Grille** nommée `Récents` -> tri `Créé le` décroissant -> **Trier par 1 champ**
+-> **Vue Grille** nommée `Récents` -> tri `Date création` décroissant -> **Trier par 1 champ**
+
+   Note : trier par `Date création` (le champ créé à l'Étape 2.a) plutôt que par `Créé le` (champ système Airtable implicite) garde la cohérence avec le Trigger Field du workflow n8n §V.4.d. Airtable propose les deux dans les options de tri, ils fonctionnent tous les deux -- mais un seul est cité partout dans ce runbook.
 
 -> **Vue Grille** nommée `À envoyer au client` -> filtre `Statut est Formaté` -> groupé par `Interlocuteur`
 
@@ -296,7 +298,9 @@ Temps setup : ~10 min (versus 30 sec via l'import template). Les deux méthodes 
 
 -> Déclencheur : `Lorsqu'un formulaire est envoyé` -> Formulaire `Prendre un CR`
 
--> Action : `Mettre à jour un enregistrement` -> Table `SC_CRs_de_RDV` -> Enregistrement `Enregistrement déclencheur` -> `Statut` = `À formater`
+-> Action : `Mettre à jour un enregistrement` -> Table `SC_CRs_de_RDV` -> Enregistrement `Enregistrement déclencheur` -> **Champ `Statut`** -> bascule du mode **par défaut** vers le mode **Custom** (case à cocher / icône crayon à droite du champ, selon la version Airtable) -> saisis manuellement `À formater` dans le champ texte.
+
+   **Piège S133z-ccweb à éviter** : en mode par défaut, Airtable exige une source de données (un champ du record déclencheur) et refuse une chaîne littérale -> l'automation plante à l'exécution avec `Réception d'entrées non valides` (l'erreur est silencieuse tant que tu n'as pas testé). Le mode Custom accepte une valeur en dur, c'est ce qu'il faut pour initialiser un statut fixe.
 
 -> **Activer**
 
@@ -328,35 +332,63 @@ Test B -- via le formulaire :
 
 L'interface actuelle `CRM Souverain` (livrée défi 1 avec 4 pages : `CRM A relancer`, `Tous Prospects - Sales Closer`, `Prospects A Relancer`, `Nouveau Prospect Sales Closer`) reste en place comme historique. On monte une **nouvelle interface unifiée** qui embarque le CRM ET le CR-RDV -- c'est celle-là que tu partageras à Eva.
 
+### 8.a -- Créer l'interface + composition (2 min)
+
 1- Onglet **Interfaces** (barre de nav en haut) -> **+ Nouvelle interface** -> nomme-la `Sales Closer Souverain`
 
-2- Choisis la mise en page **Application de suivi** (Dashboard + pages)
+2- Choisis la composition **`Tableau de bord`** (PAS `Présentation` ni `Personnaliser` -- seul `Tableau de bord` fournit le combo dashboard + sidebar navigable qu'on veut).
 
-3- **Page 1 -- `Accueil`** : vue d'ensemble
+   **Piège S133z-ccweb à éviter** : `Présentation` et `Personnaliser` sont proposés au-dessus dans la même modale et paraissent équivalents. Ils donnent des interfaces sans sidebar auto ou sans dashboard central -> re-monter tout à la main pour rien. Prendre `Tableau de bord` d'entrée.
 
--> Éléments : `Compteur` -> nombre de prospects à relancer (`SC_Prospects` filtré Statut = Nouveau OR En cours + Prochaine relance <= aujourd'hui)
+### 8.b -- Ajouter les 6 pages dans la sidebar gauche (6 min)
 
--> `Compteur` -> nombre de CRs à formater (`SC_CRs_de_RDV` filtré Statut = À formater)
+L'ordre ci-dessous est celui de la sidebar de haut en bas. Toutes les pages se réfèrent à la base `Sales Closer Souverain` (celle où tu as `SC_Prospects` du défi 1 + `SC_CRs_de_RDV` du défi 2).
 
--> `Compteur` -> nombre de CRs à envoyer au client (`SC_CRs_de_RDV` filtré Statut = Formaté)
+1- **Page 1 -- `Accueil`** (la première créée par défaut à l'étape 8.a) : vue d'ensemble
 
--> Bouton d'action `+ Prendre un CR` -> ouvre le formulaire `Prendre un CR` (URL publique)
+-> Élément **`Compteur`** -> nombre de prospects à relancer (`SC_Prospects` filtré Statut = `Nouveau` OR `En cours` + Prochaine relance <= aujourd'hui)
 
--> Bouton d'action `+ Ajouter Prospect` -> ouvre le formulaire du défi 1
+-> Élément **`Compteur`** -> nombre de CRs à formater (`SC_CRs_de_RDV` filtré Statut = `À formater`)
 
-4- **Page 2 -- `Prospects à relancer`** : réutilise la vue Grille du défi 1 (filtre Statut Nouveau/En cours + Prochaine relance <= aujourd'hui, tri par urgence, coloration rouge/orange/jaune)
+-> Élément **`Compteur`** -> nombre de CRs à envoyer au client (`SC_CRs_de_RDV` filtré Statut = `Formaté`)
 
-5- **Page 3 -- `Pipeline`** : réutilise la vue Kanban du défi 1 (`SC_Prospects` groupé par Statut)
+-> Élément **`Bouton d'action`** `+ Prendre un CR` -> ouvre la page `Prendre un CR` (8.c ci-dessous)
 
-6- **Page 4 -- `Nouveaux CRs à formater`** : Grille sur `SC_CRs_de_RDV` filtre Statut = À formater (colonnes : Créé le, Notes brutes tronquées 200 chars, Statut)
+-> Élément **`Bouton d'action`** `+ Ajouter un prospect` -> ouvre la page `Ajouter un prospect` (8.c ci-dessous)
 
-7- **Page 5 -- `CRs récents`** : Grille sur `SC_CRs_de_RDV` tri Créé le décroissant, limite 20 (colonnes : Interlocuteur, Sujet, Date RDV, Prospect linké, CR formaté)
+2- **Page 2 -- `Prospects à relancer`** : réutilise la vue Grille du défi 1 (`SC_Prospects` filtre Statut Nouveau/En cours + Prochaine relance <= aujourd'hui, tri par urgence, coloration rouge/orange/jaune)
 
-8- **Page 6 -- `CRs à envoyer au client`** : Grille sur `SC_CRs_de_RDV` filtre Statut = Formaté, groupé par Interlocuteur (prêt à copier dans un mail)
+3- **Page 3 -- `Pipeline`** : réutilise la vue Kanban du défi 1 (`SC_Prospects` groupé par `Statut`)
 
-9- **Page 7 -- `Prendre un CR`** : embed du formulaire `Prendre un CR` (ou lien vers son URL publique)
+4- **Page 4 -- `CRs à formater`** : Grille sur `SC_CRs_de_RDV` filtre Statut = `À formater` (colonnes : `Date création`, `Notes brutes` tronquées 200 chars, `Statut`)
 
-10- **Publier** l'interface -> URL partageable pour Eva et démo Alegria
+5- **Page 5 -- `CRs récents 30j`** : Grille sur `SC_CRs_de_RDV` tri `Date création` décroissant, filtre `Date création est antérieur à nombre de jours à compter d'aujourd'hui = 20` (colonnes : `Interlocuteur`, `Sujet`, `Date RDV`, `Prospect` linké, `CR formaté`).
+
+   **Piège S133z-ccweb à éviter (formulation Airtable FR ambiguë)** : dans l'interface française d'Airtable, le sélecteur de filtre pour une date propose `est antérieur à` + `nombre de jours à compter d'aujourd'hui`. Malgré la formulation qui semble dire l'inverse en français littéral (« antérieur à = plus vieux que »), ce couple garde **les records dont `Date création` est postérieure ou égale à `aujourd'hui - N jours`** (= les N derniers jours). C'est ce qu'on veut. La valeur `20` (au lieu de `30`) est un choix conservateur pour un défi Alegria : la vue reste courte et lisible même après plusieurs semaines d'usage. Bumper à 30/60/90 selon volume réel du client.
+
+6- **Page 6 -- `CRs à envoyer au client`** : Grille sur `SC_CRs_de_RDV` filtre Statut = `Formaté`, groupé par `Interlocuteur` (prêt à copier dans un mail).
+
+### 8.c -- Ajouter les 2 formulaires dans la sidebar (1 min)
+
+Les 2 formulaires (celui du défi 1 `Ajouter un prospect` + celui du défi 2 `Prendre un CR`) sont ajoutés en bas de la sidebar comme deux entrées supplémentaires, pas comme des pages dashboard classiques. Ils sont invoqués par les boutons d'action de l'Accueil ET directement accessibles pour un opérateur qui préfère taper dans la sidebar.
+
+1- Dans la sidebar gauche de l'interface -> **+ Ajouter une page** -> composition **`Formulaire`** -> choisis le formulaire `Prendre un CR` de la table `SC_CRs_de_RDV`. Nomme la page `Prendre un CR`.
+
+2- Répète avec le formulaire `Ajouter un prospect` (défi 1, table `SC_Prospects`). Nomme la page `Ajouter un prospect`.
+
+### 8.d -- Partager l'interface (1 min)
+
+**Piège S133z-ccweb à éviter (URL publique 100% payante)** : le bouton `Publier -> URL publique` en haut à droite de l'interface donne un lien accessible sans compte Airtable... mais **uniquement sur le plan Team payant (~24€/mois)**. En plan Free (celui du défi Alegria), le bouton existe mais ne rend pas l'interface publique -> le lien renvoie un écran de login Airtable = inutilisable pour un client final ou un élève Alegria qui veut juste jeter un œil.
+
+À la place, on partage via un **lien d'invitation en lecture**, gratuit et illimité en plan Free :
+
+1- En haut à droite de l'interface -> **`Partager`** (icône silhouette / bouton `Share`).
+
+2- Dans la modale, section **`Inviter par lien`** -> permission par défaut **`Read only`** (lecteur) -> **`Créer un lien`**.
+
+3- Copie le lien `https://airtable.com/invite/l?inviteId=...` -> c'est celui-là que tu envoies à Eva et aux élèves Alegria.
+
+   L'invité crée un compte Airtable Free en 30 sec s'il n'en a pas, puis a un accès lecture à la base ET à l'interface `Sales Closer Souverain`. Pour un déploiement client payant (plan Team), le bouton `Publier` fonctionne alors comme prévu et l'URL publique devient utilisable.
 
 ---
 
@@ -364,13 +396,13 @@ L'interface actuelle `CRM Souverain` (livrée défi 1 avec 4 pages : `CRM A rela
 
 Une fois monté, tu as 4 démos possibles à partager en canal :
 
--> **Interface unifiée `Sales Closer Souverain`** (lien partagé) -> le client voit tout d'un dashboard : prospects à relancer + CRs à formater/envoyer + boutons d'action `+ Prendre un CR` et `+ Ajouter Prospect`
+-> **Interface unifiée `Sales Closer Souverain`** (lien d'invitation en lecture, §VIII.8.d) -> le client voit tout d'un dashboard : prospects à relancer + CRs à formater/envoyer + boutons d'action `+ Prendre un CR` et `+ Ajouter un prospect`
 
--> **Formulaire public `Prendre un CR`** (lien Share Form) -> le client colle ses notes, le CR arrive en 1-5 min -> aucun outil à apprendre
+-> **Formulaire public `Prendre un CR`** (lien Share Form -> URL publique du formulaire, celle-là est bien gratuite en plan Free contrairement à l'URL publique d'interface) -> le client colle ses notes, le CR arrive en 1-5 min -> aucun outil à apprendre
 
--> **Vue `CRs récents`** dans l'interface -> le client voit ses 20 derniers CR, tableau lisible, colonne `CR formaté` en markdown rendu
+-> **Page `CRs récents 30j`** dans l'interface -> le client voit ses derniers CR sur les 20 derniers jours, tableau lisible, colonne `CR formaté` en markdown rendu
 
--> **Vue `CRs à envoyer au client`** dans l'interface -> groupée par interlocuteur, prête à copier dans un mail
+-> **Page `CRs à envoyer au client`** dans l'interface -> groupée par interlocuteur, prête à copier dans un mail
 
 Le tout en no-code, tout dans Airtable + n8n (Airtable Free + n8n Cloud tier free = 0€/mois, seul coût = OpenRouter ~5€ crédit initial pour ~1000-5000 CR).
 
@@ -508,6 +540,17 @@ Isolation par **schémas PostgreSQL** :
 ---
 
 ## Changelog
+
+-> 1.5.4 -- 2026-09-12 (S134z-ccweb, backlog S133z : 7 corrections restantes hors urgence) : PATCH -- finalise les corrections de la §V.5 et de la §VIII qui n'étaient pas passées dans v1.5.2/v1.5.3 (celles-ci s'étaient concentrées sur §III.2.a nom du champ `Date création`, §V.4.d Fields+Formula VIDES, §V.4.d Update Record Map Automatically). Livré :
+   -> §IV.b vue `Récents` : tri par `Date création` (cohérence avec le Trigger Field n8n) au lieu du champ système `Créé le` -- note ajoutée expliquant que les deux fonctionnent mais qu'un seul est cité partout dans ce runbook.
+   -> §V.5 automation `Init statut sur nouveau CR` : mode **`Custom`** obligatoire pour saisir la chaîne littérale `À formater` -- en mode par défaut Airtable exige un champ source et plante à l'exécution avec `Réception d'entrées non valides`. Piège S133z-ccweb documenté.
+   -> §VIII.8.a : composition **`Tableau de bord`** explicite (PAS `Présentation` ni `Personnaliser` -- seul `Tableau de bord` fournit sidebar navigable + dashboard central). Piège S133z-ccweb documenté.
+   -> §VIII.8.b : la sidebar de gauche liste 6 pages dashboard dans un ordre imposé (Accueil / Prospects à relancer / Pipeline / CRs à formater / CRs récents 30j / CRs à envoyer au client). Renommages : `Nouveaux CRs à formater` -> `CRs à formater`, `CRs récents` (limite 20 items non filtré par date) -> `CRs récents 30j` (avec filtre 20 derniers jours), `+ Ajouter Prospect` -> `+ Ajouter un prospect` (cohérence avec les labels formulaire du défi 1).
+   -> §VIII.8.b page 4 + page 5 : colonne `Créé le` -> `Date création` (cohérence avec §IV.b).
+   -> §VIII.8.b page 5 filtre 20 derniers jours : formulation Airtable FR ambiguë `est antérieur à nombre de jours à compter d'aujourd'hui = 20` documentée (le libellé français fait littéralement penser à l'inverse mais garde bien les records récents).
+   -> §VIII.8.c : les 2 formulaires (`Prendre un CR` + `Ajouter un prospect`) sont ajoutés comme entrées sidebar séparées de la composition `Formulaire`, PAS comme pages dashboard classiques -- accessibles par les boutons d'action de l'Accueil ET directement dans la sidebar.
+   -> §VIII.8.d : partage via **lien d'invitation en lecture** gratuit en plan Free (`https://airtable.com/invite/l?inviteId=...`) au lieu de l'URL publique de l'interface qui nécessite en réalité le plan Team payant (~24€/mois). Le bouton `Publier` existe en plan Free mais rend un lien qui renvoie sur écran de login -> piège S133z-ccweb documenté. L'URL publique du formulaire reste gratuite (`Share Form`).
+   -> §IX : mentions "URL publique" et libellés de pages alignés sur §VIII v1.5.4.
 
 -> 1.5.3 -- 2026-09-11 (S133z-ccweb, Cor David "SB_WF10-2 accepte pas d'être publiée -- 422 à l'activation") : PATCH -- correction §V.4.d Additional Fields : Fields ET Formula laissés VIDES (au lieu de Formula pré-remplie avec array v1.5.2). Le champ Formula est un `filterByFormula` Airtable (filtre de records), pas un sélecteur de fields ; y mettre un array n8n `["Date création", "Notes brutes"]` déclenche une 422 à l'activation du workflow (piège traître : passe silencieusement en Fetch Test Event). Correction alignée avec dr-context PR#449 v1.1.1 (retrait de la clé `formula` du template JSON). Test end-to-end reste validé sur les 4 seeds -- n8n retourne tous les fields de la vue par défaut, le Preparer + Assembler ne lisent que ce dont ils ont besoin.
 
