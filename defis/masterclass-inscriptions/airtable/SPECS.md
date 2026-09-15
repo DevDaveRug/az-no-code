@@ -115,13 +115,25 @@ Gestion d'erreur (optionnelle mais recommandée) :
 
 - Ajouter une 3ème étape "Update record" qui met `StatutEmail` = `Erreur` si le step 1 échoue (utiliser le résultat conditionnel du step précédent)
 
-## Import via API (optionnel)
+## Import via API (référence, PAS via UI)
 
-Le fichier `schema.json` de ce dossier contient la structure exportable via l'API Airtable Metadata (POST `/v0/meta/bases/{baseId}/tables`). Utile pour recréer la base ailleurs en une commande.
+Le fichier `schema.json` de ce dossier documente la structure au format API Airtable Metadata (POST `/v0/meta/bases/{baseId}/tables`). **Il n'est PAS importable depuis l'UI Airtable** (le dialog "Ajouter des données" ne le reconnaît pas). Il sert :
+
+-> de référence formelle pour la structure (utile si tu écris un script d'automatisation)
+
+-> de base pour un futur script `az-code/scripts/airtable-import.mjs` qui appellerait l'API avec ton token
+
+Pour recréer la table à la main dans l'UI, suivre la section "Table AZ_Inscrits" ci-dessus (~8 min).
+
+## Enregistrer ce défi dans AZ_Defis + Interface Alegria
+
+Après création + captures, ajouter une ligne dans la table `AZ_Defis` de la base `Sales Closer Souverain`, et vérifier que le défi apparaît dans l'Interface "Défis Alegria". Spec complète : `az-no-code/interfaces/DEFIS_ALEGRIA_INTERFACE.md`.
 
 ## Exemples de données
 
-Voir `exemples.md` -- 5 inscrits, dont David lui-même (le test explicitement demandé par l'énoncé).
+Voir `exemples.md` -- 5 inscrits, dont David lui-même (le test explicitement demandé par l'énoncé). Emails toujours en `.example` dans le repo public.
+
+**Variante base perso David** : dans la base `Sales Closer Souverain`, David peut ajouter un champ `LinkedProspect` de type Enregistrement lié vers `SC_Prospects` pour rattacher chaque inscrit à un prospect réel sans exposer son email (l'email reste en `.example` dans la colonne Email, le lien fournit l'accès au contact réel via le record link). Les captures Alegria doivent alors flouter la colonne Email si un vrai email s'y trouve.
 
 ## Captures d'écran attendues (dans `captures/`)
 
