@@ -1,6 +1,6 @@
 # Interface Airtable native -- masterclass-inscriptions
 
-Version : 1.0.0
+Version : 2.0.0
 Date : 2026-09-16
 Session : S135z-ccweb
 
@@ -12,9 +12,15 @@ Interface Airtable Interface Designer pour ce projet, à montrer à un prospect 
 
 -> les emails de confirmation partent tout seuls
 
--> il pilote tout depuis une seule vue "propriétaire"
+-> il pilote tout depuis une seule page "propriétaire"
 
-Cette interface est une PAGE dans l'interface globale `Sales Closer Souverain` (voir `interfaces/AZ_PORTFOLIO_INTERFACE.md`). Elle NE remplace PAS la page Portfolio -- elle vit à côté et sert la démo dédiée.
+Cette page vit à côté de la page Portfolio globale dans la même Interface `Sales Closer Souverain` (spec Portfolio dans `interfaces/AZ_PORTFOLIO_INTERFACE.md`).
+
+## Termes Airtable utilisés dans cette spec
+
+Tous les termes ci-dessous sont les VRAIS termes anglais officiels de l'Element picker (panneau de gauche en mode édition) et du Properties panel (panneau de droite quand un Element est sélectionné). Source unique : `dr-context/docs/DR/DR_Medias/Me_Logiciels/MeLc_Plateformes/MeLcPf_Airtable/AIRTABLE_INTERFACE_TERMS.md`. Si l'UI de David est en français, les libellés peuvent être traduits par Airtable, mais la fonctionnalité et la position sont identiques.
+
+Note : la traduction française d'Airtable (si activée dans les préférences) traduit certains labels mais garde souvent le terme anglais dans le panneau de sélection. En cas de doute -> basculer l'UI en anglais dans les préférences Airtable pour retrouver exactement les termes ci-dessous.
 
 ## Prérequis
 
@@ -24,81 +30,93 @@ Cette interface est une PAGE dans l'interface globale `Sales Closer Souverain` (
 
 -> Automation `Envoi email de confirmation` active
 
--> Interface globale ouverte, tu es en mode édition
+-> Interface `Sales Closer Souverain` ouverte, en mode édition
 
 ## Ajouter la page "Masterclass inscriptions"
 
-Onglet `Interfaces` -> ouvrir l'interface globale -> `+ Ajouter une page` -> layout `Tableau de bord` -> nommer `Masterclass inscriptions`.
+En haut à droite de la base, clic sur l'onglet `Interfaces` -> ouvrir l'Interface `Sales Closer Souverain` -> clic `+ Add page` (ou `+ Ajouter une page` en FR) -> choisir le layout `Dashboard`.
 
-Airtable dépose une page vide. Passe en mode édition (bouton crayon).
+Nommer la page `Masterclass inscriptions`. Airtable crée une page vide en mode édition, avec le panneau `Element picker` à gauche (icônes des Elements à drag & drop) et le panneau `Properties panel` à droite (pour configurer l'Element sélectionné).
 
-## Éléments à poser (dans l'ordre)
+## Elements à poser (dans l'ordre)
 
-### 1- `Texte` (titre)
+### 1- `Text` (titre)
 
-Contenu : `Masterclass inscriptions`. Style : `Titre` (Heading 1).
+Drag & drop depuis l'Element picker (icône `T`). Dans le Properties panel à droite :
 
-Juste en dessous, un second `Texte` en Sous-titre : `Chaque nouvel inscrit reçoit automatiquement son email de confirmation.` Sert de pitch d'ouverture.
+-> Style : `Heading 1`
 
-### 2- Bandeau `Nombre` x 4
+-> Contenu : `Masterclass inscriptions`
 
-Côte à côte sous le titre. Chaque `Nombre` a une source (vue) + un calcul (dropdown, pas de formule).
+Ajouter un second `Text` juste en dessous :
 
--> **Nombre 1 -- Total inscrits**
+-> Style : `Subtitle` ou `Paragraph`
 
-   -> Source : table `AZ_Inscrits`, vue `Tous les inscrits`
+-> Contenu : `Chaque nouvel inscrit reçoit automatiquement son email de confirmation.`
 
-   -> Calcul : `Nombre d'enregistrements` (Count)
+### 2- 4 x `Number` côte à côte
 
-   -> Label : "Total inscrits"
+Drag & drop 4 fois l'Element `Number` (icône `123`). Positionner en ligne sous le titre. Chacun se configure indépendamment via le Properties panel :
 
--> **Nombre 2 -- Emails envoyés**
+-> **Number 1 -- Total inscrits**
 
-   -> Source : `AZ_Inscrits`, créer une nouvelle vue filtrée `StatutEmail` = `Envoyé` (nomme-la "Emails envoyés")
+   -> Section `Data` : Source = table `AZ_Inscrits`, vue `Tous les inscrits`
 
-   -> Calcul : `Nombre d'enregistrements`
+   -> Type de calcul : `Record count` (dropdown en haut du Properties panel)
+
+   -> Section `Appearance` : Label = "Total inscrits"
+
+-> **Number 2 -- Emails envoyés**
+
+   -> Section `Data` : Source = `AZ_Inscrits`, créer une nouvelle vue filtrée `StatutEmail` = `Envoyé` (nomme-la "Emails envoyés") ET utiliser cette vue
+
+   -> Type de calcul : `Record count`
 
    -> Label : "Emails envoyés"
 
--> **Nombre 3 -- Erreurs**
+-> **Number 3 -- Erreurs**
 
-   -> Source : `AZ_Inscrits`, vue `Erreurs d'envoi`
+   -> Section `Data` : Source = `AZ_Inscrits`, vue `Erreurs d'envoi`
 
-   -> Calcul : `Nombre d'enregistrements`
+   -> Type de calcul : `Record count`
 
    -> Label : "Erreurs"
 
-   -> Couleur d'accent : rouge (si le composant le permet)
+   -> Section `Appearance` : accent rouge si disponible
 
--> **Nombre 4 -- Taux de succès**
+-> **Number 4 -- Taux de succès**
 
-   -> Source : `AZ_Inscrits`, vue `Tous les inscrits`
+   -> Section `Data` : Source = `AZ_Inscrits`, vue `Tous les inscrits`
 
-   -> Calcul : `Pourcentage` (Percentage) sur les records qui matchent une condition -> condition : `StatutEmail` = `Envoyé`
+   -> Type de calcul : `Percentage` (dropdown), avec condition `StatutEmail = Envoyé`
 
    -> Label : "% d'emails délivrés"
 
-Résultat visuel : 4 tuiles chiffrées qui rassurent le prospect ("tu vois combien de gens se sont inscrits et si le système leur envoie bien le mail").
+   -> Si le `Percentage` natif n'est pas dispo dans votre plan Airtable : créer un champ `Formula` dans la table (`IF({StatutEmail}='Envoyé',1,0)`) puis utiliser `Field summary` -> `Average` sur ce champ, avec affichage en pourcentage dans le Properties panel
 
-### 3- `Kanban` "Statut d'envoi"
+Résultat visuel : 4 valeurs numériques côte à côte qui rassurent le prospect ("tu vois combien de gens se sont inscrits et si le système leur envoie bien le mail"). Aucune formule à taper dans l'Interface Designer -- tout se sélectionne dans les dropdowns du Properties panel.
 
-Drag & drop sous le bandeau chiffres.
+### 3- `Kanban` (element) "Statut d'envoi"
 
--> Source : `AZ_Inscrits`, vue `Tous les inscrits`
+Drag & drop l'Element `Kanban` sous les 4 Numbers.
 
--> Regroupement (Stack by) : `StatutEmail`
+-> Section `Data` : Source = `AZ_Inscrits`, vue `Tous les inscrits`
 
--> Colonnes : `En attente` (gris), `Envoyé` (vert), `Erreur` (rouge)
+-> Section `Data` : `Stack by` = champ `StatutEmail`
 
--> Champs sur la carte : `Prenom`, `Email`, `DateMasterclass`
+-> Colonnes automatiques héritées des Single Select : `En attente` (gris), `Envoyé` (vert), `Erreur` (rouge)
+
+-> Section `Appearance` : champs affichés sur chaque carte = `Prenom`, `Email`, `DateMasterclass`
 
 Résultat : le prospect voit visuellement où en est chaque inscrit dans le cycle d'envoi.
 
-### 4- `Chronologie` (Timeline) "Masterclass à venir"
+### 4- `Timeline` (element) "Masterclass à venir"
 
-Sous le Kanban.
+Drag & drop l'Element `Timeline` sous le Kanban.
 
--> Source : `AZ_Inscrits`, vue `Par masterclass`
+Note : cet Element nécessite un plan Airtable payant. Si absent, remplacer par un `Calendar` layout séparé ou une seconde page dédiée.
+
+-> Section `Data` : Source = `AZ_Inscrits`, vue `Par masterclass`
 
 -> Champ date : `DateMasterclass`
 
@@ -106,65 +124,69 @@ Sous le Kanban.
 
 Résultat : le prospect voit sa charge par date de session. Utile s'il a plusieurs masterclass dans le mois.
 
-### 5- `Grille` (Grid) "Détail des inscrits"
+### 5- `Grid` (element) "Détail des inscrits"
 
-Sous la chronologie.
+Drag & drop l'Element `Grid` sous la Timeline.
 
--> Source : `AZ_Inscrits`, vue `Par masterclass`
+-> Section `Data` : Source = `AZ_Inscrits`, vue `Par masterclass`
 
--> Champs affichés : `Prenom`, `Email`, `DateMasterclass`, `StatutEmail`, `DateInscription`, `Notes`
+-> Section `Appearance` : champs affichés = `Prenom`, `Email`, `DateMasterclass`, `StatutEmail`, `DateInscription`, `Notes`
 
 -> Groupement : hérité de la vue (par `DateMasterclass`)
 
--> Option `Permettre l'édition en ligne` : activer (le prospect peut ajouter des notes)
+-> Section `User actions` : cocher `Allow inline editing` (le prospect peut ajouter des notes)
 
-### 6- `Bouton` "Ouvrir le formulaire d'inscription"
+### 6- `Button` "Ouvrir le formulaire d'inscription"
 
-En haut à droite (position fixe).
+Drag & drop l'Element `Button` en haut à droite de la page (position fixe).
 
--> Action : `Ouvrir URL`
+Dans le Properties panel :
 
--> URL : lien partagé public du formulaire d'inscription (généré par Airtable dans l'onglet `Formulaires`)
+-> Section `Data` -> Action = `Go to external URL`
 
--> Label : "Ouvrir le formulaire"
+-> URL = lien public de la vue Form `Inscription masterclass` (généré par Airtable via `Share view` dans l'onglet Base -> vue Form)
+
+-> Section `Appearance` -> Label = "Ouvrir le formulaire"
 
 Résultat : le prospect peut simuler une inscription en un clic et voir l'automation partir en live.
 
-### 7- `Texte` (footer explicatif)
+### 7- `Text` (footer explicatif)
 
-En bas de page.
+Drag & drop un `Text` en bas de page.
 
-Contenu :
+-> Style : `Paragraph`
+
+-> Contenu (Markdown supporté) :
 
 ```
 Chaque nouvel inscrit ajouté ici (via le formulaire ou à la main) déclenche automatiquement :
+
 1- Un email de confirmation personnalisé (prénom + date de la session)
+
 2- Une mise à jour du statut d'envoi visible dans le Kanban ci-dessus
 
 Aucune manipulation manuelle. Aucun tableau Excel à mettre à jour. Aucun mail à envoyer un par un.
 ```
 
-Style : `Paragraphe`.
-
 ## Publication et partage
 
-Clique `Publier` en haut à droite -> `Partager` -> `Créer un lien public` (lecture seule pour un prospect externe).
+Clic `Publish` en haut à droite -> `Share` -> `Create a shareable link` (lecture seule pour un prospect externe).
 
-Le prospect qui clique sur ce lien voit ta page en lecture seule, sans compte Airtable, sans exposer les autres tables de ta base.
+Le prospect qui clique sur ce lien voit la page en lecture seule, sans compte Airtable, sans exposer les autres tables de la base.
 
-Le lien à mettre dans `Lien_Airtable_Demo` de la table `AZ_Portfolio` (champ URL) pour que la page Portfolio pointe vers cette démo.
+Le lien à mettre dans le champ `Lien_Airtable_Demo` de la table `AZ_Portfolio` (champ URL) pour que la page Portfolio pointe vers cette démo.
 
 ## Angle "donner envie"
 
--> **Le bandeau chiffres au-dessus de tout** = argument émotionnel immédiat ("regarde mes 5 inscrits, 4 emails partis, 0 erreur")
+-> **Les 4 `Number` en haut** = argument émotionnel immédiat ("regarde mes 5 inscrits, 4 emails partis, 0 erreur")
 
--> **Le Kanban** = argument visuel ("je vois où j'en suis")
+-> **Le `Kanban`** = argument visuel ("je vois où j'en suis")
 
--> **La Timeline** = argument planification ("je gère plusieurs sessions sans confusion")
+-> **La `Timeline`** = argument planification ("je gère plusieurs sessions sans confusion")
 
--> **Le Bouton formulaire** = argument démo live ("tu peux tester avec ton propre email, ça arrive en 20 secondes")
+-> **Le `Button` formulaire** = argument démo live ("tu peux tester avec ton propre email, ça arrive en 20 secondes")
 
-Ne surcharge pas la page. Reste sobre. Un prospect qui voit trop de choses décroche.
+Ne pas surcharger la page. Rester sobre. Un prospect qui voit trop de choses décroche.
 
 ## Comparaison avec le code souverain (Next.js)
 
@@ -174,8 +196,10 @@ L'interface code souverain est déjà déployable sur Vercel (`az-code/defis/mas
 
 -> `/nouveau` = formulaire d'inscription client-side
 
-Différence avec l'Airtable Interface : la version code est BRANDÉE (le prospect voit son propre nom / logo / couleurs), alors qu'Airtable Interface reste "Airtable look". Argument à raconter : "Si tu veux ça brandé à ta marque, on passe sur la version code, même fonctionnalité, ton domaine, ton design."
+Différence avec l'Interface Airtable : la version code est BRANDÉE (le prospect voit son propre nom / logo / couleurs), alors qu'Airtable Interface reste "Airtable look". Argument à raconter : "Si tu veux ça brandé à ta marque, on passe sur la version code, même fonctionnalité, ton domaine, ton design."
 
 ## Changelog
 
--> 1.0.0 -- 2026-09-16 -- création (S135z-ccweb, Cor David) : spec de l'Interface Airtable native pour ce projet, à ajouter comme page dans l'interface globale `Sales Closer Souverain`. Éléments avec les VRAIS termes Airtable (Nombre, Kanban, Chronologie, Grille, Bouton, Texte). Aucune formule à taper.
+-> 2.0.0 -- 2026-09-16 -- correction termes officiels (S135z-ccweb, Cor David) : bascule de la spec française inventée (Nombre / Grille / Chronologie / Bouton / Texte) vers les VRAIS termes anglais officiels de l'Element picker Airtable (Number / Grid / Timeline / Button / Text / Kanban) sourcés sur la doc Airtable Support 2026. Ajout section "Termes Airtable utilisés dans cette spec" pointant vers `dr-context/docs/DR/DR_Medias/Me_Logiciels/MeLc_Plateformes/MeLcPf_Airtable/AIRTABLE_INTERFACE_TERMS.md`. Précisions sur Element picker (gauche), Properties panel (droite), sections du panel (Data / Appearance / User actions), types de calcul du Number (`Record count`, `Percentage`, `Field summary`) qui se choisissent dans un dropdown -- aucune formule à taper dans l'Interface Designer. Layout `Dashboard` explicitement nommé (pas "Tableau de bord recommandé").
+
+-> 1.0.0 -- 2026-09-16 -- création (S135z-ccweb) : première spec avec termes français inventés (Tuile / Bandeau / Formule dans Tuile), corrigée en v2.0.0 après feedback David.
