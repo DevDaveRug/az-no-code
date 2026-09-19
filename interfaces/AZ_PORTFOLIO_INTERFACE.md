@@ -1,8 +1,10 @@
 # Interface Airtable "Portfolio" -- table `AZ_Portfolio`
 
-Version : 3.0.0
-Date : 2026-09-16
-Session : S135z-ccweb
+Version : 4.0.0
+Date : 2026-09-19
+Session : S135z-ccweb (création) puis S136z-ccdd (correction contre l'UI réelle de David)
+
+> **MAJ S136z-ccdd** : la section "pas à pas" v3.0.0 ci-dessous décrivait un Interface Designer générique sourcé sur la doc Airtable Support, jamais vérifié contre le compte réel de David. Testé en conditions réelles S136z (captures d'écran à l'appui) : plusieurs termes/mécanismes ne correspondent pas. Section réécrite en v4.0.0 avec les VRAIS écrans observés. L'Interface Portfolio est déjà construite et fonctionnelle à cette date (3 Number, 1 Calendar, 1 Grid) -- ce document sert désormais de référence pour la MAINTENIR et l'ÉTENDRE, pas de guide de construction initiale.
 
 ## But
 
@@ -82,143 +84,37 @@ Champs à remplir manuellement après import :
 
 -> `Preview_Vercel`, `Lien_Airtable_Demo`, `Lien_NocoDB_Demo` : à remplir quand les démos live sont prêtes
 
-## Interface Airtable -- pas à pas avec les VRAIS termes officiels
+## Interface Airtable -- ce qui est VRAIMENT à l'écran (vérifié S136z, captures David)
 
-Onglet `Interfaces` (en haut à droite de la base, entre `Automations` et `Forms`). Deux cas :
+Onglet `Interfaces` (en haut, entre `Automatisations` et `Formulaires`). Sidebar gauche : liste des interfaces existantes + pages (`Portfolio Sales Closer`, `Accueil`, `Prendre un CR de RDV`, `Ajouter un nouveau Prospect`...).
 
--> **Cas A -- Interface existante** : ouvre-la, clique sur `+ Add page` (bouton en haut à gauche du panneau des pages).
+**Il n'y a PAS de panneau latéral "Element picker" à glisser-déposer.** Le mécanisme réel : clique `+ Ajouter un groupe` au milieu de la page (ou en bas d'un groupe existant) -> un petit menu liste d'abord les **tables sources** (`SC_Prospects`, `SC_CRs_de_RDV`, `AZ_Inscrits`, `AZ_Portfolio`) -> puis une **rangée de boutons bleus** apparaît avec les éléments disponibles :
 
--> **Cas B -- première Interface** : clique `Create interface` -> nomme-la `Sales Closer Souverain` -> confirme.
+`+ Ajouter un numéro` (= Number) -- `+ Ajouter un graphique` (= Chart) -- `+ Ajouter une liste` (= List) -- `+ Ajouter un tableur` (= Grid) -- `+ Ajouter une galerie` (= Gallery) -- `+ Ajouter un kanban` (= Kanban) -- `+ Ajouter un calendrier` (= Calendar) -- `+ Ajouter un tableau croisé dynamique` (= Pivot table, pas dans la doc Airtable officielle utilisée en v3.0.0) -- `+ Ajouter une chronologie` (= Timeline) -- `+ Ajouter une extension personnalisée`.
 
-Dans les 2 cas, tu arrives sur le choix du `Layout` de page.
+Pas de `Text`, `Divider`, `Button`, `Filter` ou `Record picker` comme éléments séparés dans cette rangée -- ces "vrais termes officiels" v3.0.0 existent dans la doc Airtable générique mais pas comme boutons distincts dans la version de David. Les titres de section (`Portfolio Sales Closer Souverain`, `Dates Portfolio`, `Portfolio Public`) s'éditent en tapant directement sur le texte généré par défaut au-dessus de chaque groupe, pas via un élément `Text` à poser.
 
-### Page 1 -- "Portfolio" (page d'accueil de l'Interface)
+**Le `Properties panel` à droite existe bien**, avec les mêmes sections que prévu (`Données`, `Apparence`, `Actions d'utilisateur`) -- juste pas de section `Filters` séparée : le filtrage vit DANS `Données` (`Filtrer par`, un filtre fixé par David) et DANS `Actions d'utilisateur` (`Filtre`, un interrupteur qui donne un contrôle de filtrage au visiteur de la page).
 
-Layout à choisir : `Dashboard`.
+### État réel au 2026-09-19 (déjà construit, fonctionnel, publié)
 
-Airtable te dépose une page vide. En haut à droite, clic sur `Edit` (icône crayon) pour entrer en mode édition.
+Page `Portfolio Sales Closer` :
 
-Deux panneaux apparaissent :
+-> 2 `Number` : `Projets livrés` (2, source vue `Portfolio public`, calcul `Record count`) et `Prochaine livraison` (1, source vue `En cours + À faire`, agrégation `Min` sur `DateLivraison`). Un 3e Number `Semaines livrées` a été retiré (redondant avec `Projets livrés` dans le modèle actuel 1 projet = 1 semaine).
 
--> **Element picker à gauche** : palette des Elements posables via drag & drop (`Grid`, `Number`, `Chart`, `Timeline`, `Gallery`, `Kanban`, `Text`, `Divider`, `Button`, `Filter`, `Record picker`, `Comment`).
+-> 1 `Calendar` ("Dates Portfolio") : source `AZ_Portfolio`, affiche les 3 projets positionnés sur `DateLivraison`.
 
--> **Properties panel à droite** : apparaît quand tu sélectionnes un Element posé, avec sections `Data`, `Appearance`, `User actions`, `Advanced`, `Filters` selon le type.
+-> 1 `Grid` ("Portfolio Public") : source vue `Portfolio public (livrés uniquement)`, colonnes `Nom du projet`, `DateLivraison`, `Statut`, `EnonceCourt`. Filtrage `Filtrer par` laissé sur `Aucun` (déjà filtré en amont par la vue Airtable, redondant de filtrer deux fois). Toggle `Cliquer pour accéder aux détails de l'entrée` (section `Actions d'utilisateur`) à activer pour obtenir une fiche détail automatique par clic sur une ligne -- pas besoin de construire une page dédiée séparée à ce stade (3 projets).
 
-On va poser 6 Elements dans l'ordre :
+-> Publication : `Publier` en haut à droite. Partage externe : `Partager l'interface`.
 
-**1- Element `Text`**
+### Étendre l'interface pour un futur projet (4, 5...)
 
-Drag & drop depuis l'Element picker (icône `T`) en haut de la page. Dans le Properties panel :
+1- Ajoute une ligne dans `AZ_Portfolio` (table, pas Interface) avec tous les champs remplis, `Statut = Livré` une fois prêt.
 
--> Style : `Heading 1`
+2- Le `Number` `Projets livrés`, le `Calendar` et le `Grid` s'auto-mettent à jour (ils lisent la vue filtrée, aucune action sur l'Interface).
 
--> Contenu : `Portfolio Sales Closer Souverain`
-
-Résultat : titre en haut de la page.
-
-**2- 3 x Element `Number` côte à côte (ligne de stats)**
-
-Drag & drop 3 fois l'Element `Number` (icône `123`) et aligne-les horizontalement. Chacun se configure indépendamment :
-
--> **Number 1 -- `Projets livrés`**
-
-   -> Section `Data` : Source = table `AZ_Portfolio`, vue `Portfolio public (livrés uniquement)`
-
-   -> Type de calcul (dropdown en haut du Properties panel) : `Record count`
-
-   -> Section `Appearance` : Label = "Projets livrés"
-
--> **Number 2 -- `Prochaine livraison`**
-
-   -> Section `Data` : Source = `AZ_Portfolio`, vue `En cours + À faire`
-
-   -> Type de calcul : `Field summary` -> champ `DateLivraison` -> agrégation `Min` (dans le dropdown)
-
-   -> Label : "Prochaine livraison"
-
--> **Number 3 -- `Semaines livrées`**
-
-   -> Section `Data` : Source = `AZ_Portfolio`, vue `Portfolio public (livrés uniquement)`
-
-   -> Type de calcul : `Record count` (chaque projet = une semaine unique dans notre modèle -- si un jour deux projets partagent la même semaine, il faudra ajouter un champ `Formula` de type comptage unique dans la table)
-
-   -> Label : "Semaines livrées"
-
-Aucune formule à taper : tout se choisit dans les dropdowns du Properties panel. Airtable fait le calcul.
-
-**3- Element `Timeline`**
-
-Drag & drop sous la ligne de 3 `Number`.
-
-Note : nécessite un plan Airtable payant. Si absent, remplacer par un layout `Calendar` sur une autre page.
-
--> Section `Data` : Source = `AZ_Portfolio`, vue `Tous les projets`
-
--> Champ date : `DateLivraison`
-
--> Section `Appearance` : Coloration = par champ `Statut`
-
-Résultat : ruban chronologique horizontal. Un prospect qui scroll voit la cadence des livraisons.
-
-**4- Element `Grid`**
-
-Drag & drop sous la Timeline.
-
--> Section `Data` : Source = `AZ_Portfolio`, vue `Portfolio public (livrés uniquement)`
-
--> Section `Appearance` : cocher les champs à afficher = `Nom du projet`, `Semaine`, `Pitch`, `Repo_NoCode`, `Repo_Code`, `Preview_Vercel`, `Captures`
-
--> Section `User actions` : activer `Allow record detail view` (ouvre la page détail au clic sur une ligne, cf Page 2)
-
-Résultat : le prospect voit la liste des projets, clique sur une ligne, atterrit sur la page détail.
-
-**5- Element `Filter` (optionnel)**
-
-Drag & drop en haut, sous le titre. Dans le Properties panel :
-
--> Style : `Tabs` ou `Dropdown`
-
--> Champ filtré : `AnnéeSaison` ou `Client`
-
-Permet au prospect de filtrer par saison ou secteur.
-
-**6- Sauvegarde**
-
-Bouton `Publish` en haut à droite. La page est live pour tous les collaborateurs de la base. Pour la partager avec un prospect externe (lecture seule), clic `Share` -> `Create a shareable link`.
-
-### Page 2 -- "Détail projet"
-
-Layout à choisir : `Record review` (parcourir un record à la fois via un sélecteur en haut).
-
-Alternative moderne (si disponible dans ta version Airtable) : layout `Record summary` ou `Grid` avec `Allow record detail view` activé sur Page 1 -- Airtable génère alors une page détail automatique.
-
-En haut de la page (en mode édition), Airtable te demande la source :
-
--> Source : table `AZ_Portfolio`
-
--> Vue : `Tous les projets`
-
-Configure les Elements du layout `Record review` :
-
--> **Text** (Heading 1) : bind sur le champ `Nom du projet`
-
--> **Text** (Subtitle) : bind sur le champ `Pitch`
-
--> **3 x Button** horizontaux :
-
-   -> Button 1 -- Section `Data` : Action = `Go to URL in record` -> champ source = `Repo_NoCode`. Section `Appearance` : Label = "Voir le repo no-code"
-
-   -> Button 2 -- Action = `Go to URL in record` -> champ = `Repo_Code`. Label = "Voir le repo code"
-
-   -> Button 3 -- Action = `Go to URL in record` -> champ = `Preview_Vercel`. Label = "Ouvrir la démo Vercel"
-
--> **Field** `Captures` (type Attachment) : affiché automatiquement en galerie de miniatures par Airtable
-
--> **Field** `AngleCommercial` (Long text) : affiché en pleine largeur -- le prospect voit l'argument de vente
-
--> **Métadonnées** dans le side panel : `Semaine`, `Client`, `DateLivraison`, `Statut`
-
-`Publish`. Depuis Page 1, quand un prospect clique une ligne, il atterrit ici.
+3- Aucune reconstruction d'Interface nécessaire -- c'est le principe même du Dashboard connecté aux vues.
 
 ### Comment ajouter chaque nouveau projet
 
@@ -275,6 +171,8 @@ Attention : le lien public est une SPA JavaScript. Un WebFetch serveur (agent IA
 -> comme argument LIA'M/SC quand un prospect demande "montre-moi ce que ça donne"
 
 ## Changelog
+
+-> 4.0.0 -- 2026-09-19 (S136z-ccdd) : section "pas à pas" entièrement réécrite après vérification contre l'UI réelle de David (3 captures d'écran fournies). Corrections : pas de panneau latéral "Element picker" (c'est une rangée de boutons "+ Ajouter un X" après avoir choisi la table source), pas d'éléments séparés `Text`/`Divider`/`Button`/`Filter`/`Record picker` (titres tapés directement, filtrage intégré aux sections `Données`/`Actions d'utilisateur` d'un élément existant), élément `Pivot table` disponible mais absent de la doc v3.0.0. État réel documenté : Interface déjà construite et publiée (2 Number + 1 Calendar + 1 Grid), tuile "Semaines livrées" retirée (redondante), détail projet via toggle natif plutôt que page dédiée séparée.
 
 -> 3.0.0 -- 2026-09-16 -- correction termes officiels (S135z-ccweb, Cor David) : bascule des termes français inventés (Nombre / Grille / Chronologie / Bouton / Texte / Filtre / "Tableau de bord recommandé") vers les VRAIS termes anglais officiels sourcés sur la doc Airtable Support 2026 (`Number` / `Grid` / `Timeline` / `Button` / `Text` / `Filter` / `Dashboard`). Ajout section "Termes Airtable utilisés dans cette spec" pointant vers `dr-context/docs/DR/DR_Medias/Me_Logiciels/MeLc_Plateformes/MeLcPf_Airtable/AIRTABLE_INTERFACE_TERMS.md` (doc de référence unique). Réécriture précise Page 1 + Page 2 avec Element picker (panneau gauche), Properties panel (panneau droit, sections Data / Appearance / User actions), types de calcul du `Number` (`Record count`, `Field summary` avec agrégation `Min`), action du `Button` (`Go to URL in record`). Précision sur SPA JS Airtable (WebFetch KO -> captures d'écran nécessaires pour audit).
 
