@@ -12,6 +12,8 @@ Un lien unique que le client remplit tout seul : ta description, ton urgence, te
 
 - `nocodb/` : équivalent souverain (spec table + formulaire + Dashboard NocoDB natif)
 
+- `import-csv/` : 2 CSV importables directement dans Airtable (`Add table > CSV`) ou NocoDB (`Import CSV`) pour créer la structure + peupler les données de démo en 10 min chrono. Voir `import-csv/README.md` pour la procédure.
+
 Stack code souverain équivalent : `github.com/DevDaveRug/az-code/tree/main/defis/demandes-clients-urgentes` (Next.js + Prisma + Neon).
 
 ## Modèle de données
