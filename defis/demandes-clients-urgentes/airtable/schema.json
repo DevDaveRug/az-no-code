@@ -1,0 +1,43 @@
+{
+  "base": {
+    "id": "appTqLo3JDg7d1fak",
+    "name": "Sales Closer Souverain"
+  },
+  "tables": [
+    {
+      "name": "AZ_Clients",
+      "description": "Fiches clients uniques par Email (matching automation).",
+      "fields": [
+        { "name": "Nom", "type": "singleLineText" },
+        { "name": "Email", "type": "email" },
+        { "name": "Telephone", "type": "phoneNumber" },
+        { "name": "DateCreation", "type": "createdTime" },
+        { "name": "Demandes", "type": "multipleRecordLinks", "options": { "linkedTableId": "TBD_AZ_DEMANDES", "prefersSingleRecordLink": false } },
+        { "name": "NbDemandes", "type": "count", "options": { "recordLinkFieldId": "TBD_DEMANDES_FIELD_ID" } }
+      ]
+    },
+    {
+      "name": "AZ_Demandes",
+      "description": "Demandes de modification reçues via formulaire public partageable.",
+      "fields": [
+        { "name": "Ref", "type": "autoNumber" },
+        { "name": "Client", "type": "multipleRecordLinks", "options": { "linkedTableId": "TBD_AZ_CLIENTS", "prefersSingleRecordLink": true } },
+        { "name": "DateDemande", "type": "createdTime" },
+        { "name": "Description", "type": "multilineText" },
+        { "name": "UrgenceClient", "type": "singleSelect", "options": { "choices": [ { "name": "Basse", "color": "grayLight2" }, { "name": "Moyenne", "color": "yellowLight2" }, { "name": "Haute", "color": "orangeLight2" }, { "name": "Critique", "color": "redBright" } ] } },
+        { "name": "UrgenceReelle", "type": "singleSelect", "options": { "choices": [ { "name": "Basse", "color": "grayLight2" }, { "name": "Moyenne", "color": "yellowLight2" }, { "name": "Haute", "color": "orangeLight2" }, { "name": "Critique", "color": "redBright" } ] } },
+        { "name": "Statut", "type": "singleSelect", "options": { "choices": [ { "name": "Nouveau", "color": "blueLight2" }, { "name": "En cours", "color": "yellowLight2" }, { "name": "Bloque", "color": "orangeLight2" }, { "name": "Fait", "color": "greenLight2" } ] } },
+        { "name": "Commentaires", "type": "multilineText" },
+        { "name": "DateTraitement", "type": "date", "options": { "dateFormat": { "name": "iso" } } },
+        { "name": "NomClientTemp", "type": "singleLineText" },
+        { "name": "EmailClientTemp", "type": "email" },
+        { "name": "TelephoneClientTemp", "type": "phoneNumber" }
+      ]
+    }
+  ],
+  "notes": [
+    "Les champ Link record (Demandes cote Clients, Client cote Demandes) exigent 2 POST separes (creer table A, creer table B, puis creer le Link A->B). L Airtable Metadata API ne cree pas automatiquement le symetrique inverse : creer aussi le Link B->A si necessaire (piege identifie en S135z).",
+    "Le field Count NbDemandes ne peut etre cree par Metadata API : le champ recordLinkFieldId doit exister avant. Creer NbDemandes a la main dans l UI apres migration.",
+    "Le formulaire, les automations et les vues (Grid, Kanban) restent UI-only : Metadata API ne les gere pas. Le script automatise la structure de donnees seulement."
+  ]
+}

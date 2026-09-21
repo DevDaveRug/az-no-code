@@ -1,0 +1,11 @@
+Description,UrgenceClient,UrgenceReelle,Statut,NomClientTemp,EmailClientTemp,TelephoneClientTemp
+"Changer le logo dans le header du site, la nouvelle version est en pj.",Basse,Basse,Fait,Alice Martin,alice.martin@legrand.example,+33 6 00 00 00 11
+"Ajouter un bouton Contact dans le menu mobile, il manque depuis la refonte.",Moyenne,Moyenne,En cours,Bob Durand,bob.durand@techflow.example,+33 6 00 00 00 12
+"Corriger la fonte du prix sur la landing, elle passe en Comic Sans en prod.",Haute,Haute,Nouveau,Chloe Dubois,chloe.dubois@studio-zenith.example,+33 6 00 00 00 13
+"Le formulaire de contact ne renvoie plus d'email, urgent avant demain.",Critique,Critique,En cours,Alice Martin,alice.martin@legrand.example,+33 6 00 00 00 11
+"Retirer un ancien post du blog qui reference un partenariat termine.",Basse,Moyenne,Nouveau,Emma Petit,emma.petit@marketpro.example,+33 6 00 00 00 14
+"Ajouter un lien vers ma nouvelle chaine YouTube dans le footer.",Moyenne,Basse,Nouveau,Fabien Roux,fabien.roux@atelier-nord.example,+33 6 00 00 00 15
+"Peux tu me faire une version anglaise de la page tarifs ?",Haute,Moyenne,Bloque,Bob Durand,bob.durand@techflow.example,+33 6 00 00 00 12
+"Refresh du menu principal, on veut inverser l'ordre de 2 items.",Basse,Basse,Fait,Chloe Dubois,chloe.dubois@studio-zenith.example,+33 6 00 00 00 13
+"La photo hero est pixellisee sur mobile, elle prend toute la largeur mal.",Haute,Haute,Nouveau,Emma Petit,emma.petit@marketpro.example,+33 6 00 00 00 14
+"Ajouter un pop up cookie conforme RGPD, on a un audit dans 15 jours.",Critique,Haute,En cours,Alice Martin,alice.martin@legrand.example,+33 6 00 00 00 11
