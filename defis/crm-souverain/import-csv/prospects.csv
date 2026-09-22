@@ -1,0 +1,5 @@
+Prenom,Nom,Entreprise,Email,Telephone,Statut,Source,DateEntree,DernierContact,Notes,MontantPotentiel
+Alice,Martin,Cabinet Legrand,alice.martin@legrand.example,+33 6 00 00 00 12,Nouveau,LinkedIn,2026-08-25,2026-08-25,"A repondu au DM LinkedIn, demande d infos sur l offre. Rappeler cette semaine.",
+Bob,Durand,TechFlow SAS,b.durand@techflow.example,+33 6 00 00 00 34,En cours,Recommandation,2026-08-10,2026-08-20,"Envoi de la maquette prevu. Il attend un devis avant fin de mois. Sensible au prix.",1500
+Chloe,Dubois,Studio Zenith,c.dubois@zenith.example,+33 6 00 00 00 56,Gagne,Site,2026-08-05,2026-08-30,"Contrat signe le 30/8. Onboarding la semaine du 8/9.",2500
+Emma,Petit,MarketPro,e.petit@marketpro.example,+33 6 00 00 00 78,Perdu,LinkedIn,2026-08-08,2026-08-22,"Pas de budget cette annee. A rappeler debut 2027 si l offre evolue.",
