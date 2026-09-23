@@ -1,6 +1,26 @@
 # Import CSV -- raccourci Airtable + NocoDB (defi 1 crm-souverain)
 
-1 CSV pret a importer pour creer la structure + peupler les donnees en 5 min.
+2 CSV prêts à importer pour créer la structure + peupler les données + enregistrer le projet dans le portfolio.
+
+## Fichiers livrés
+
+- `prospects.csv` : 4 lignes de prospects de démo (table `SC_Prospects`), 1 par statut (Nouveau / En cours / Gagné / Perdu) + 1 en "à relancer".
+
+- `crm-souverain-portfolio-row.csv` : 1 ligne prête à ajouter dans la table méta `AZ_Portfolio` de la base `Sales Closer Souverain` (raccourci Étape 8 du skill `/defi-hebdo-alegria` -- 30 sec au lieu de 5 min de saisie manuelle). Rétroactif S138z-ccdd (volet C IDEE_infra_198). Nom préfixé par slug (conforme code_archi R4 kebab-case pur zone repo, évite les collisions au téléchargement multiple).
+
+## Ajouter la ligne AZ_Portfolio (raccourci Étape 8 du skill)
+
+`crm-souverain-portfolio-row.csv` contient une ligne unique avec 17 des 18 champs remplis (`Captures` reste vide, c'est une pièce jointe à uploader manuellement dans la ligne Airtable après import). `Lien_Airtable_Demo` pointe vers le formulaire public "Ajouter un prospect" (`page28aUl1MwHBuqv/form`) : accès direct sans authentification, préféré à l'Interface Dashboard qui exige un login. `Lien_NocoDB_Demo` vide -- à remplir quand NocoDB sera déployé (IDEE_infra_196). Preview_Vercel = URL Vercel par défaut, custom domain à basculer plus tard (backlog IDEAS_PRO).
+
+Deux voies pour l'ajouter à `AZ_Portfolio` :
+
+1. **Import en ajout** (recommandé si la table existe déjà) : Airtable ne propose pas d'`Append CSV` natif dans l'UI -- utiliser l'extension `CSV Import` (Extensions -> Add extension -> CSV Import -> table cible `AZ_Portfolio` -> Upload -> Match fields -> Import). Ajoute la ligne sans écraser.
+
+2. **Copier-coller manuel** (fallback 30 sec) : ouvrir `crm-souverain-portfolio-row.csv` dans un tableur, copier la ligne de données, coller dans une nouvelle ligne vide de `AZ_Portfolio`. Airtable colle valeur par valeur.
+
+Après import : `DateLivraison` = `2026-09-04` doit être Date, `Statut` = `Livré` doit être SingleSelect, `Numéro` = 1 et `Semaine` = 36 doivent être Number.
+
+---
 
 ## Airtable
 

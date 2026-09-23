@@ -1,6 +1,26 @@
 # Import CSV -- raccourci Airtable + NocoDB (defi 3 masterclass-inscriptions)
 
-1 CSV pret a importer pour creer la structure + peupler les donnees de demo en 5 min.
+2 CSV prêts à importer pour créer la structure + peupler les données de démo + enregistrer le projet dans le portfolio.
+
+## Fichiers livrés
+
+- `inscrits.csv` : 5 lignes d'inscrits de démo (table `AZ_Inscrits`, 4 personas + David lui-même, cf. §Note ligne David).
+
+- `masterclass-inscriptions-portfolio-row.csv` : 1 ligne prête à ajouter dans la table méta `AZ_Portfolio` de la base `Sales Closer Souverain` (raccourci Étape 8 du skill `/defi-hebdo-alegria`). Rétroactif S138z-ccdd (volet C IDEE_infra_198). Nom préfixé par slug (conforme code_archi R4, évite collision au téléchargement). `Statut` = `En cours` (Cor David S136z-D : passe en `Livré` une fois l'Interface publique montrable).
+
+## Ajouter la ligne AZ_Portfolio (raccourci Étape 8 du skill)
+
+`masterclass-inscriptions-portfolio-row.csv` contient une ligne unique avec 17 des 18 champs remplis (`Captures` reste vide, à uploader manuellement). `Lien_Airtable_Demo` pointe vers le formulaire public "Ajouter un inscrit à la masterclass" (`pagI3FYwUrzpkz2MO/form`) : accès direct sans authentification (préféré au partage Interface Dashboard bloqué par le forfait non-Team). `Lien_NocoDB_Demo` vide -- à remplir quand NocoDB sera déployé (IDEE_infra_196). Preview_Vercel = URL Vercel par défaut, custom domain à basculer plus tard (backlog IDEAS_PRO).
+
+Deux voies pour l'ajouter à `AZ_Portfolio` :
+
+1. **Import en ajout** (recommandé) : extension `CSV Import` (Extensions -> Add extension -> CSV Import -> table cible `AZ_Portfolio` -> Upload -> Match fields -> Import).
+
+2. **Copier-coller manuel** (fallback 30 sec) : ouvrir `masterclass-inscriptions-portfolio-row.csv` dans un tableur, copier la ligne, coller dans une nouvelle ligne vide de `AZ_Portfolio`.
+
+Après import : `DateLivraison` = `2026-09-18` doit être Date, `Statut` = `En cours` doit être SingleSelect (pas encore `Livré`), `Numéro` = 3 et `Semaine` = 38 doivent être Number.
+
+---
 
 ## Airtable
 
