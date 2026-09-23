@@ -2,6 +2,8 @@
 
 Deux CSV prêts à importer pour créer la structure + peupler les données en 2 clics.
 
+Note : pas de `<slug>-portfolio-row.csv` livré pour ce défi -- la ligne AZ_Portfolio du projet 4 a été saisie manuellement in-session S137z-E, ne pas re-importer sous peine de doublon. Voir les défis 1, 2, 3 qui livrent bien un `<slug>-portfolio-row.csv` préfixé (raccourci Étape 8 du skill `/defi-hebdo-alegria`, rétroactif S138z-ccdd, volet C IDEE_infra_198).
+
 ## Airtable
 
 1. Ouvre la base cible (`Sales Closer Souverain` ou une base dédiée)
