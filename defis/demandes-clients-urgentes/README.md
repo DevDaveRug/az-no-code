@@ -70,6 +70,18 @@ Une automatisation Airtable poste-lie ces demandes aux `AZ_Clients` existants pa
 
 - `nocodb_03_form_public.png` : formulaire NocoDB partagé public
 
+## URLs publiques livrées (S153c-c 2026-09-25)
+
+- **Airtable formulaire public** : https://airtable.com/appTqLo3JDg7d1fak/pagBUbRHnk0WYY4yM/form
+
+- **NocoDB base publique read-only** (dashboard admin, Kanban, Grid urgentes en premier, formulaire complet) : https://sb-nocodb.coolify.salescloser.fr/#/base/22ca37d4-9d7a-4cf2-86ed-6e569babae1d
+
+- **NocoDB formulaire de soumission public read-write** (submission directe, sans navigation admin) : https://sb-nocodb.coolify.salescloser.fr/#/nc/form/1a730f9f-2091-47c5-88e5-3d6f40c145fa
+
+- **Vercel prod** : https://demandes-clients-urgentes.vercel.app
+
+Note format URL NocoDB : le `#/` est essentiel dans les 2 liens NocoDB. Sans lui, la route retourne 404 (routing SPA).
+
 ## Angle commercial
 
 Le prospect qui perd 50 % de ses demandes clients éparpillées sur 3 canaux découvre en 30 min qu'il peut centraliser, prioriser et rassurer ses clients avec un seul lien. La version souveraine (NocoDB ou Next.js) enlève la dépendance Airtable pour ceux qui veulent leur outil chez eux.
