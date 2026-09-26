@@ -1,10 +1,19 @@
 # NocoDB - CRM Souverain (self-host)
 
-Équivalent souverain d'Airtable, à créer sur infra Coolify. Sert :
+Équivalent souverain d'Airtable, déployé sur infra Coolify. Sert :
 
 - de démonstration "je peux le refaire chez moi sans dépendre d'Airtable"
 
 - de fallback si Airtable devient payant/coupé pour un client
+
+## Déploiement effectif (S138z-ccdd, 2026-09-26)
+
+- Base ID NocoDB : `p2e8g8j54l8ln06`
+- Table SC_Prospects ID : `mhvzxd63ekzaut1`
+- 4 prospects d'exemples déjà importés (Alice Martin / Bob Durand / Chloé Dubois / Emma Petit + un 5e non importé selon le CSV)
+- URL publique base (read-only) : `https://sb-nocodb.coolify.salescloser.fr/#/base/9149b280-45ff-408e-9e71-6dd612c0687c`
+- URL publique formulaire "Ajouter un prospect" : à créer via UI (Add form view -> Enable public share) puis remplacer ici
+- Statut AZ_Portfolio : `Livré` (Lien_NocoDB_Demo patché via API)
 
 ## Cible d'hébergement
 

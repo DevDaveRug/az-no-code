@@ -1,12 +1,21 @@
 # NocoDB - Masterclass Inscriptions (self-host)
 
-Équivalent souverain d'Airtable. Sert :
+Équivalent souverain d'Airtable, déployé sur infra Coolify. Sert :
 
 -> de démonstration "je peux le refaire chez toi sans dépendre d'Airtable"
 
 -> de fallback si Airtable devient payant/coupé pour un client
 
 -> de brique réutilisable pour d'autres clients Alegria
+
+## Déploiement effectif (S138z-ccdd, 2026-09-26)
+
+- Base ID NocoDB : `p2cju7kotpuorj1`
+- Table AZ_Inscrits ID : `movk8q3jkzg3w3g`
+- 5 inscrits d'exemples déjà importés (David lui-même + 4 personas)
+- URL publique base (read-only) : `https://sb-nocodb.coolify.salescloser.fr/#/base/26700241-cc53-4d50-b26a-ab94cb4f9b4f`
+- URL publique formulaire "S'inscrire à la masterclass" : à créer via UI (Add form view -> Enable public share) puis remplacer ici
+- Statut AZ_Portfolio : `Livré` (passé de `En cours` à `Livré` via API, contrepartie NocoDB montrable levée)
 
 ## Cible d'hébergement
 
