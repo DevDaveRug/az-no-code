@@ -1,10 +1,22 @@
 # NocoDB - CRM Souverain (self-host)
 
-Équivalent souverain d'Airtable, à créer sur infra Coolify. Sert :
+Équivalent souverain d'Airtable, déployé sur infra Coolify. Sert :
 
 - de démonstration "je peux le refaire chez moi sans dépendre d'Airtable"
 
 - de fallback si Airtable devient payant/coupé pour un client
+
+## Déploiement effectif (S138z-ccdd, 2026-09-26)
+
+Après Cor David : **base unifiée** `Sales Closer Souverain` (miroir exact de la base Airtable) au lieu d'une base isolée par défi. Cohérence "univers de solutions activables" plutôt que silos.
+
+- Base unifiée : `Sales Closer Souverain` (id `phwalskbrftv4o4`)
+- Table SC_Prospects id : `m163jpgx02zhgnc`
+- 4 prospects d'exemples importés (Alice Martin / Bob Durand / Chloé Dubois / Emma Petit)
+- URL publique unifiée (partagée par les 4 défis) : `https://sb-nocodb.coolify.salescloser.fr/#/base/22ca37d4-9d7a-4cf2-86ed-6e569babae1d`
+- URL publique formulaire "Ajouter un prospect" : à créer via UI (Add form view -> Enable public share) puis remplacer ici
+- Statut AZ_Portfolio : `Livré`
+- Link Records entrants (défis qui référencent SC_Prospects) : SC_CRs_de_RDV.Prospect (défi 2), AZ_Inscrits.Prospect (défi 3), AZ_Clients.Prospect (défi 4)
 
 ## Cible d'hébergement
 
