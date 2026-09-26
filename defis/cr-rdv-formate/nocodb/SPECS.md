@@ -103,9 +103,12 @@ Le champ Link Record vers SC_Prospects (livré côté Airtable dans le RUNBOOK.m
 
 Déployé en S138z-ccdd (rattrapage rétroactif IDEE_infra_196 défis 1+2+3, 2026-09-26).
 
-- Base ID NocoDB : `pezcail7wrs5cuq`
-- Table SC_CRs_de_RDV ID : `mua8v3enwrm37dg`
-- 5 records d'exemples déjà insérés via API bulk
-- URL publique base (read-only) : `https://sb-nocodb.coolify.salescloser.fr/#/base/79d50c05-8361-4e52-b8a4-1763feaffeb7`
+Après Cor David : **base unifiée** `Sales Closer Souverain` (miroir exact Airtable) au lieu d'une base isolée par défi.
+
+- Base unifiée : `Sales Closer Souverain` (id `phwalskbrftv4o4`)
+- Table SC_CRs_de_RDV id : `mkhq6zt5pv5gz0v`
+- 5 records de démo importés couvrant les 5 contextes (Découverte / Négociation / Suivi / Closing / Support)
+- URL publique unifiée (partagée par les 4 défis) : `https://sb-nocodb.coolify.salescloser.fr/#/base/22ca37d4-9d7a-4cf2-86ed-6e569babae1d`
 - URL publique formulaire read-write : à créer via UI (Add form view -> Enable public share) puis remplacer ici
 - Statut AZ_Portfolio : `Livré` (Lien_NocoDB_Demo patché via API)
+- **Link Record `Prospect`** vers SC_Prospects (défi 1) : chaque CR de RDV peut référencer le prospect concerné, cohérent avec le RUNBOOK Airtable §XIII (architecture unifiée Sales Closer Souverain)

@@ -8,12 +8,15 @@
 
 ## Déploiement effectif (S138z-ccdd, 2026-09-26)
 
-- Base ID NocoDB : `p2e8g8j54l8ln06`
-- Table SC_Prospects ID : `mhvzxd63ekzaut1`
-- 4 prospects d'exemples déjà importés (Alice Martin / Bob Durand / Chloé Dubois / Emma Petit + un 5e non importé selon le CSV)
-- URL publique base (read-only) : `https://sb-nocodb.coolify.salescloser.fr/#/base/9149b280-45ff-408e-9e71-6dd612c0687c`
+Après Cor David : **base unifiée** `Sales Closer Souverain` (miroir exact de la base Airtable) au lieu d'une base isolée par défi. Cohérence "univers de solutions activables" plutôt que silos.
+
+- Base unifiée : `Sales Closer Souverain` (id `phwalskbrftv4o4`)
+- Table SC_Prospects id : `m163jpgx02zhgnc`
+- 4 prospects d'exemples importés (Alice Martin / Bob Durand / Chloé Dubois / Emma Petit)
+- URL publique unifiée (partagée par les 4 défis) : `https://sb-nocodb.coolify.salescloser.fr/#/base/22ca37d4-9d7a-4cf2-86ed-6e569babae1d`
 - URL publique formulaire "Ajouter un prospect" : à créer via UI (Add form view -> Enable public share) puis remplacer ici
-- Statut AZ_Portfolio : `Livré` (Lien_NocoDB_Demo patché via API)
+- Statut AZ_Portfolio : `Livré`
+- Link Records entrants (défis qui référencent SC_Prospects) : SC_CRs_de_RDV.Prospect (défi 2), AZ_Inscrits.Prospect (défi 3), AZ_Clients.Prospect (défi 4)
 
 ## Cible d'hébergement
 
