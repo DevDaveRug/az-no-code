@@ -1,0 +1,46 @@
+{
+  "base": {
+    "id": "appTqLo3JDg7d1fak",
+    "name": "Sales Closer Souverain"
+  },
+  "tables": [
+    {
+      "name": "AZ_Missions",
+      "description": "Une ligne par mission. Client = lien vers AZ_Clients (jamais retapé). Types corrects : Devise, Date, Sélection unique, Case à cocher.",
+      "fields": [
+        { "name": "Mission", "type": "singleLineText" },
+        { "name": "Statut", "type": "singleSelect", "options": { "choices": [ { "name": "À faire", "color": "grayLight2" }, { "name": "En cours", "color": "yellowLight2" }, { "name": "Terminée", "color": "greenLight2" }, { "name": "Arrêtée", "color": "redLight2" } ] } },
+        { "name": "Montant", "type": "currency", "options": { "precision": 2, "symbol": "€" } },
+        { "name": "DateFin", "type": "date", "options": { "dateFormat": { "name": "european" } } },
+        { "name": "Facturé", "type": "checkbox", "options": { "icon": "check", "color": "greenBright" } },
+        { "name": "NotesMigration", "type": "multilineText" }
+      ]
+    }
+  ],
+  "fieldsToAdd": [
+    {
+      "table": "AZ_Missions",
+      "tableId": "TBD_AZ_MISSIONS",
+      "field": { "name": "Client", "type": "multipleRecordLinks", "options": { "linkedTableId": "TBD_AZ_CLIENTS", "prefersSingleRecordLink": true } }
+    },
+    {
+      "table": "AZ_Clients",
+      "tableId": "TBD_AZ_CLIENTS",
+      "field": { "name": "Entreprise", "type": "singleLineText" }
+    }
+  ],
+  "uiOnly": [
+    "AZ_Clients.Missions : symétrique du lien Client. Vérifier qu'il existe après création du lien (piège S135z : l'API ne le crée pas toujours), le renommer 'Missions'.",
+    "AZ_Clients.NbMissions : Count -> Missions.",
+    "AZ_Clients.CAFacturé : Rollup SUM(values) sur Missions.Montant, condition Facturé coché.",
+    "AZ_Clients.ResteAFacturer : Rollup SUM(values) sur Missions.Montant, conditions Statut = Terminée ET Facturé non coché.",
+    "AZ_Clients.MontantEnCours : Rollup SUM(values) sur Missions.Montant, condition Statut = En cours.",
+    "AZ_Missions.EmailClient : Lookup Client -> Email (optionnel).",
+    "Vues (Grid, Kanban, Calendar), formulaire 'Nouvelle mission' et page Interface : UI uniquement."
+  ],
+  "notes": [
+    "Ordre d'exécution : 1) POST /v0/meta/bases/appTqLo3JDg7d1fak/tables avec AZ_Missions (sans le lien) ; 2) POST .../tables/{AZ_Missions}/fields avec Client ; 3) POST .../tables/{AZ_Clients}/fields avec Entreprise ; 4) champs uiOnly à la main.",
+    "Les identifiants TBD_* se lisent via GET /v0/meta/bases/appTqLo3JDg7d1fak/tables (jeton AIRTABLE_PAT, scope schema.bases:read + schema.bases:write).",
+    "Ne pas importer un CSV dans une table existante pour créer les options de Statut : Airtable crée des options à partir des valeurs trouvées (options polluées, cf. skill defi-hebdo-alegria §8)."
+  ]
+}
