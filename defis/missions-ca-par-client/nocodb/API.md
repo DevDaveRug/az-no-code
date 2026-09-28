@@ -256,3 +256,116 @@ En haut à droite du formulaire : `Share` -> activer le partage public -> copier
 Filtres et tris de vues : UI (2 minutes), plus lisible que l'API. `À facturer`, `À vérifier (migration)`, `Toutes les missions` (Grid), `Par statut` (Kanban), `Échéances` (Calendar), `CA par client` (Grid sur `AZ_Clients`). Détail : `SPECS.md` et `INTERFACE.md`.
 
 Note : les chemins d'API ci-dessus suivent l'API v2 NocoDB. Au 1er appel d'écriture, lire la réponse : si un champ du payload n'est pas reconnu par la version `2026.09.0`, la réponse le dit (`msg`), corriger avant de lancer la suite.
+
+## 10- Exécution du 28/09/2026 (session fille S163z)
+
+Jetons présents dans l'environnement (`NOCODB_API_TOKEN`, `AIRTABLE_PAT`), jamais affichés. Lectures préalables : liste des tables, swagger de la base (routes données uniquement, les routes méta ne sont pas dans ce swagger : utilisées selon l'API v2 et contrôlées par un GET après chaque écriture), méta des 4 tables, enregistrements concernés. Aucune table créée, rien supprimé.
+
+```bash
+NC=https://sb-nocodb.coolify.salescloser.fr
+H=(-H "xc-token: $NOCODB_API_TOKEN" -H "Content-Type: application/json")
+AT=https://api.airtable.com/v0/appTqLo3JDg7d1fak
+AH=(-H "Authorization: Bearer $AIRTABLE_PAT" -H "Content-Type: application/json")
+```
+
+### 10a- `AZ_Inscrits` n°5 anonymisé
+
+```bash
+curl -s "${H[@]}" -X PATCH "$NC/api/v2/tables/ml25u20dkb9gfxm/records" \
+  -d '[{"Id":5,"Prenom":"Fabien","Email":"fabien.roux@atelier-nord.example"}]'
+```
+
+Réponse : `[{"Id":5}]`. GET de contrôle : Prenom `Fabien`, Email `fabien.roux@atelier-nord.example`. Valeurs d'avant : `David` / `david@salescloser.fr` (retour arrière : même PATCH avec ces valeurs, déconseillé).
+
+### 10b- Prospect Fabien Roux + 3 liens
+
+```bash
+curl -s "${H[@]}" -X POST "$NC/api/v2/tables/m163jpgx02zhgnc/records" -d '[{
+  "Prenom":"Fabien","Nom":"Roux","Entreprise":"Atelier Nord",
+  "Email":"fabien.roux@atelier-nord.example","Telephone":"+33 6 00 00 00 15",
+  "Statut":"En cours","Source":"Recommandation","DateEntree":"2026-09-20","DernierContact":"2026-09-24"}]'
+curl -s "${H[@]}" -X POST "$NC/api/v2/tables/my2gc6wwrlaqlh2/links/ckh0r3l3eqlto16/records/5" -d '[{"Id":5}]'  # AZ_Clients 5
+curl -s "${H[@]}" -X POST "$NC/api/v2/tables/mkhq6zt5pv5gz0v/links/c8nt1nee0r7y59v/records/5" -d '[{"Id":5}]'  # SC_CRs_de_RDV 5
+curl -s "${H[@]}" -X POST "$NC/api/v2/tables/ml25u20dkb9gfxm/links/chdjhpzlb02gpoh/records/5" -d '[{"Id":5}]'  # AZ_Inscrits 5
+```
+
+Réponses : `[{"Id":5}]` (création : **SC_Prospects Id 5**), puis `true` x 3. GET de contrôle : les 10 champs conformes, et chaque lien renvoie `[{"Id":5,"Prenom":"Fabien"}]`.
+
+Retour arrière : les 3 appels de lien avec `-X DELETE`, puis `curl -s "${H[@]}" -X DELETE "$NC/api/v2/tables/m163jpgx02zhgnc/records" -d '[{"Id":5}]'`.
+
+### 10c- Valeurs par défaut des colonnes
+
+L'API exige le payload complet de la colonne. Méthode sans risque retenue : GET de la colonne, modification du seul `cdf`, PATCH du même objet (mêmes options, mêmes identifiants d'options). Contrôle avant/après : identifiants d'options inchangés et valeurs des enregistrements identiques (comparaison des instantanés) sur les 3 tables.
+
+```bash
+setdef() { # $1 = id colonne, $2 = valeur par défaut
+  curl -s "${H[@]}" "$NC/api/v2/meta/columns/$1" | jq -c --arg v "$2" '.cdf=$v' \
+  | curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/columns/$1" -d @- | jq -c '{msg}'; }
+setdef coy4deomg31alb7 "Nouveau"      # SC_Prospects.Statut
+setdef c87ppy0qhvsv546 "A formater"   # SC_CRs_de_RDV.Statut
+setdef c1d9y0hz40lm29z "En attente"   # AZ_Inscrits.StatutEmail
+```
+
+Réponses : `{"msg":null}` x 3, `cdf` relu conforme. Valeur d'avant : `cdf` null partout. Retour arrière : même fonction avec `jq '.cdf=null'`.
+
+### 10d- 3 formulaires publics
+
+| Table | Formulaire | Id vue | Champs visibles (* requis) |
+|---|---|---|---|
+| `SC_Prospects` | Ajouter un prospect | `vw1ka15rxzp856j2` | Prenom*, Nom*, Entreprise, Email*, Telephone, Source, Notes |
+| `SC_CRs_de_RDV` | Nouveau CR de RDV | `vwpo6k6790xpwxhy` | DateRDV*, Client*, ContexteRDV*, NotesBrutes* |
+| `AZ_Inscrits` | Inscription masterclass | `vwft4pbieg1qzdrc` | Prenom*, Email*, DateMasterclass* |
+
+Tous les autres champs masqués (dont tous les `Links`). Messages après envoi : ceux du §8 bis, à l'identique.
+
+```bash
+# Création (une fois par table)
+V=$(curl -s "${H[@]}" -X POST "$NC/api/v2/meta/tables/m163jpgx02zhgnc/forms" -d '{"title":"Ajouter un prospect"}' | jq -r .id)
+# Champs : pour chaque colonne de formulaire (GET $NC/api/v2/meta/forms/$V -> .columns[].id)
+curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/form-columns/<id colonne de formulaire>" -d '{"show":true,"required":true,"order":1}'   # visible
+curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/form-columns/<id colonne de formulaire>" -d '{"show":false,"required":false,"order":100}' # masqué
+# Message après envoi
+curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/forms/$V" -d '{"success_msg":"Prospect ajouté. Tu peux le suivre depuis la vue Tous les prospects."}'
+# Partage public
+curl -s "${H[@]}" -X POST "$NC/api/v2/meta/views/$V/share" | jq -r .uuid
+```
+
+Script complet de configuration des champs (correspondance titre -> colonne via la méta de la table) : boucle sur `.columns[]` du formulaire, `show` vrai uniquement pour les titres listés ci-dessus. Réponses : aucun `msg` d'erreur, relecture conforme.
+
+Retour arrière : `curl -s "${H[@]}" -X DELETE "$NC/api/v2/meta/views/$V/share"` (dépublie) puis `-X DELETE "$NC/api/v2/meta/forms/$V"`.
+
+### 10e- URL publiques (vérifiées par `GET $NC/api/v2/public/shared-view/<uuid>/meta`, sans jeton, sans soumission : HTTP 200, titre, champs visibles, requis et message conformes)
+
+-> Projet 1, `SC_Prospects` : https://sb-nocodb.coolify.salescloser.fr/#/nc/form/0476d0c5-1db4-4cd7-b62a-552adbdf818c
+
+-> Projet 2, `SC_CRs_de_RDV` : https://sb-nocodb.coolify.salescloser.fr/#/nc/form/4aca5fa0-f7f5-4216-85ce-092959518893
+
+-> Projet 3, `AZ_Inscrits` : https://sb-nocodb.coolify.salescloser.fr/#/nc/form/e3eb2619-338b-4451-9c9e-57cd07ed13e8
+
+### 10f- Airtable
+
+`AZ_Inscrits` : aucune ligne `David` ni `david@salescloser.fr` (7 lignes lues), aucune écriture.
+
+`AZ_Portfolio`, `Lien_NocoDB_Demo` des projets 1, 2, 3 (`typecast` false) :
+
+```bash
+F=https://sb-nocodb.coolify.salescloser.fr/#/nc/form
+curl -s "${AH[@]}" -X PATCH "$AT/AZ_Portfolio" -d "{\"typecast\":false,\"records\":[
+ {\"id\":\"recpzC5yp61ZyqL89\",\"fields\":{\"Lien_NocoDB_Demo\":\"$F/0476d0c5-1db4-4cd7-b62a-552adbdf818c\"}},
+ {\"id\":\"recemskuGIXm6vbnD\",\"fields\":{\"Lien_NocoDB_Demo\":\"$F/4aca5fa0-f7f5-4216-85ce-092959518893\"}},
+ {\"id\":\"recMatGGZkUBzu15V\",\"fields\":{\"Lien_NocoDB_Demo\":\"$F/e3eb2619-338b-4451-9c9e-57cd07ed13e8\"}}]}"
+```
+
+Réponse : les 3 identifiants renvoyés, GET de contrôle conforme (projet 4 inchangé). Valeur d'avant, identique pour les 3 : `https://sb-nocodb.coolify.salescloser.fr/#/base/22ca37d4-9d7a-4cf2-86ed-6e569babae1d` (retour arrière : même PATCH avec cette URL).
+
+CSV mis à jour : `Lien_NocoDB_Demo` des 3 `*-portfolio-row.csv` (projets 1, 2, 3).
+
+### 10g- Sauté ou à noter
+
+-> Rien de sauté dans le périmètre.
+
+-> Le message du formulaire `Ajouter un prospect` cite la vue « Tous les prospects », qui n'existe pas encore dans NocoDB (seule la vue grille `SC_Prospects`) : renommer cette vue ou créer la vue (UI, §9).
+
+-> Aucun test de soumission réel (consigne) : à faire une fois en navigation privée si tu veux la preuve bout en bout, puis supprimer la ligne de test.
+
+-> La colonne `Notes` du CSV du projet 1 dit encore « Lien_NocoDB_Demo vide tant que NocoDB pas déployé » : non modifiée (hors périmètre), à ajuster.
