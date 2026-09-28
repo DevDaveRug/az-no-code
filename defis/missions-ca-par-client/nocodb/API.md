@@ -165,7 +165,9 @@ curl -s "${H[@]}" -X POST "$NC/api/v2/tables/mkhq6zt5pv5gz0v/links/c8nt1nee0r7y5
 
 Retour arrière : `-X DELETE` sur les 2 liens, puis `curl -s "${H[@]}" -X DELETE "$NC/api/v2/tables/m163jpgx02zhgnc/records" -d "[{\"Id\":$FABIEN}]"`.
 
-### 7c- `AZ_Inscrits` n°5 : données réelles dans une base de démonstration (Val David requis)
+### 7c- `AZ_Inscrits` n°5 : données réelles dans une base de démonstration (Val David S163z, 28/09)
+
+État au 28/09/2026 18h : correction validée, pas encore appliquée (aucun jeton dans la session). Voie sans jeton : interface NocoDB, voir §8 bis étape 0.
 
 L'inscrit n°5 est `David` / `david@salescloser.fr` : ton vrai prénom et ton vrai e-mail dans une base partagée publiquement, contraire à la règle d'anonymisation du skill (« ne jamais utiliser le vrai nom de David comme fake data »). Proposition : le remplacer par Fabien Roux, puis le relier.
 
@@ -200,6 +202,54 @@ form "$MISSIONS"     "Nouvelle mission"
 Après création : dans l'UI, masquer les champs techniques de chaque formulaire (Links vers d'autres tables, formules, `CRFormate`, `Cout_LLM`, `StatutEmail`), 1 minute par formulaire. Les 4 URL publiques vont dans le journal de session, et celle de `Nouvelle mission` dans `Lien_NocoDB_Demo` du projet 5.
 
 Retour arrière : `curl -s "${H[@]}" -X DELETE "$NC/api/v2/meta/views/$V/share"` (dépublie) puis `-X DELETE "$NC/api/v2/meta/forms/$V"`.
+
+## 8 bis- Sans jeton : les mêmes actions dans l'interface NocoDB (Cor David S163z)
+
+Constat du 28/09/2026 (lecture du partage public) : seul `AZ_Demandes` (projet 4) a un formulaire public. `SC_Prospects` (projet 1), `SC_CRs_de_RDV` (projet 2) et `AZ_Inscrits` (projet 3) n'en ont aucun.
+
+### Étape 0- Anonymiser `AZ_Inscrits` n°5 et relier Fabien Roux (3 minutes)
+
+1- `SC_Prospects` : nouvelle ligne `Fabien` / `Roux` / `Atelier Nord` / `fabien.roux@atelier-nord.example` / `+33 6 00 00 00 15`, Statut `En cours`, Source `Recommandation`
+
+2- `AZ_Inscrits`, ligne 5 : Prenom `David` -> `Fabien`, Email `david@salescloser.fr` -> `fabien.roux@atelier-nord.example`, puis cellule `Prospect` -> `+` -> Fabien Roux
+
+3- `AZ_Clients`, ligne 5 (Fabien Roux) : cellule `Prospect` -> `+` -> Fabien Roux
+
+4- `SC_CRs_de_RDV`, ligne 5 (Fabien Roux - Atelier Nord) : cellule `Prospect` -> `+` -> Fabien Roux
+
+Vérifier aussi `AZ_Inscrits` côté Airtable : même ligne probable.
+
+### Étape 1- Valeurs par défaut (elles remplacent les champs cachés des formulaires Airtable)
+
+Un champ masqué d'un formulaire NocoDB n'est pas envoyé : c'est la valeur par défaut de la colonne qui s'applique. En-tête de colonne -> `Edit` -> valeur par défaut :
+
+-> `SC_Prospects.Statut` : `Nouveau`
+
+-> `SC_CRs_de_RDV.Statut` : `A formater`
+
+-> `AZ_Inscrits.StatutEmail` : `En attente`
+
+### Étape 2- Créer chaque formulaire (5 minutes par table)
+
+Barre latérale, sous la table -> `+` (créer une vue) -> `Form` -> nommer. Dans l'éditeur : garder uniquement les champs listés, cocher `Required` quand indiqué, renseigner le message après envoi.
+
+| Table (projet) | Nom du formulaire | Champs visibles, dans l'ordre | Masqués | Message après envoi |
+|---|---|---|---|---|
+| `SC_Prospects` (1) | Ajouter un prospect | Prenom (requis), Nom (requis), Entreprise, Email (requis), Telephone, Source, Notes | Statut, DateEntree, DernierContact, MontantPotentiel, tous les liens | Prospect ajouté. Tu peux le suivre depuis la vue Tous les prospects. |
+| `SC_CRs_de_RDV` (2) | Nouveau CR de RDV | DateRDV (requis), Client (requis), ContexteRDV (requis), NotesBrutes (requis) | CRFormate, Statut, DateFormatage, Cout_LLM, Prospect | Merci, ton compte rendu brut est bien enregistré. |
+| `AZ_Inscrits` (3) | Inscription masterclass | Prenom (requis), Email (requis), DateMasterclass (requis) | StatutEmail, Notes, Prospect | Merci pour ton inscription ! Un e-mail de confirmation arrive dans quelques secondes. |
+
+Toujours masquer les champs `Links` (Prospect, AZ_Clients...) dans un formulaire public : sinon le visiteur voit et peut choisir les enregistrements de la table liée.
+
+`DateEntree` et `DernierContact` (projet 1) : si l'édition de colonne propose une date du jour par défaut, l'activer ; sinon les laisser vides (le prospect n'apparaît dans `À relancer` qu'une fois `DernierContact` rempli).
+
+### Étape 3- Publier
+
+En haut à droite du formulaire : `Share` -> activer le partage public -> copier le lien (format `https://sb-nocodb.coolify.salescloser.fr/#/nc/form/<uuid>`). Tester chaque lien en navigation privée : une soumission doit créer une ligne visible dans la table.
+
+### Étape 4- Reporter les liens
+
+`Lien_NocoDB_Demo` de `AZ_Portfolio` (projets 1, 2, 3) + les 3 `<slug>-portfolio-row.csv`. Le lien de la base partagée reste utilisable pour la consultation, le formulaire est le lien de démonstration.
 
 ## 9- Vues à créer dans l'UI
 
