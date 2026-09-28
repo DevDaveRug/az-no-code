@@ -1,0 +1,8 @@
+Mission,Client,Statut,Montant,DateFin,Facturé,NotesMigration
+Refonte site,Alice Martin,Terminée,2500,2026-03-12,checked,
+Création d'une app mobile,Bob Durand,Terminée,80000,2026-05-31,checked,"Date d'origine 'mai 2026' sans jour : dernier jour du mois retenu, à confirmer."
+Maintenance page,Alice Martin,Arrêtée,500,2026-06-30,checked,"Date d'origine 'juin' sans jour ni année : 30/06/2026 retenu, à confirmer. Facturé d'origine 'x' lu comme oui, à confirmer. Doublon possible avec 'Maintenance' (même cliente)."
+Audit,Chloe Dubois,En cours,1200,2026-06-24,,Facturé d'origine vide lu comme non.
+Maintenance,Alice Martin,En cours,450,2026-07-31,,"Date d'origine 'Juillet' sans jour ni année : 31/07/2026 retenu, à confirmer. Doublon possible avec 'Maintenance page' (même cliente)."
+Tunnel de vente,Emma Petit,Terminée,3200,2026-05-15,,
+Atelier CRM,Fabien Roux,À faire,900,2026-10-30,,Facturé d'origine vide lu comme non.
