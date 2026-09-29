@@ -14,7 +14,7 @@ C'est pour ça que ce dossier `import-csv/` contient uniquement `cr-rdv-formate-
 
 ## Ajouter la ligne AZ_Portfolio (raccourci Étape 8 du skill)
 
-`cr-rdv-formate-portfolio-row.csv` contient les 17 champs remplis (`Captures` reste vide). `Lien_Airtable_Demo` pointe vers le formulaire public "Ajouter un CR de RDV" (`pag5VRfyhBBi1lKfy/form`) : accès direct sans authentification, préféré au partage Interface Dashboard qui exige un login préalable. `Lien_NocoDB_Demo` est vide (écart S136z-E, NocoDB pas encore déployé, IDEE_infra_196). Preview_Vercel = URL Vercel par défaut, custom domain à basculer plus tard (backlog IDEAS_PRO).
+`cr-rdv-formate-portfolio-row.csv` contient les 17 champs remplis (`Captures` reste vide). `Lien_Airtable_Demo` pointe vers le formulaire public "Ajouter un CR de RDV" (`pag5VRfyhBBi1lKfy/form`) : accès direct sans authentification, préféré au partage Interface Dashboard qui exige un login préalable. `Lien_NocoDB_Demo` pointe vers le formulaire public NocoDB "Nouveau CR de RDV" (`https://sb-nocodb.coolify.salescloser.fr/#/nc/form/4aca5fa0-f7f5-4216-85ce-092959518893`, créé S163z le 28/09/2026). Preview_Vercel = URL Vercel par défaut, custom domain à basculer plus tard (backlog IDEAS_PRO).
 
 Deux voies pour l'ajouter :
 

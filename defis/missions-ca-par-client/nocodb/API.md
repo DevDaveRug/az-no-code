@@ -364,11 +364,28 @@ CSV mis à jour : `Lien_NocoDB_Demo` des 3 `*-portfolio-row.csv` (projets 1, 2, 
 
 -> Rien de sauté dans le périmètre.
 
--> Le message du formulaire `Ajouter un prospect` cite la vue « Tous les prospects », qui n'existe pas encore dans NocoDB (seule la vue grille `SC_Prospects`) : renommer cette vue ou créer la vue (UI, §9).
+-> Vue grille `SC_Prospects` renommée « Tous les prospects » par David le 29/09 (UI) : le message du formulaire `Ajouter un prospect` est cohérent.
 
 -> Aucun test de soumission réel (consigne) : à faire une fois en navigation privée si tu veux la preuve bout en bout, puis supprimer la ligne de test.
 
--> La colonne `Notes` du CSV du projet 1 dit encore « Lien_NocoDB_Demo vide tant que NocoDB pas déployé » : non modifiée (hors périmètre), à ajuster.
+-> Note « Lien_NocoDB_Demo vide tant que NocoDB pas déployé » : corrigée, voir 10h.
+
+### 10h- Suivi du 29/09/2026
+
+NocoDB est déployé depuis S153c-ccdd : la mention « NocoDB pas déployé » était obsolète, rien à déployer.
+
+-> CSV projet 1 : `Notes` déjà corrigée par la session mère (commit `ebc307d`).
+
+-> `import-csv/README.md` des défis 1, 2, 3 : la phrase « `Lien_NocoDB_Demo` vide » remplacée par le lien du formulaire NocoDB.
+
+-> Airtable `AZ_Portfolio` projet 1 (`recpzC5yp61ZyqL89`), champ `Notes` aligné sur le CSV :
+
+```bash
+python3 -c "import csv,json;r=list(csv.DictReader(open('defis/crm-souverain/import-csv/crm-souverain-portfolio-row.csv')))[0];print(json.dumps({'typecast':False,'records':[{'id':'recpzC5yp61ZyqL89','fields':{'Notes':r['Notes']}}]}))" \
+  | curl -s "${AH[@]}" -X PATCH "$AT/AZ_Portfolio" -d @-
+```
+
+Réponse : `recpzC5yp61ZyqL89` renvoyé, GET conforme. Retour arrière : même PATCH avec l'ancienne fin de note « Lien_NocoDB_Demo vide tant que NocoDB pas déployé (IDEE_infra_196). » à la place de la phrase `Lien_NocoDB_Demo = ...`. Projets 2 à 5 : aucune mention obsolète.
 
 ## 11- Exécution défi 5 du 29/09/2026
 
