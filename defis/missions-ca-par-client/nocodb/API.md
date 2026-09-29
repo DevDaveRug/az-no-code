@@ -369,3 +369,125 @@ CSV mis à jour : `Lien_NocoDB_Demo` des 3 `*-portfolio-row.csv` (projets 1, 2, 
 -> Aucun test de soumission réel (consigne) : à faire une fois en navigation privée si tu veux la preuve bout en bout, puis supprimer la ligne de test.
 
 -> La colonne `Notes` du CSV du projet 1 dit encore « Lien_NocoDB_Demo vide tant que NocoDB pas déployé » : non modifiée (hors périmètre), à ajuster.
+
+## 11- Exécution défi 5 du 29/09/2026
+
+Session fille S163z (P1 défi 5). Jeton `NOCODB_API_TOKEN` présent, jamais affiché. Méthode du §10 : lecture avant écriture, GET de contrôle après chaque écriture, colonnes modifiées par GET puis PATCH du même objet. Rien supprimé.
+
+```bash
+NC=https://sb-nocodb.coolify.salescloser.fr
+H=(-H "xc-token: $NOCODB_API_TOKEN" -H "Content-Type: application/json")
+BASE=phwalskbrftv4o4
+MISSIONS=mfm5tqthjo0ar5o      # AZ_Missions
+LINK_MISSIONS=cknsvqw43wnlc3j # AZ_Clients.Missions (hm)
+```
+
+### 11a- Étape 0 : lecture
+
+5 tables présentes, pas de `AZ_Missions`. `AZ_Clients` : 5 enregistrements, pas de colonne `Entreprise`.
+
+### 11b- Étape 1 : table `AZ_Missions`
+
+Commande du §1 à l'identique. Réponse : `{"id":"mfm5tqthjo0ar5o","title":"AZ_Missions"}`. GET de contrôle : `Mission` (champ d'affichage), `Statut` (4 options), `Montant` (Currency fr-FR EUR), `DateFin` (DD/MM/YYYY), `Facturé`, `NotesMigration` conformes.
+
+Retour arrière : `curl -s "${H[@]}" -X DELETE "$NC/api/v2/meta/tables/$MISSIONS"`
+
+### 11c- Étape 2 : lien `AZ_Clients` -> `AZ_Missions`, côté `AZ_Missions` renommé `Client`
+
+```bash
+curl -s "${H[@]}" -X POST "$NC/api/v2/meta/tables/my2gc6wwrlaqlh2/columns" -d "{
+  \"title\": \"Missions\", \"column_name\": \"Missions\", \"uidt\": \"Links\",
+  \"parentId\": \"my2gc6wwrlaqlh2\", \"childId\": \"$MISSIONS\", \"type\": \"hm\"}"
+# Renommage du côté bt (créé sous le titre AZ_Clients) : GET puis PATCH du même objet
+curl -s "${H[@]}" "$NC/api/v2/meta/columns/c0ssvug1u82vv5d" | jq -c '.title="Client"' \
+ | curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/columns/c0ssvug1u82vv5d" -d @-
+```
+
+Réponses : `msg` null x 2. GET de contrôle : `AZ_Clients.Missions` = `cknsvqw43wnlc3j` (hm vers `AZ_Missions`), `AZ_Missions.Client` = `c0ssvug1u82vv5d` (bt, clé `nc_muxb___AZ_Clients_id`).
+
+Retour arrière : renommage, même PATCH avec `.title="AZ_Clients"` ; lien, `curl -s "${H[@]}" -X DELETE "$NC/api/v2/meta/columns/$LINK_MISSIONS"`.
+
+### 11d- Étape 3 : 3 formules d'aide
+
+Écart avec le §3 : `{Statut} = "Terminée"` et `{Statut} = "En cours"` sont refusés par la version `2026.09.0` (`ERR_INTERNAL_SERVER`, « Failed to update column », aucune colonne créée). La comparaison `==` passe. Commandes réellement jouées :
+
+```bash
+for f in \
+  '{"title":"MontantFacturé","column_name":"MontantFacture","uidt":"Formula","formula_raw":"IF({Facturé}, {Montant}, 0)"}' \
+  '{"title":"MontantResteAFacturer","column_name":"MontantResteAFacturer","uidt":"Formula","formula_raw":"IF({Facturé}, 0, IF({Statut} == \"Terminée\", {Montant}, 0))"}' \
+  '{"title":"MontantEnCours","column_name":"MontantEnCours","uidt":"Formula","formula_raw":"IF({Statut} == \"En cours\", {Montant}, 0)"}'
+do curl -s "${H[@]}" -X POST "$NC/api/v2/meta/tables/$MISSIONS/columns" -d "$f" | jq -c '{msg}'; done
+```
+
+Identifiants : `MontantFacturé` `cvii7a8kdlbt70k`, `MontantResteAFacturer` `cyipm3exp1ft7fw`, `MontantEnCours` `c9ayyvivscbtlsn`. Valeurs contrôlées sur les 7 missions (11f).
+
+Retour arrière : `curl -s "${H[@]}" -X DELETE "$NC/api/v2/meta/columns/<id>"` par formule (après les Rollups qui en dépendent).
+
+### 11e- Étape 4 : `Entreprise` + 3 cumuls sur `AZ_Clients`
+
+Commandes du §4 à l'identique (Entreprise, PATCH des 5 clients, 3 Rollups `sum`). Réponses : `msg` null, PATCH `[{"Id":1},...,{"Id":5}]`. **Rollup sur Formula accepté** : plan B non nécessaire.
+
+| Colonne | Id | Source |
+|---|---|---|
+| `Entreprise` | SingleLineText | Cabinet Legrand, TechFlow SAS, Studio Zenith, MarketPro, Atelier Nord |
+| `CAFacturé` | `cil1jihu64kkvcd` | sum `MontantFacturé` |
+| `ResteAFacturer` | `cfr1djxjg3ont4p` | sum `MontantResteAFacturer` |
+| `MontantEnCours` | `cf7xqe8zfywzcwg` | sum `MontantEnCours` |
+
+Valeur d'avant de `Entreprise` : colonne inexistante. Retour arrière : `DELETE $NC/api/v2/meta/columns/<id>` par colonne (Rollups d'abord).
+
+### 11f- Étape 5 : 7 missions + liens
+
+Commandes du §5 à l'identique. Réponses : `[{"Id":1},...,{"Id":7}]` dans l'ordre, puis `true` x 5 pour les liens.
+
+Contrôle final (GET `AZ_Clients`), conforme à `exemples.md` :
+
+| Client | Missions | CAFacturé | ResteAFacturer | MontantEnCours |
+|---|---|---|---|---|
+| Alice Martin | 3 | 3000 | 0 | 450 |
+| Bob Durand | 1 | 80000 | 0 | 0 |
+| Chloe Dubois | 1 | 0 | 0 | 1200 |
+| Emma Petit | 1 | 0 | 3200 | 0 |
+| Fabien Roux | 1 | 0 | 0 | 0 |
+
+Retour arrière : les 5 appels de lien avec `-X DELETE`, puis `curl -s "${H[@]}" -X DELETE "$NC/api/v2/tables/$MISSIONS/records" -d '[{"Id":1},{"Id":2},{"Id":3},{"Id":4},{"Id":5},{"Id":6},{"Id":7}]'`.
+
+### 11g- Formulaire public `Nouvelle mission` (vue `vw8ry33iwqmjl3fx`)
+
+```bash
+V=$(curl -s "${H[@]}" -X POST "$NC/api/v2/meta/tables/$MISSIONS/forms" -d '{"title":"Nouvelle mission"}' | jq -r .id)
+# Colonnes du formulaire : GET $NC/api/v2/meta/forms/$V -> .columns[] (id, fk_column_id)
+# Visibles : Mission* (cgsye4j64lhoj82) 1, Client* (c0ssvug1u82vv5d) 2, Statut* (c784up19q2ujsum) 3,
+#            Montant* (ci5g0klq8w0wyqk) 4, DateFin (cldchl4e38aqmkc) 5, Facturé (cqg0kir7c2vel9f) 6
+curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/form-columns/<id>" -d '{"show":true,"required":true,"order":1}'
+# Toutes les autres (NotesMigration, 3 formules, clé étrangère, champs système) :
+curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/form-columns/<id>" -d '{"show":false,"required":false,"order":100}'
+curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/forms/$V" -d '{"success_msg":"Mission enregistrée. Elle apparaît déjà dans le CA de ton client."}'
+curl -s "${H[@]}" -X POST "$NC/api/v2/meta/views/$V/share" | jq -r .uuid
+```
+
+Réponses : `1` par colonne de formulaire, `msg` null pour le message, uuid `83e067cf-0f2d-44e5-a645-04aa6906203c`. GET de contrôle : 6 champs visibles dans l'ordre, 4 requis, message conforme. `GET $NC/api/v2/public/shared-view/<uuid>/meta` sans jeton : HTTP 200, titre `Nouvelle mission`. Aucune soumission de test.
+
+URL publique : https://sb-nocodb.coolify.salescloser.fr/#/nc/form/83e067cf-0f2d-44e5-a645-04aa6906203c
+
+Retour arrière : `curl -s "${H[@]}" -X DELETE "$NC/api/v2/meta/views/$V/share"` puis `-X DELETE "$NC/api/v2/meta/forms/$V"`.
+
+### 11h- Vue `SC_Prospects` renommée `Tous les prospects`
+
+```bash
+curl -s "${H[@]}" -X PATCH "$NC/api/v2/meta/views/vwmtdlh65wxy96ad" -d '{"title":"Tous les prospects"}'
+```
+
+Réponse : `title` = `Tous les prospects`. GET de contrôle conforme (le message du formulaire `Ajouter un prospect` cite désormais une vue existante). Valeur d'avant : `SC_Prospects`. Retour arrière : même PATCH avec `{"title":"SC_Prospects"}`.
+
+### 11i- Reste à faire dans l'interface NocoDB
+
+-> Vues `AZ_Missions` du §9 : `Toutes les missions`, `À facturer` (partage lecture seule), `À vérifier (migration)`, `Par statut` (Kanban), `Échéances` (Calendar)
+
+-> Vue `CA par client` sur `AZ_Clients` (tri `CAFacturé` décroissant, partage lecture seule) ; masquer les 3 formules d'aide dans la grille `AZ_Missions`
+
+-> Formulaire `Nouvelle mission` : le champ `Client` (requis) montre la liste des 5 clients au visiteur, c'est voulu (démonstration) ; si tu préfères, basculer l'affichage en recherche
+
+-> Une soumission de test en navigation privée, puis supprimer la ligne de test
+
+-> `NbMissions` facultatif : la colonne `Missions` affiche déjà le nombre

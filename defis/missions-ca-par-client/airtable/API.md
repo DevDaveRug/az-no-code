@@ -92,3 +92,78 @@ curl -s "${H[@]}" -X POST "$AT/$BASE/AZ_Portfolio" -d @/tmp/az_portfolio_row.jso
 Retour arrière : `curl -s "${H[@]}" -X DELETE "$AT/$BASE/AZ_Portfolio/<recId>"`
 
 Quand le formulaire est créé et le déploiement Vercel vérifié : PATCH `Statut` = `Livré`, `Lien_Airtable_Demo` = URL du formulaire, `Lien_NocoDB_Demo` = URL du formulaire NocoDB `Nouvelle mission`.
+
+## 7- Exécution du 29/09/2026
+
+Session fille S163z (P1 défi 5). Jeton `AIRTABLE_PAT` présent, jamais affiché. Lecture de la méta et des enregistrements avant chaque écriture, GET de contrôle après. `typecast` false partout. Rien supprimé.
+
+```bash
+AT=https://api.airtable.com/v0
+BASE=appTqLo3JDg7d1fak
+H=(-H "Authorization: Bearer $AIRTABLE_PAT" -H "Content-Type: application/json")
+CLIENTS=tblVV9R3CVy1bpnAt
+MISSIONS=tblPIwGAVNi8GzjYj
+```
+
+### 7a- Étape 1 : table `AZ_Missions`
+
+Commande de l'étape 1 à l'identique. Réponse : `tblPIwGAVNi8GzjYj`, 6 champs (`Mission` fld0c7Ncz7tIOT3mX, `Statut` fld7lorJWJlfVh6Xk, `Montant` fldVqWPmasqYKOxwD, `DateFin` fld4ocuUNPTHFqKwX, `Facturé` fld9Gt9mlFvxnWivM, `NotesMigration` fldSPepsl1NVJeNMe).
+
+Retour arrière : UI uniquement (clic droit sur l'onglet > Supprimer la table).
+
+### 7b- Étape 2 : lien `Client`, symétrique `Missions`, champ `Entreprise`
+
+Écart avec l'étape 2 : `prefersSingleRecordLink` est refusé à la création (`INVALID_FIELD_TYPE_OPTIONS_FOR_CREATE`, rien créé). Commandes réellement jouées :
+
+```bash
+curl -s "${H[@]}" -X POST "$AT/meta/bases/$BASE/tables/$MISSIONS/fields" \
+  -d "{\"name\":\"Client\",\"type\":\"multipleRecordLinks\",\"options\":{\"linkedTableId\":\"$CLIENTS\"}}"
+# Symétrique créé automatiquement sous le nom AZ_Missions : renommé par l'API
+curl -s "${H[@]}" -X PATCH "$AT/meta/bases/$BASE/tables/$CLIENTS/fields/fldE5XJfeFdCb1Rna" -d '{"name":"Missions"}'
+curl -s "${H[@]}" -X POST "$AT/meta/bases/$BASE/tables/$CLIENTS/fields" -d '{"name":"Entreprise","type":"singleLineText"}'
+```
+
+Réponses : `Client` = `fldq6P1ZcDYGiMcKO` (inverse `fldE5XJfeFdCb1Rna`, `prefersSingleRecordLink` false) ; symétrique renommé `Missions` ; `Entreprise` = `fldWGOU1Z4D5xW71G`. GET de contrôle conforme (piège S135z évité : le symétrique existe).
+
+Retour arrière : renommage, même PATCH avec `{"name":"AZ_Missions"}` ; champs, suppression dans l'UI (pas de DELETE de champ par l'API).
+
+### 7c- Étape 3 : `Entreprise` des 5 clients
+
+```bash
+curl -s "${H[@]}" -X PATCH "$AT/$BASE/AZ_Clients" -d '{"typecast":false,"records":[
+ {"id":"reclHMTkBAp8foWG4","fields":{"Entreprise":"Cabinet Legrand"}},
+ {"id":"recj3Mi9MJLgkzyFI","fields":{"Entreprise":"TechFlow SAS"}},
+ {"id":"recTK1mvRM2v9xgoS","fields":{"Entreprise":"Studio Zenith"}},
+ {"id":"reco7JotPcmqoQGT8","fields":{"Entreprise":"MarketPro"}},
+ {"id":"recj6scH2tvsdszRG","fields":{"Entreprise":"Atelier Nord"}}]}'
+```
+
+Réponse : les 5 identifiants, valeurs relues conformes. Valeur d'avant : vide (champ nouveau). Retour arrière : même PATCH avec `"Entreprise":null`.
+
+### 7d- Étape 4 : 7 missions
+
+Commande de l'étape 4 à l'identique (identifiants clients ci-dessus). Réponse : `rectV6YhdBpMBojh1`, `rectqnwopXBAOyCFL`, `recFOQLy8ZMXgTYhM`, `recocmVLlka5p8Fev`, `recvM5EeMxqY5EoSH`, `recbMp39ua7X3dneg`, `recKB7lZfEo9t3uOg`. GET de contrôle : Mission, Client, Statut, Montant, DateFin, Facturé conformes ; `Missions` côté clients : Alice 3, Bob 1, Chloe 1, Emma 1, Fabien 1.
+
+Retour arrière : `curl -s "${H[@]}" -X DELETE "$AT/$BASE/AZ_Missions?records%5B%5D=rectV6YhdBpMBojh1&records%5B%5D=rectqnwopXBAOyCFL&records%5B%5D=recFOQLy8ZMXgTYhM&records%5B%5D=recocmVLlka5p8Fev&records%5B%5D=recvM5EeMxqY5EoSH&records%5B%5D=recbMp39ua7X3dneg&records%5B%5D=recKB7lZfEo9t3uOg"`
+
+### 7e- Étape 6 : ligne `AZ_Portfolio` du projet 5
+
+CSV mis à jour d'abord : `Lien_NocoDB_Demo` = https://sb-nocodb.coolify.salescloser.fr/#/nc/form/83e067cf-0f2d-44e5-a645-04aa6906203c (formulaire `Nouvelle mission`), `Preview_Vercel` = https://missions-ca-par-client.demo.salescloser.fr (avant : `https://missions-ca-par-client.vercel.app` et le lien de la base partagée). Aucune ligne `Numéro` = 5 avant écriture (`filterByFormula={Numéro}=5` vide). Commande de l'étape 6 à l'identique, lancée depuis `import-csv/`.
+
+Réponse : `recu5hyazLK3Rhf3s`. GET de contrôle : `Projet 5 - missions-ca-par-client`, Statut `En cours`, Client, AnnéeSaison, liens conformes ; nombre d'options des 3 sélections inchangé (1 / 6 / 4).
+
+Retour arrière : `curl -s "${H[@]}" -X DELETE "$AT/$BASE/AZ_Portfolio/recu5hyazLK3Rhf3s"`
+
+### 7f- `Preview_Vercel` des projets 1 à 4
+
+Trace dans `../DOMAINES-DEMO.md` (même jour, après vérification HTTPS des domaines).
+
+### 7g- Reste à faire dans l'interface Airtable
+
+-> `AZ_Missions.Client` : cocher « Autoriser un seul enregistrement » (refusé par l'API à la création)
+
+-> `AZ_Clients` : `NbMissions` (Count), `CAFacturé`, `ResteAFacturer`, `MontantEnCours` (Rollup conditionnels), voir `schema.json` > `uiOnly`
+
+-> Vues, formulaire `Nouvelle mission` et page Interface (`SPECS.md`, `INTERFACE.md`), puis `Lien_Airtable_Demo` du projet 5
+
+-> Statut du projet 5 à passer `Livré` quand le formulaire Airtable et le déploiement Vercel sont vérifiés
