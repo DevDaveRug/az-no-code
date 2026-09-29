@@ -10,7 +10,7 @@
 
 ## Ajouter la ligne AZ_Portfolio (raccourci Étape 8 du skill)
 
-`crm-souverain-portfolio-row.csv` contient une ligne unique avec 17 des 18 champs remplis (`Captures` reste vide, c'est une pièce jointe à uploader manuellement dans la ligne Airtable après import). `Lien_Airtable_Demo` pointe vers le formulaire public "Ajouter un prospect" (`page28aUl1MwHBuqv/form`) : accès direct sans authentification, préféré à l'Interface Dashboard qui exige un login. `Lien_NocoDB_Demo` vide -- à remplir quand NocoDB sera déployé (IDEE_infra_196). Preview_Vercel = URL Vercel par défaut, custom domain à basculer plus tard (backlog IDEAS_PRO).
+`crm-souverain-portfolio-row.csv` contient une ligne unique avec 17 des 18 champs remplis (`Captures` reste vide, c'est une pièce jointe à uploader manuellement dans la ligne Airtable après import). `Lien_Airtable_Demo` pointe vers le formulaire public "Ajouter un prospect" (`page28aUl1MwHBuqv/form`) : accès direct sans authentification, préféré à l'Interface Dashboard qui exige un login. `Lien_NocoDB_Demo` pointe vers le formulaire public NocoDB "Ajouter un prospect" (`https://sb-nocodb.coolify.salescloser.fr/#/nc/form/0476d0c5-1db4-4cd7-b62a-552adbdf818c`, créé S163z le 28/09/2026). Preview_Vercel = URL Vercel par défaut, custom domain à basculer plus tard (backlog IDEAS_PRO).
 
 Deux voies pour l'ajouter à `AZ_Portfolio` :
 
