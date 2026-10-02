@@ -1,6 +1,6 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.2.1
+Version : 1.2.2
 Date : 2026-10-02
 Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
@@ -90,6 +90,10 @@ Pièges constatés au montage (02/10, capture David) :
 -> « Rechercher des entrées » : la valeur de `Email` doit être le champ `EmailClientTemp` pris dans la source « Lorsqu'une entrée correspond aux conditions » (le déclencheur = ce que le contact a tapé, différent à chaque demande). Jamais la source « Tableaux et champs de cette base » (affichée « Métadonnées de la base ») : elle insère l'identifiant du champ (`ID de champ fldC79MKlH9j7gVD7`), un texte fixe ; la recherche ne trouverait jamais personne et chaque demande créerait un doublon de contact. Contrôle : au test de l'étape, la condition affiche une vraie adresse e-mail, pas `fld...`
 
 -> « Limite maximale d'entrées » : 1 (une demande se relie à un seul contact)
+
+-> Valeur tapée au clavier : si le résumé de l'étape affiche `Lorsque Email est "EmailClientTemp"` (entre guillemets), le mot a été tapé comme du texte ; la recherche porte alors sur le mot « EmailClientTemp » et ne trouve jamais personne. Une valeur dynamique s'insère uniquement par le « + » et apparaît comme une étiquette colorée
+
+-> Sélecteur « Utiliser les données de... » : colonne de gauche = la source, colonne de droite = le champ. Pour tout ce que le contact a tapé (prénom, nom, e-mail, téléphone) et pour l'ID de la demande : source « Lorsqu'une entrée correspond aux conditions ». Pour le contact trouvé : source « Rechercher des entrées ». Pour le contact créé : source « Créer une entrée ». Jamais « Structure de la base » (liste les tables et leurs identifiants, pas les données). `Statut` et `Source` se choisissent directement dans leur liste, sans « + »
 
 -> 2e branche du groupe : « + Ajouter une condition » crée un « Otherwise if » qui demande une condition. Condition à mettre : `Records` (de « Rechercher des entrées ») -> `length` -> `=` -> `0`. Elle couvre exactement le cas « aucun contact trouvé »
 
@@ -187,6 +191,8 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.2.2 -- 2026-10-02 (S163z-ccweb) : pièges « valeur tapée entre guillemets » et « source du sélecteur » (déclencheur, Rechercher, Créer ; jamais Structure de la base).
 
 -> 1.2.1 -- 2026-10-02 (S163z-ccweb) : piège « source de la valeur » détaillé (déclencheur vs « Tableaux et champs de cette base » qui insère l'ID du champ), limite de recherche à 1.
 
