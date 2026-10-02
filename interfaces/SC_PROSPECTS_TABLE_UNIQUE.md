@@ -1,6 +1,6 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.2.0
+Version : 1.2.1
 Date : 2026-10-02
 Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
@@ -87,7 +87,9 @@ Automations -> + Créer une automatisation, nom « Demande urgente : rattacher l
 
 Pièges constatés au montage (02/10, capture David) :
 
--> « Rechercher des entrées » : la valeur de `Email` doit être le champ `EmailClientTemp` de l'étape « Lorsqu'une entrée correspond aux conditions », jamais « Métadonnées de la base »
+-> « Rechercher des entrées » : la valeur de `Email` doit être le champ `EmailClientTemp` pris dans la source « Lorsqu'une entrée correspond aux conditions » (le déclencheur = ce que le contact a tapé, différent à chaque demande). Jamais la source « Tableaux et champs de cette base » (affichée « Métadonnées de la base ») : elle insère l'identifiant du champ (`ID de champ fldC79MKlH9j7gVD7`), un texte fixe ; la recherche ne trouverait jamais personne et chaque demande créerait un doublon de contact. Contrôle : au test de l'étape, la condition affiche une vraie adresse e-mail, pas `fld...`
+
+-> « Limite maximale d'entrées » : 1 (une demande se relie à un seul contact)
 
 -> 2e branche du groupe : « + Ajouter une condition » crée un « Otherwise if » qui demande une condition. Condition à mettre : `Records` (de « Rechercher des entrées ») -> `length` -> `=` -> `0`. Elle couvre exactement le cas « aucun contact trouvé »
 
@@ -185,6 +187,8 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.2.1 -- 2026-10-02 (S163z-ccweb) : piège « source de la valeur » détaillé (déclencheur vs « Tableaux et champs de cette base » qui insère l'ID du champ), limite de recherche à 1.
 
 -> 1.2.0 -- 2026-10-02 (S163z-ccweb) : automatisation du projet 4, pièges constatés au montage (valeur de recherche, 2e branche `length = 0`, triangle rouge du déclencheur) et procédure de test en 7 temps ; renommage `Contact` validé par David pour S170z.
 
