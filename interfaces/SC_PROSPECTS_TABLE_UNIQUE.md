@@ -1,7 +1,7 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.1.0
-Date : 2026-10-01
+Version : 1.2.0
+Date : 2026-10-02
 Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
 
@@ -19,7 +19,7 @@ Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ
 
 ## Vocabulaire et lien « Ajouter un contact »
 
--> Libellé visible `Contact` dans les formulaires (neutre : prospect ou client). Le renommage des champs liens `Prospect` en `Contact` et de la table `SC_Prospects` en `SC_Contacts` attend la Val de David (impact à vérifier sur n8n, docs et code avant de renommer la table).
+-> Libellé visible `Contact` dans les formulaires (neutre : prospect ou client). Renommage des champs liens `Prospect` en `Contact` et de la table `SC_Prospects` en `SC_Contacts` : Val David le 02/10, exécution en S170z après inventaire des références (n8n, docs, code).
 
 -> Lien cliquable « Ajouter un contact » sur chaque formulaire rempli par quelqu'un de la société :
 
@@ -85,9 +85,29 @@ Automations -> + Créer une automatisation, nom « Demande urgente : rattacher l
 
    -> Sinon (Otherwise) -> action « Créer un enregistrement » (Create record) : table `SC_Prospects`, `Prénom` = `PrenomClientTemp`, `Nom` = `NomClientTemp`, `Email` = `EmailClientTemp`, `Téléphone` = `TelephoneClientTemp`, `Statut` = `Nouveau`, `Source` = `Site`. Puis action « Mettre à jour l'enregistrement » : table `AZ_Demandes`, ID = `Airtable record ID` du déclencheur, champ `Prospect` = `Airtable record ID` de l'enregistrement créé juste avant.
 
-4- Tester chaque étape (Test step) avec une demande d'exemple, puis activer l'automatisation.
+Pièges constatés au montage (02/10, capture David) :
 
-5- Contrôle : soumettre le formulaire 2 fois, une fois avec l'e-mail d'un contact existant (la demande se relie à lui, aucun doublon), une fois avec un nouvel e-mail (une fiche contact apparaît dans `SC_Prospects`). Supprimer ensuite les 2 demandes de test et la fiche de test.
+-> « Rechercher des entrées » : la valeur de `Email` doit être le champ `EmailClientTemp` de l'étape « Lorsqu'une entrée correspond aux conditions », jamais « Métadonnées de la base »
+
+-> 2e branche du groupe : « + Ajouter une condition » crée un « Otherwise if » qui demande une condition. Condition à mettre : `Records` (de « Rechercher des entrées ») -> `length` -> `=` -> `0`. Elle couvre exactement le cas « aucun contact trouvé »
+
+-> Triangle rouge sur le déclencheur : normal tant qu'aucune demande ne remplit les conditions (les 10 demandes existantes ont déjà leur contact, vérifié par API le 02/10). Il disparaît après le 1er test avec une demande soumise par le formulaire
+
+4- Test, dans cet ordre :
+
+   a- Soumettre le formulaire public avec un contact fictif nouveau (ex. prénom Test, nom Rattachement, e-mail `test.rattachement@exemple.fr`).
+
+   b- Dans l'éditeur : « Tester le déclencheur » -> choisir cette demande ; puis tester « Rechercher des entrées » (résultat attendu : 0 entrée) ; puis tester les actions de la branche `length = 0`. Attention : un test d'action est réel, il crée la fiche contact et pose le lien.
+
+   c- Vérifier : la demande a son `Prospect`, la fiche existe dans `SC_Prospects` (Statut Nouveau, Source Site).
+
+   d- Activer l'automatisation (interrupteur en haut).
+
+   e- Soumettre à nouveau le formulaire avec le même e-mail : en moins d'une minute, la 2e demande est reliée à la même fiche, aucune nouvelle fiche (branche `length ≠ 0`).
+
+   f- Historique des exécutions (Run history) : 2 exécutions vertes.
+
+   g- Nettoyage : CC vérifie par API puis supprime les demandes et la fiche de test sur le Go de David.
 
 Si le groupe conditionnel n'est pas proposé par ton offre Airtable, le dire à CC : le rattachement passe alors par n8n (même logique que NocoDB).
 
@@ -165,6 +185,8 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.2.0 -- 2026-10-02 (S163z-ccweb) : automatisation du projet 4, pièges constatés au montage (valeur de recherche, 2e branche `length = 0`, triangle rouge du déclencheur) et procédure de test en 7 temps ; renommage `Contact` validé par David pour S170z.
 
 -> 1.1.0 -- 2026-10-01 (S163z-ccweb) : vocabulaire `Contact` (renommage en attente de Val), lien « Ajouter un contact » par format, automatisation du projet 4 à créer pas à pas (aucune n'existait), champ `PrenomClientTemp` créé (Airtable + NocoDB), description des 2 formulaires NocoDB internes.
 
