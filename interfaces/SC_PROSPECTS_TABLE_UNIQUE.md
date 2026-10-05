@@ -1,7 +1,7 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.2.2
-Date : 2026-10-02
+Version : 1.3.1
+Date : 2026-10-05
 Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
 
@@ -123,18 +123,20 @@ Même automatisation, à l'identique, pour l'inscription masterclass (`AZ_Inscri
 
 | Champ | Type | Réglage |
 |---|---|---|
-| `NbMissions` | Comptage (Count) | champ lié `Missions` |
+| `Nb Missions` | Quantité (Count ; libellé « Quantité » dans l'interface française) | champ lié `Missions` |
 | `CA facturé` | Cumul (Rollup) | `Missions` -> `Montant`, `SUM(values)`, condition : `Facturé` coché |
 | `Reste à facturer` | Cumul | `Missions` -> `Montant`, `SUM(values)`, conditions : `Statut` = `Terminée` ET `Facturé` non coché |
 | `En cours` | Cumul | `Missions` -> `Montant`, `SUM(values)`, condition : `Statut` = `En cours` |
 
 Les conditions se règlent par « N'inclure que les enregistrements liés qui remplissent certaines conditions ». Format devise, euro.
 
+Fait par David le 05/10, vérifié par API : Alice 3 / 3000 / 0 / 450, Bob 1 / 80000 / 0 / 0, Chloé 1 / 0 / 0 / 1200, Emma 1 / 0 / 3200 / 0, Fabien 1 / 0 / 0 / 0.
+
 ### 6- Vues partagées en lecture seule (colonne `Lien_Airtable_Base`)
 
 Dupliquer la vue de travail, masquer dans la copie `Email`, `Téléphone` et `Notes`, puis Partager la vue -> Créer un lien :
 
--> Projet 5 : `SC_Prospects`, vue « Clients et CA », filtre `Statut` = `Gagne`, colonnes `Missions` + les 4 cumuls
+-> Projet 5 : `SC_Prospects`, vue « Clients et CA », filtre `Statut` = `Gagne`, tri `CA facturé` décroissant. Colonnes visibles : `NOM Complet`, `Missions`, `Nb Missions`, `CA facturé`, `Reste à facturer`, `En cours` ; tout le reste masqué (`Email`, `Téléphone`, `Date entree`, `Notes`, `Montant potentiel`, `Projets_liés`...)
 
 -> Projet 1 : `SC_Prospects`, vue « Prospects »
 
@@ -148,13 +150,53 @@ Envoyer les 5 liens à CC : il les reporte dans `AZ_Portfolio` et dans les messa
 
 ### 7- Suppressions (seulement après 1 à 4)
 
-1- `AZ_Missions` : supprimer le champ `Client`.
+Principe : d'abord tout ce qui **lit** l'ancien lien (vues, automatisations, interfaces) passe sur `Prospect`, ensuite seulement on supprime. Airtable ne recalcule pas une vue groupée sur un champ supprimé : elle perd son regroupement.
 
-2- `AZ_Demandes` : supprimer `Nom (from AZ_Clients)`, puis `AZ_Clients`. Si la vue « Par client » était regroupée sur `AZ_Clients`, la regrouper sur `Prospect`.
+1- Vue « Par client » de `AZ_Demandes` : « Groupé selon 1 champ » -> remplacer `AZ_Clients` par `Prospect`. Contrôle : 5 groupes de 3 / 2 / 2 / 2 / 1 demandes (Alice, Bob, Chloé, Emma, Fabien), plus un groupe vide pour une éventuelle demande de test non rattachée. (Fait par David le 05/10.)
 
-3- Table `AZ_Clients` : clic droit sur l'onglet -> Supprimer la table.
+2- Automatisations et interfaces : vérifier qu'aucune ne lit `AZ_Clients` (voir « Consulter une automatisation active » ci-dessous). Au 05/10, les 4 automatisations portent sur `SC_Prospects`, `SC_CRs_de_RDV`, `AZ_Inscrits` et `AZ_Demandes` -> `SC_Prospects` (rattachement, en cours de montage) : aucune ne vise `AZ_Clients` d'après leur titre, à confirmer en les ouvrant.
 
-Vérifié par API le 01/10 : les 7 missions et les 10 demandes ont déjà leur lien `Prospect`, rien ne se perd. Retour arrière : corbeille de la base (Trash) pour restaurer un champ ou une table supprimés ; données d'origine aussi dans `defis/demandes-clients-urgentes/import-csv/clients.csv`.
+3- `AZ_Demandes` : supprimer le champ `AZ_Clients` (le lookup `Nom (from AZ_Clients)` n'existe déjà plus au 05/10).
+
+4- `AZ_Missions` : supprimer le champ `Client` (lien vide vers `SC_Prospects`, doublon de `Prospect` ; supprime aussi le champ vide `AZ_Missions` de `SC_Prospects`).
+
+5- Table `AZ_Clients` : clic droit sur l'onglet -> Supprimer la table.
+
+6- `SC_Prospects` : supprimer le champ texte `AZ_Missions`, reste vide de l'étape 4 (Airtable convertit en texte le symétrique d'un lien supprimé).
+
+État au 05/10 (API) : étapes 1, 3, 4, 5 faites par David ; reste l'étape 6.
+
+Vérifié par API le 05/10 : les 7 missions et les 10 demandes d'origine ont leur lien `Prospect`, rien ne se perd. Retour arrière : corbeille de la base (Trash) pour restaurer un champ ou une table supprimés ; données d'origine aussi dans `defis/demandes-clients-urgentes/import-csv/clients.csv`.
+
+#### Consulter une automatisation active
+
+Une automatisation **activée** est verrouillée : le curseur « sens interdit » apparaît sur ses étapes, on ne peut pas les modifier. Deux façons de lire sa configuration :
+
+-> Sans rien couper : bouton « Historique » -> une exécution -> chaque étape affiche sa table, ses conditions et les valeurs utilisées. Suffit pour savoir quelle table est lue.
+
+-> Pour modifier : interrupteur « Activée » -> désactivé, faire la modification, « Tester l'automatisation », puis réactiver aussitôt. Pendant la coupure, rien ne se déclenche (ex. pas d'e-mail de confirmation pour une inscription arrivée entre-temps) : choisir un moment calme, ne jamais quitter la page en laissant l'automatisation coupée.
+
+-> Au moment de supprimer un champ, Airtable prévient si une automatisation ou une interface l'utilise : lire l'avertissement avant de confirmer.
+
+#### Correction des données `AZ_Demandes` (API, 05/10/2026, Cor David)
+
+`NomClientTemp` contenait « Prénom Nom ». Prénom déplacé dans `PrenomClientTemp`, nom seul gardé dans `NomClientTemp`, sur les 10 demandes d'origine, Airtable et NocoDB (miroir). La demande de test (`Test` / `Rattachement`) était déjà conforme, non modifiée.
+
+```bash
+# Airtable : lecture, découpage au 1er espace, PATCH (typecast false)
+curl -s "${AH[@]}" "$AT/$AB/AZ_Demandes" | jq -c '{typecast:false, records:[.records[]
+  | select(.fields.NomClientTemp and (.fields.PrenomClientTemp|not) and (.fields.NomClientTemp|test(" ")))
+  | (.fields.NomClientTemp|split(" ")) as $s
+  | {id, fields:{PrenomClientTemp:$s[0], NomClientTemp:($s[1:]|join(" "))}}]}' \
+  | curl -s "${AH[@]}" -X PATCH "$AT/$AB/AZ_Demandes" -d @-
+# NocoDB : même découpage sur mka0odea97qenk1
+curl -s "${H[@]}" "$NC/api/v2/tables/mka0odea97qenk1/records?limit=50" | jq -c '[.list[]
+  | select(.NomClientTemp and (.PrenomClientTemp|not) and (.NomClientTemp|test(" ")))
+  | (.NomClientTemp|split(" ")) as $s | {Id, PrenomClientTemp:$s[0], NomClientTemp:($s[1:]|join(" "))}]' \
+  | curl -s "${H[@]}" -X PATCH "$NC/api/v2/tables/mka0odea97qenk1/records" -d @-
+```
+
+Réponses : 10 enregistrements Airtable, `[{"Id":1},...,{"Id":10}]` NocoDB. GET de contrôle : Alice/Martin, Bob/Durand, Chloe/Dubois, Emma/Petit, Fabien/Roux, liens `Prospect` inchangés. Retour arrière : PATCH `NomClientTemp` = « Prénom Nom », `PrenomClientTemp` = null sur les mêmes enregistrements. Le CSV d'import historique `defis/demandes-clients-urgentes/import-csv/demandes.csv` garde l'ancien format (source de la migration, non modifié).
 
 ## II- NocoDB
 
@@ -191,6 +233,10 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.3.1 -- 2026-10-05 (S163z-ccweb) : « Quantité » (libellé français du Count) ; colonnes visibles de la vue « Clients et CA » ; cumuls vérifiés ; étape 6 (champ texte `AZ_Missions` résiduel dans `SC_Prospects`) ; état des suppressions.
+
+-> 1.3.0 -- 2026-10-05 (S163z-ccweb) : §7 réordonné (regrouper la vue « Par client » sur `Prospect` et vérifier automatisations et interfaces avant toute suppression ; lookup `Nom (from AZ_Clients)` déjà absent) ; consultation d'une automatisation active ; prénom et nom séparés dans `AZ_Demandes` (Airtable + NocoDB, API, trace).
 
 -> 1.2.2 -- 2026-10-02 (S163z-ccweb) : pièges « valeur tapée entre guillemets » et « source du sélecteur » (déclencheur, Rechercher, Créer ; jamais Structure de la base).
 
