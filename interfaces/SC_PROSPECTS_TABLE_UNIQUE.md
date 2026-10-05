@@ -1,6 +1,6 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.3.0
+Version : 1.3.1
 Date : 2026-10-05
 Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
@@ -123,18 +123,20 @@ Même automatisation, à l'identique, pour l'inscription masterclass (`AZ_Inscri
 
 | Champ | Type | Réglage |
 |---|---|---|
-| `NbMissions` | Comptage (Count) | champ lié `Missions` |
+| `Nb Missions` | Quantité (Count ; libellé « Quantité » dans l'interface française) | champ lié `Missions` |
 | `CA facturé` | Cumul (Rollup) | `Missions` -> `Montant`, `SUM(values)`, condition : `Facturé` coché |
 | `Reste à facturer` | Cumul | `Missions` -> `Montant`, `SUM(values)`, conditions : `Statut` = `Terminée` ET `Facturé` non coché |
 | `En cours` | Cumul | `Missions` -> `Montant`, `SUM(values)`, condition : `Statut` = `En cours` |
 
 Les conditions se règlent par « N'inclure que les enregistrements liés qui remplissent certaines conditions ». Format devise, euro.
 
+Fait par David le 05/10, vérifié par API : Alice 3 / 3000 / 0 / 450, Bob 1 / 80000 / 0 / 0, Chloé 1 / 0 / 0 / 1200, Emma 1 / 0 / 3200 / 0, Fabien 1 / 0 / 0 / 0.
+
 ### 6- Vues partagées en lecture seule (colonne `Lien_Airtable_Base`)
 
 Dupliquer la vue de travail, masquer dans la copie `Email`, `Téléphone` et `Notes`, puis Partager la vue -> Créer un lien :
 
--> Projet 5 : `SC_Prospects`, vue « Clients et CA », filtre `Statut` = `Gagne`, colonnes `Missions` + les 4 cumuls
+-> Projet 5 : `SC_Prospects`, vue « Clients et CA », filtre `Statut` = `Gagne`, tri `CA facturé` décroissant. Colonnes visibles : `NOM Complet`, `Missions`, `Nb Missions`, `CA facturé`, `Reste à facturer`, `En cours` ; tout le reste masqué (`Email`, `Téléphone`, `Date entree`, `Notes`, `Montant potentiel`, `Projets_liés`...)
 
 -> Projet 1 : `SC_Prospects`, vue « Prospects »
 
@@ -159,6 +161,10 @@ Principe : d'abord tout ce qui **lit** l'ancien lien (vues, automatisations, int
 4- `AZ_Missions` : supprimer le champ `Client` (lien vide vers `SC_Prospects`, doublon de `Prospect` ; supprime aussi le champ vide `AZ_Missions` de `SC_Prospects`).
 
 5- Table `AZ_Clients` : clic droit sur l'onglet -> Supprimer la table.
+
+6- `SC_Prospects` : supprimer le champ texte `AZ_Missions`, reste vide de l'étape 4 (Airtable convertit en texte le symétrique d'un lien supprimé).
+
+État au 05/10 (API) : étapes 1, 3, 4, 5 faites par David ; reste l'étape 6.
 
 Vérifié par API le 05/10 : les 7 missions et les 10 demandes d'origine ont leur lien `Prospect`, rien ne se perd. Retour arrière : corbeille de la base (Trash) pour restaurer un champ ou une table supprimés ; données d'origine aussi dans `defis/demandes-clients-urgentes/import-csv/clients.csv`.
 
@@ -227,6 +233,8 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.3.1 -- 2026-10-05 (S163z-ccweb) : « Quantité » (libellé français du Count) ; colonnes visibles de la vue « Clients et CA » ; cumuls vérifiés ; étape 6 (champ texte `AZ_Missions` résiduel dans `SC_Prospects`) ; état des suppressions.
 
 -> 1.3.0 -- 2026-10-05 (S163z-ccweb) : §7 réordonné (regrouper la vue « Par client » sur `Prospect` et vérifier automatisations et interfaces avant toute suppression ; lookup `Nom (from AZ_Clients)` déjà absent) ; consultation d'une automatisation active ; prénom et nom séparés dans `AZ_Demandes` (Airtable + NocoDB, API, trace).
 
