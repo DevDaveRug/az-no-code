@@ -10,7 +10,7 @@
 
 ## Ajouter la ligne AZ_Portfolio (raccourci Étape 8 du skill)
 
-`masterclass-inscriptions-portfolio-row.csv` contient une ligne unique avec 17 des 18 champs remplis (`Captures` reste vide, à uploader manuellement). `Lien_Airtable_Demo` pointe vers le formulaire public "Ajouter un inscrit à la masterclass" (`pagI3FYwUrzpkz2MO/form`) : accès direct sans authentification (préféré au partage Interface Dashboard bloqué par le forfait non-Team). `Lien_NocoDB_Demo` vide -- à remplir quand NocoDB sera déployé (IDEE_infra_196). Preview_Vercel = URL Vercel par défaut, custom domain à basculer plus tard (backlog IDEAS_PRO).
+`masterclass-inscriptions-portfolio-row.csv` contient une ligne unique avec 17 des 18 champs remplis (`Captures` reste vide, à uploader manuellement). `Lien_Airtable_Demo` pointe vers le formulaire public "Ajouter un inscrit à la masterclass" (`pagI3FYwUrzpkz2MO/form`) : accès direct sans authentification (préféré au partage Interface Dashboard bloqué par le forfait non-Team). `Lien_NocoDB_Demo` pointe vers le formulaire public NocoDB "Inscription masterclass" (`https://sb-nocodb.coolify.salescloser.fr/#/nc/form/e3eb2619-338b-4451-9c9e-57cd07ed13e8`, créé S163z le 28/09/2026). Preview_Vercel = URL Vercel par défaut, custom domain à basculer plus tard (backlog IDEAS_PRO).
 
 Deux voies pour l'ajouter à `AZ_Portfolio` :
 
