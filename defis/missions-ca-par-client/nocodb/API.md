@@ -544,4 +544,4 @@ Constats :
 
 -> Champs masqués et valeurs par défaut : conformes sur les 3 formulaires.
 
--> Le message après envoi de « Inscription masterclass » annonce un e-mail de confirmation, mais aucun webhook NocoDB n'existe sur `AZ_Inscrits` : l'e-mail ne part pas depuis NocoDB.
+-> E-mail de confirmation à faire : le message après inscription annonce un e-mail, mais NocoDB ne l'envoie pas (aucun webhook sur `AZ_Inscrits`).
