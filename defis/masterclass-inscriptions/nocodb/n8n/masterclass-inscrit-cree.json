@@ -1,0 +1,216 @@
+{
+  "name": "AZ_Masterclass_inscrit_cree",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "masterclass-inscrit-cree",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "Webhook NocoDB",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "masterclass-inscrit-cree",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_WEBHOOK_SECRET__",
+          "name": "NocoDB webhook secret (masterclass)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Contrôle et nettoyage : le formulaire public n'impose pas les champs requis côté serveur.\nconst rows = ($json.body && $json.body.data && $json.body.data.rows) || [];\nconst store = $getWorkflowStaticData('global');\nconst now = Date.now();\nstore.sent = (store.sent || []).filter(t => now - t < 3600 * 1000);\nconst LIMITE_HEURE = 30;\nconst out = [];\nfor (const r of rows) {\n  const email = String(r.Email || '').trim().toLowerCase();\n  const emailOk = /^[^\\s@]+@[^\\s@]+\\.[a-z]{2,}$/.test(email) && email.length <= 120\n    && !/\\.(example|test|invalid|localhost)$/.test(email);\n  // Prénom : lettres, espace, tiret, apostrophe ; 3 mots et 40 caractères au plus (pas de lien ni de phrase)\n  let prenom = String(r.Prenom || '')\n    .replace(/<[^>]*>/g, ' ')\n    .replace(/(https?:\\/\\/|www\\.)\\S*/gi, ' ')\n    .replace(/[^\\p{L}' -]/gu, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .split(' ').slice(0, 3).join(' ')\n    .slice(0, 40)\n    .trim();\n  if (!prenom) prenom = 'à toi';\n  const m = /^(\\d{4})-(\\d{2})-(\\d{2})/.exec(String(r.DateMasterclass || ''));\n  const dateFr = m ? `${m[3]}/${m[2]}/${m[1]}` : '';\n  let motif = '';\n  if (!emailOk) motif = 'email invalide';\n  else if (!dateFr) motif = 'date absente';\n  else if (store.sent.length >= LIMITE_HEURE) motif = 'limite horaire atteinte';\n  if (!motif) store.sent.push(now);\n  out.push({ json: { Id: r.Id, email, prenom, dateFr, envoyer: !motif, motif } });\n}\nreturn out;\n"
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "Contrôle et nettoyage",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.envoyer }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "Envoi autorisé ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "David Ruggieri <david@salescloser.fr>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "=Ta place pour la masterclass du {{ $json.dateFr }} est confirmée",
+        "emailFormat": "text",
+        "text": "=Salut {{ $json.prenom }},\n\nTa place pour la masterclass du {{ $json.dateFr }} est confirmée.\n\nJe t'envoie le lien de connexion + le programme détaillé quelques jours avant.\n\nSi tu as la moindre question d'ici là, réponds simplement à cet email.\n\nÀ très vite,\nDavid",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "name": "E-mail de confirmation",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        -100
+      ],
+      "onError": "continueErrorOutput",
+      "credentials": {
+        "smtp": {
+          "id": "__CRED_SMTP__",
+          "name": "SMTP IONOS - david@salescloser.fr"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://sb-nocodb.coolify.salescloser.fr/api/v2/tables/ml25u20dkb9gfxm/records",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ Id: $('Contrôle et nettoyage').item.json.Id, StatutEmail: 'Envoye' }]) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000005",
+      "name": "StatutEmail = Envoye",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        -180
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_NOCODB__",
+          "name": "NocoDB xc-token (sb)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://sb-nocodb.coolify.salescloser.fr/api/v2/tables/ml25u20dkb9gfxm/records",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify([{ Id: $('Contrôle et nettoyage').item.json.Id, StatutEmail: 'Erreur' }]) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000006",
+      "name": "StatutEmail = Erreur",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_NOCODB__",
+          "name": "NocoDB xc-token (sb)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook NocoDB": {
+      "main": [
+        [
+          {
+            "node": "Contrôle et nettoyage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contrôle et nettoyage": {
+      "main": [
+        [
+          {
+            "node": "Envoi autorisé ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envoi autorisé ?": {
+      "main": [
+        [
+          {
+            "node": "E-mail de confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "StatutEmail = Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "E-mail de confirmation": {
+      "main": [
+        [
+          {
+            "node": "StatutEmail = Envoye",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "StatutEmail = Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
