@@ -386,3 +386,40 @@ python3 -c "import csv,json;r=list(csv.DictReader(open('defis/crm-souverain/impo
 ```
 
 Réponse : `recpzC5yp61ZyqL89` renvoyé, GET conforme. Retour arrière : même PATCH avec l'ancienne fin de note « Lien_NocoDB_Demo vide tant que NocoDB pas déployé (IDEE_infra_196). » à la place de la phrase `Lien_NocoDB_Demo = ...`. Projets 2 à 5 : aucune mention obsolète.
+
+### 10i- Tests des 3 formulaires publics par l'API (05/10/2026, suppression validée par David)
+
+Avant test : aucun webhook NocoDB sur les 3 tables (`GET $NC/api/v2/meta/tables/<id>/hooks` vide), donc aucun e-mail réel. Comptes : `SC_Prospects` 8, `SC_CRs_de_RDV` 5, `AZ_Inscrits` 5.
+
+Route de soumission publique, sans jeton, celle de l'interface du formulaire (`/api/v2/public/shared-view/<uuid>/view-data` n'existe pas en 2026.09.0 : 404) :
+
+```bash
+curl -s -X POST "$NC/api/v2/public/shared-view/<uuid>/rows" -F 'data={"Champ":"valeur"}'
+```
+
+| Test | Envoi | Résultat |
+|---|---|---|
+| Prospects, sans champ requis | `{"Entreprise":"Test sans requis S163z"}` | **Accepté** (Id 9, Statut `Nouveau` par défaut) : le « requis » n'est contrôlé que par le navigateur |
+| Prospects, complet + injection | 7 champs visibles + `Statut:"Gagne"`, `MontantPotentiel:99999` | Id 10 créé, `MontantPotentiel` (masqué) ignoré ; `Statut` = `Gagne` car le champ est visible et facultatif depuis le 01/10 (voulu, `interfaces/SC_PROSPECTS_TABLE_UNIQUE.md`) |
+| CR de RDV + injection | 4 champs + `Statut:"Valide"`, `CRFormate:"injection"` | Id 6 créé, `Statut` = `A formater` (défaut), `CRFormate` ignoré. Envoyé sans `Prospect`, requis depuis le 01/10 : accepté quand même |
+| Inscription + injection | 3 champs + `StatutEmail:"Envoye"`, `Notes:"injection"` | Id 6 créé, `StatutEmail` = `En attente` (défaut), `Notes` ignoré |
+
+Contrôle à 20 secondes : aucune ligne créée par une automatisation, aucun lien posé.
+
+Suppression des 4 lignes de test (Val David) :
+
+```bash
+curl -s "${H[@]}" -X DELETE "$NC/api/v2/tables/m163jpgx02zhgnc/records" -d '[{"Id":9},{"Id":10}]'
+curl -s "${H[@]}" -X DELETE "$NC/api/v2/tables/mkhq6zt5pv5gz0v/records" -d '[{"Id":6}]'
+curl -s "${H[@]}" -X DELETE "$NC/api/v2/tables/ml25u20dkb9gfxm/records" -d '[{"Id":6}]'
+```
+
+Réponses conformes, GET de chaque Id : 404, comptes revenus à 8 / 5 / 5. Retour arrière : sans objet (données de test).
+
+Constats :
+
+-> Les champs obligatoires ne sont pas contrôlés côté serveur : un envoi direct à l'API peut créer une ligne vide ou un CR sans `Prospect`. Sans conséquence pour un usage normal par le formulaire, à savoir pour la démonstration (« base propre »).
+
+-> Champs masqués et valeurs par défaut : conformes sur les 3 formulaires.
+
+-> Le message après envoi de « Inscription masterclass » annonce un e-mail de confirmation, mais aucun webhook NocoDB n'existe sur `AZ_Inscrits` : l'e-mail ne part pas depuis NocoDB.
