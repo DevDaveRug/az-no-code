@@ -3,7 +3,7 @@
 Version : 1.0.0
 Date : 2026-10-05
 Session : S170z-ccweb
-Compagnon : `ATTENDUS.md` (grille des attendus), `/defi-hebdo-alegria` v1.8.1 (Étape 10, archive des messages ; Étape 10 bis, défi de type texte)
+Compagnon : `ATTENDUS.md` (grille des attendus), `DIAGNOSTIC.md` (version publique anonymisée), `/defi-hebdo-alegria` v1.8.1 (Étape 10.0, réponse au fil = livrable noté ; Étape 10 bis, défi `diagnostic` ; Étape 10, archive des messages)
 
 Archive des messages tels qu'ils sont à poster. Défi de type texte : aucun lien, aucune capture, aucune base, aucun code. La règle des 6 liens minimum ne s'applique pas.
 
@@ -11,9 +11,11 @@ Comptage : `LC_ALL=C.UTF-8 wc -m` moins le saut de ligne final, soit le nombre d
 
 Les messages déjà postés se corrigent en éditant le message dans Discord, pas en le repostant.
 
-## Message 1 : fil du défi (livrable noté)
+## Message 1 : fil du projet (livrable noté)
 
-Statut : à poster par David dans le fil avant le 09/10/2026 17h00. Deux messages à la suite, 1966 et 1976 caractères (limite 2000). À copier tel quel, les `**` sont le gras Discord.
+Statut : à poster par David dans le fil avant le 09/10/2026 17h00. Deux messages à la suite, 1966 et 1978 caractères (limite 2000). À copier tel quel, les `**` sont le gras Discord.
+
+Val : poster les messages 1/2 puis 2/2 dans le fil du projet avant le 09/10/2026 17h00.
 
 ### 1/2
 
@@ -37,7 +39,7 @@ Ton prompt corrigé et les deux posts : message suivant.
 
 ### 2/2
 
-Ton prompt corrigé. Seuls les crochets changent d'un post à l'autre ; le cas réel est le tien, ici un exemple :
+Ton prompt corrigé. Seuls les crochets changent ; le cas réel est le tien, ici un exemple :
 
 CONTEXTE
 Formatrice en gestion du stress pour dirigeants de PME.
@@ -60,21 +62,23 @@ N'invente rien : aucun chiffre, citation ou exemple que je ne t'ai pas donné. S
 
 Relis FORMAT, corrige, rends le post seul.
 
-Le post obtenu, 942 caractères, 0 emoji, 0 flèche, 0 hashtag, 0 question :
+Le post obtenu, 964 caractères, 0 emoji, 0 flèche, 0 hashtag, 0 question :
 
-En fin de deuxième journée de formation, un dirigeant de 34 salariés m'a dit : "Je ne suis pas fatigué de travailler, je suis fatigué de décider pour tout le monde."
+À la fin de la deuxième journée d'atelier, un dirigeant de 34 salariés m'a dit « Je ne suis pas fatigué de travailler, je suis fatigué de décider pour tout le monde. »
 
 Nous avons écrit ses décisions de la semaine sur une feuille. Il y en avait onze. Sept ne lui appartenaient pas.
 
-Trois semaines plus tard, il en avait rendu cinq à ses responsables. Cinq décisions sur sept ne pesaient plus sur lui.
+Trois semaines plus tard, il en avait rendu cinq à ses responsables.
 
-Voilà ce que je retiens. La fatigue d'un dirigeant vient moins de son travail que des décisions qu'il prend à la place des autres.
+Si vous réglez vos dossiers le dimanche soir sans en parler à personne, ce n'est peut-être pas le travail qui pèse.
 
-Ces décisions ne se voient pas dans l'agenda, mais elles pèsent. Elles pèsent le dimanche soir, quand vous réglez vos dossiers seul et que vous n'en parlez à personne.
+La fatigue d'un dirigeant vient moins de son travail que des décisions qu'il prend à la place des autres.
 
-Une décision qui ne vous appartient pas reste une décision que vous portez, au bureau comme chez vous, longtemps après l'avoir prise.
+Chaque décision qui n'est pas la vôtre reste pourtant sur vos épaules. Ce n'est pas une question de courage ni de temps, mais de savoir à qui appartient chaque décision.
 
-Lundi matin, posez la même feuille devant vous et cochez toutes les décisions qui ne sont pas les vôtres.
+Écrire les décisions suffit à les voir autrement. Sur une feuille, la réponse se voit.
+
+Lundi matin, posez la même feuille devant vous, écrivez vos décisions de la semaine et cochez celles qui ne sont pas les vôtres.
 
 ## Annexe : les 3 exécutions (preuve, ne se poste pas)
 
@@ -144,19 +148,33 @@ Post de 1884 caractères. Mesuré : 3 flèches U+2192, 5 hashtags, 4 questions, 
 
 ### Exécution 3 -- prompt corrigé, crochets remplis avec un cas d'exemple
 
-Post de 942 caractères. Mesuré : 0 emoji, 0 pictogramme hors ponctuation, 0 hashtag, 0 question, 0 astérisque, 0 puce. Dans la fourchette 900-1300 demandée. Sortie complète : c'est le post du message 2/2 ci-dessus.
+Post de 964 caractères. Mesuré : 0 emoji, 0 pictogramme hors ponctuation, 0 hashtag, 0 question, 0 astérisque, 0 puce. Dans la fourchette 900-1300 demandée. Sortie complète : c'est le post du message 2/2 ci-dessus.
+
+Cette exécution a été relancée une fois : le cas d'exemple disait « deuxième journée de formation », et l'auto-check de l'Étape 11 interdit le mot « formation » dans un message Discord. Le crochet « cas réel » étant une variable d'entrée, « formation » a été remplacé par « atelier » dans le cas d'exemple et le prompt relancé à l'identique. Le post montré est bien celui que le prompt corrigé a produit, aucune retouche à la main.
 
 Crochets remplis pour cette exécution (cas d'exemple, ni un témoignage de David ni un témoignage de Sonia) :
 
     Lecteur : dirigeant d'une PME de 20 à 60 salariés, qui règle ses dossiers le dimanche soir et n'en parle à personne.
     Une seule idée : la fatigue d'un dirigeant vient moins de son travail que des décisions qu'il prend à la place des autres.
-    Mon cas réel : en fin de deuxième journée de formation, un dirigeant de 34 salariés m'a dit "je ne suis pas fatigué de travailler, je suis fatigué de décider pour tout le monde". On a écrit ses décisions de la semaine sur une feuille : sur onze, sept ne lui appartenaient pas. Trois semaines plus tard il en avait rendu cinq à ses responsables.
+    Mon cas réel : en fin de deuxième journée d'atelier, un dirigeant de 34 salariés m'a dit "je ne suis pas fatigué de travailler, je suis fatigué de décider pour tout le monde". On a écrit ses décisions de la semaine sur une feuille : sur onze, sept ne lui appartenaient pas. Trois semaines plus tard il en avait rendu cinq à ses responsables.
     Ce qu'il doit faire après : poser la même feuille lundi matin et cocher les décisions qui ne sont pas les siennes.
 
-## Salons Défis et Victoires
+## Salons Défis et Victoires -- à trancher par David
 
-Non applicable cette semaine : rien à montrer en ligne, donc aucun lien à poster. À trancher par David s'il veut tout de même un message de salon : il porterait sur la méthode (un prompt se répare en le remplissant, pas en l'enjolivant), pas sur un livrable.
+Le skill v1.8.1 attend 3 messages (fil, salon Défis, salon Victoires), les deux derniers avec au minimum 6 liens, au minimum 2 par forme (formulaire + table) pour Airtable, NocoDB et le code. L'Étape 10 bis lève cette règle pour la réponse au fil, pas pour les messages de salon.
+
+Ici les 6 liens sont impossibles : l'énoncé ne demande aucun outil, il n'y a donc ni base, ni formulaire, ni déploiement, donc rien à lier. Trois issues, à choisir par David :
+
+-> 1- ne rien poster en salon cette semaine (le livrable noté est complet sans cela)
+
+-> 2- poster un message de salon sans lien, sur la méthode : un prompt se répare en le remplissant, pas en l'enjolivant, avec la grille d'audit en 7 points de `DIAGNOSTIC.md`
+
+-> 3- construire après coup un petit outil à montrer (un formulaire qui assemble le prompt depuis les 5 crochets, dans les 3 stacks) pour retrouver les 6 liens, en sachant que l'énoncé ne le demande pas
+
+Le skill ne prévoit pas le cas d'un défi `diagnostic` livré sans aucune stack : signal remonté à la session qui édite le skill.
 
 ## Changelog
+
+-> 1.1.0 -- 2026-10-05 (S170z-ccweb) : relecture contre le skill v1.8.1 une fois `dr-context` cloné. Étiquettes alignées sur l'Étape 10.0 (`Message 1 : fil du projet (livrable noté)`), ligne `Val` ajoutée, section Salons réécrite avec les 3 issues possibles et le signal sur la règle des 6 liens. Exécution 3 relancée avec « atelier » au lieu de « formation » dans le cas d'exemple (auto-check Étape 11) : post de 964 caractères, message 2/2 à 1978 caractères.
 
 -> 1.0.0 -- 2026-10-05 (S170z-ccweb) : création. 2 messages de fil (1966 et 1976 caractères), annexe des 3 exécutions.
