@@ -6,7 +6,7 @@ Session : S170z-ccweb
 
 Décrit ce dossier, et lui seul. Nom au format `[Prefixe]_README.md` sans date, conformément à `dr-context/CLAUDE.md` IV.
 
-> Préfixe `AZNcDf` **proposé, en attente de Val David** : le registre `dr-context/docs/DR/DR_Professionnel/DR_Codes_Archivage.md` ne porte aujourd'hui aucun code pour le repo `az-no-code` ni pour son dossier `defis/`. Dérivation proposée : `AZ` (De A à Zen, NIVEAU 1, validé) + `Nc` (No-Code, repo) + `Df` (Défis, dossier). Si David retient d'autres lettres, ce fichier se renomme par un `git mv` et rien d'autre ne change.
+> Préfixe `AZNcDf` **validé par David (S170z-ccweb)** et enregistré dans `dr-context/docs/DR/DR_Professionnel/DR_Codes_Archivage.md` v0.43, section NIVEAU 1-quater : `AZ` (De A à Zen, NIVEAU 1) + `Nc` (az-no-code) + `Df` (defis).
 
 ## Objet du projet
 
@@ -32,8 +32,10 @@ Projet de type texte : aucune base Airtable, aucune base NocoDB, aucun code, auc
 
 ## Nommage des autres fichiers
 
-`ATTENDUS.md`, `MESSAGES-DISCORD.md` et `DIAGNOSTIC.md` ne sont pas conformes au format `AAMMJJ_[Prefixe]_[Description].[ext]`. Ils sont laissés en l'état pour rester alignés sur les 5 autres projets du repo, et leur renommage fait partie de la correction rétroactive à mener sur les 4 repos, une fois les codes enregistrés dans `DR_Codes_Archivage.md`.
+`ATTENDUS.md`, `MESSAGES-DISCORD.md` et `DIAGNOSTIC.md` ne sont pas conformes au format `AAMMJJ_[Prefixe]_[Description].[ext]`. Ils sont laissés en l'état pour rester alignés sur les 5 autres projets du repo : leur renommage, et celui de leurs équivalents dans les 4 repos, se fait en un seul mouvement par la session **S179a**, après l'inventaire soumis à David. Les codes nécessaires sont désormais enregistrés (`DR_Codes_Archivage` v0.43, `CLAUDE.md` v1.16.0 portée 4 repos).
 
 ## Changelog
+
+-> 1.1.0 -- 2026-10-06 (S170z-ccweb) : préfixe `AZNcDf` validé par David et enregistré au registre v0.43. Renvoi vers la session S179a pour le renommage groupé des 3 autres fichiers.
 
 -> 1.0.0 -- 2026-10-06 (S170z-ccweb) : création, après lecture de `dr-context/CLAUDE.md` IV (forme `[Prefixe]_README.md`, sans date, un seul par dossier).
