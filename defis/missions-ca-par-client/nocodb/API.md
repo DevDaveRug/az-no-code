@@ -546,68 +546,66 @@ Constats :
 
 -> E-mail de confirmation à faire : le message après inscription annonce un e-mail, mais NocoDB ne l'envoie pas (aucun webhook sur `AZ_Inscrits`).
 
-## 13- E-mail de confirmation masterclass : n8n posé, hook NocoDB bloqué (06/10/2026, S170z-ccweb)
+## 13- E-mail de confirmation masterclass : en service (06/10/2026, S170z-ccweb)
 
-Exécution du §2 de `defis/masterclass-inscriptions/nocodb/EMAIL-N8N.md`. Tout est en place côté n8n, le déclencheur NocoDB ne transmet pas la ligne. **Rien n'envoie d'e-mail aujourd'hui : le hook est désactivé.**
+Exécution du §2 de `defis/masterclass-inscriptions/nocodb/EMAIL-N8N.md`. **La chaîne complète fonctionne**, testée en deux temps et validée.
 
-### Fait
+### Identifiants posés
 
--> `GET /api/v1/workflows` : accès confirmé, 14 workflows, aucun `AZ_Masterclass*` préexistant.
+-> Credentials n8n `httpHeaderAuth` : `ifc4Icoc8OHdImKZ` (en-tête `X-NocoDB-Secret`, secret généré) et `qNJQMZ2OvAyjA4pj` (en-tête `xc-token`). Aucune valeur dans le dépôt.
 
--> 2 credentials `httpHeaderAuth` créées : `NocoDB webhook secret (masterclass)` (en-tête `X-NocoDB-Secret`, valeur générée) et `NocoDB xc-token (sb)` = `qNJQMZ2OvAyjA4pj` (en-tête `xc-token`). Aucune valeur affichée ni commitée.
+-> Credential SMTP de David, retrouvée par `GET /api/v1/credentials` : `DnIhhqDYkqamy959`, type `smtp`, `SMTP IONOS - david@salescloser.fr`.
 
--> Credential SMTP de David retrouvée par `GET /api/v1/credentials` : `DnIhhqDYkqamy959`, type `smtp`, `SMTP IONOS - david@salescloser.fr`.
+-> Workflow `AZ_Masterclass_inscrit_cree` : `Pj2Mou2CKST1vdMg`, actif, 6 nœuds, chemin `masterclass-inscrit-cree`.
 
--> Workflow importé et activé : `Pj2Mou2CKST1vdMg`, 6 nœuds, chemin webhook `masterclass-inscrit-cree` en `POST`. Les 3 placeholders `__CRED_*__` substitués. L'API publique n8n n'accepte que `name`, `nodes`, `connections`, `settings` à la création.
+-> Webhook NocoDB sur `AZ_Inscrits` : `hkwyscp73ux6l2w4`, `after` / `["insert"]`, actif.
 
--> Webhook NocoDB créé sur `AZ_Inscrits` : `hkwyscp73ux6l2w4`, `after` / `["insert"]`.
+### Trois pièges de NocoDB 2026.09.0, à connaître pour tout futur hook
 
--> Sonde directe de l'endpoint : `403` sans en-tête, `200` avec. L'authentification par en-tête fonctionne des deux côtés.
+Ce sont eux qui ont coûté la demi-journée. Aucun ne produit de message d'erreur utile.
 
-### Deux pièges de la version 2026.09.0
+-> **1- `version` doit valoir `"v3"`, et `operation` doit être un TABLEAU.** `"v2"` et l'absence de `version` sont refusés (`hook version is deprecated / not supported anymore`). Avec `"v3"`, `operation: "insert"` est rejeté : il faut `operation: ["insert"]`.
 
--> `version: "v2"` et l'absence de champ `version` sont refusés (`hook version is deprecated / not supported anymore`). Seul `"v3"` passe, et **`operation` doit être un tableau** (`["insert"]`, pas `"insert"`).
+-> **2- Chaque en-tête custom doit porter `"enabled": true`.** Sans ce champ, NocoDB **supprime l'en-tête en silence** : la requête part sans `X-NocoDB-Secret`, n8n répond `403`, et rien n'indique pourquoi. C'est le piège principal.
 
--> Les exécutions n8n ne sont pas enregistrées par défaut : `saveDataSuccessExecution` et `saveDataErrorExecution` ont été mis à `all` sur ce workflow pour pouvoir lire la charge reçue. Sans ça, « 0 exécution » se lit à tort comme « le webhook n'a pas été appelé ».
+-> **3- Le corps doit être déclaré par un gabarit `"body": "{{ json data }}"`.** Sans gabarit, NocoDB n'envoie **aucun corps** (pas de clé `data` dans la requête). Le gabarit `{{ json payload }}` envoie une chaîne vide.
 
-### Le blocage, mesuré
-
-Le hook part bien et le workflow s'exécute avec succès, mais la charge reçue est toujours :
+Avec les trois réglages, la charge reçue est bien celle que le workflow attend :
 
 ```
-{"data": {"rows": []}}
+{"type":"records.after.insert","id":"<uuid>","base_id":"phwalskbrftv4o4","version":"v3",
+ "data":{"table_id":"ml25u20dkb9gfxm","table_name":"AZ_Inscrits","rows":[{...}]}}
 ```
 
-`data.rows` arrive **vide**. Le nœud `Contrôle et nettoyage` boucle sur `$json.body.data.rows`, ne trouve aucune ligne, et ne fait donc ni envoi ni écriture : `StatutEmail` reste `En attente`.
+Le nœud `Contrôle et nettoyage` lit `$json.body.data.rows` : **ce chemin était correct depuis le début**, le problème n'a jamais été le workflow.
 
-Trois pistes écartées par la mesure :
+### Deux outils de diagnostic qui ont débloqué l'affaire
 
--> gabarit `body` du hook à `{{ json data }}` : même résultat
+-> **`GET /api/v2/meta/hooks/<hookId>/logs`** : NocoDB journalise chaque appel avec la requête exacte (URL, en-têtes réellement envoyés, corps) et la réponse reçue. C'est là qu'on voit le `403` et l'absence de `X-NocoDB-Secret`. Sans ce journal, le diagnostic est impossible.
 
--> gabarit `body` retiré, donc charge par défaut de NocoDB : même résultat
+-> **`POST /api/v2/meta/tables/<tableId>/hooks/test`** : envoie un appel de test avec une configuration de hook et une charge fournies dans le corps, sans créer de ligne. Permet d'essayer six variantes de placement d'en-tête en un seul appel chacune, au lieu d'une insertion par essai.
 
--> insertion par le formulaire public partagé au lieu de l'API `records` : même résultat
+-> À savoir aussi : les exécutions n8n ne sont **pas enregistrées par défaut**. `saveDataSuccessExecution` et `saveDataErrorExecution` ont été mis à `all` sur ce workflow. Sans ça, « 0 exécution » se lit à tort comme « le webhook n'a pas été appelé », alors qu'il l'était et échouait en amont.
 
-Aucun endpoint `samplePayload` sur ce build (404 sur les 3 chemins essayés), donc pas de moyen de lire le format attendu depuis l'instance. La méta du hook est pourtant correcte : `payload = 1`, `active`, `version = v3`, `after` / `insert`.
+### Tests, validés
 
-### État laissé
+| Essai | Adresse | `StatutEmail` obtenu | Nœuds exécutés | Verdict |
+|---|---|---|---|---|
+| 1 | `test@exemple.example` | `Erreur` | Webhook, Contrôle, Envoi autorisé ?, StatutEmail = Erreur | conforme, le nœud d'envoi n'est pas exécuté, aucun e-mail ne part |
+| 2 | `david@salescloser.fr` | `Envoye` | Webhook, Contrôle, Envoi autorisé ?, E-mail de confirmation, StatutEmail = Envoye | conforme, e-mail envoyé |
 
--> Hook `hkwyscp73ux6l2w4` : **désactivé** (`active = false`). Un hook inerte qui a l'air posé est un piège : si NocoDB change la charge, il se mettrait à envoyer sans surveillance.
+Les 2 lignes de test sont supprimées (suppression validée par David). `AZ_Inscrits` est rendue à ses 5 lignes d'origine. Les inscrits n°4 et n°5 n'ont rien reçu : le hook ne réagit qu'aux nouvelles lignes.
 
--> Workflow `Pj2Mou2CKST1vdMg` : actif, inoffensif sans appel entrant, authentification prouvée.
+**Reste à confirmer par David** : la bonne réception de l'e-mail dans la boîte `david@salescloser.fr`. Le nœud d'envoi s'est exécuté sans erreur, mais la remise effective ne se vérifie que dans la boîte.
 
--> `AZ_Inscrits` rendue à ses 5 lignes d'origine : les 4 lignes de test (n°6 à n°9) sont supprimées. Les inscrits n°4 et n°5 n'ont rien reçu.
+### Retour arrière
 
--> Test de l'e-mail réel **non concluant** : aucun e-mail n'est parti, donc David n'a rien à confirmer pour l'instant.
+-> `DELETE /api/v2/meta/hooks/hkwyscp73ux6l2w4` : stoppe tout envoi immédiatement.
 
-### Reste à faire
+-> `POST /api/v1/workflows/Pj2Mou2CKST1vdMg/deactivate` puis `DELETE /api/v1/workflows/Pj2Mou2CKST1vdMg`.
 
--> Trouver le nom de la variable qui porte la ligne dans les hooks v3 de 2026.09.0, soit en lisant la charge d'un hook créé à la main dans l'interface NocoDB (la créer, l'inspecter, comparer), soit dans le changelog NocoDB entre la v2 et la v3 des hooks.
+-> `DELETE /api/v1/credentials/ifc4Icoc8OHdImKZ` et `/qNJQMZ2OvAyjA4pj`.
 
--> Adapter le nœud `Contrôle et nettoyage` à la vraie clé, réactiver le hook, puis rejouer le test en deux temps : `david@salescloser.fr` (attendu `Envoye` + e-mail reçu), puis une adresse `.example` (attendu `Erreur`, aucun e-mail), et supprimer les lignes de test.
+### Incident de session, déclaré
 
--> Retour arrière complet si abandon : `DELETE /api/v2/meta/hooks/hkwyscp73ux6l2w4`, `POST /api/v1/workflows/Pj2Mou2CKST1vdMg/deactivate` puis `DELETE`, et suppression des credentials `ifc4Icoc8OHdImKZ` et `qNJQMZ2OvAyjA4pj`.
-
-### Incident de session, à savoir
-
-Un `print` de diagnostic a affiché la valeur du secret du webhook dans la sortie de la session. Le secret a été **remplacé immédiatement** : nouvelle credential n8n `ifc4Icoc8OHdImKZ`, nœud `Webhook NocoDB` recâblé dessus, ancienne credential `nakEIHKwZWnN7Y8b` supprimée, en-tête du hook NocoDB mis à la nouvelle valeur. La valeur affichée n'autorise donc plus rien. Elle n'a jamais touché le dépôt.
+Un `print` de diagnostic a affiché la valeur du secret du webhook dans la sortie de session. Le secret a été **remplacé immédiatement** : nouvelle credential `ifc4Icoc8OHdImKZ`, nœud `Webhook NocoDB` recâblé dessus, ancienne credential `nakEIHKwZWnN7Y8b` supprimée, en-tête du hook mis à la nouvelle valeur. La valeur affichée n'autorise plus rien et n'a jamais touché le dépôt.

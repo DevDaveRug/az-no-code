@@ -51,6 +51,40 @@ Lire avant d'écrire, GET de contrôle après chaque écriture, trace dans `defi
 
 6- Test : une inscription par le formulaire public (`#/nc/form/e3eb2619-338b-4451-9c9e-57cd07ed13e8`) avec `david@salescloser.fr`. Attendu : e-mail reçu (David confirme), `StatutEmail` = `Envoye`. Puis 1 envoi avec `test@exemple.example` : attendu `StatutEmail` = `Erreur`, aucun e-mail. Supprimer les 2 lignes de test.
 
+## 2-bis- Fait le 06/10/2026 (S170z-ccweb) : en service
+
+Le §2 est exécuté, la chaîne fonctionne. Identifiants et trace complète : `defis/missions-ca-par-client/nocodb/API.md` §13.
+
+**La configuration du hook NocoDB qui marche**, en 2026.09.0 :
+
+```
+version    : "v3"                   (v2 et l'absence de version sont refusees)
+operation  : ["insert"]              (un TABLEAU, pas une chaine)
+headers    : [{"name":"X-NocoDB-Secret","value":"<secret>","enabled":true}]
+body       : "{{ json data }}"
+```
+
+Les trois pièges, aucun ne produisant d'erreur lisible :
+
+-> `operation` en chaîne est rejeté par la validation, `version` absente ou `"v2"` aussi
+
+-> un en-tête **sans `"enabled": true` est supprimé en silence** : la requête part sans le secret, n8n répond `403`. C'est le piège principal, et celui qui ressemble le plus à une panne de workflow
+
+-> **sans gabarit `body`, NocoDB n'envoie aucun corps** ; `{{ json payload }}` envoie une chaîne vide. Seul `{{ json data }}` porte la ligne
+
+Charge effectivement reçue, conforme à ce que lit le nœud `Contrôle et nettoyage` (`$json.body.data.rows`) :
+
+```
+{"type":"records.after.insert","id":"<uuid>","base_id":"phwalskbrftv4o4","version":"v3",
+ "data":{"table_id":"ml25u20dkb9gfxm","table_name":"AZ_Inscrits","rows":[{...}]}}
+```
+
+**Les deux outils à utiliser d'emblée la prochaine fois** : `GET /api/v2/meta/hooks/<hookId>/logs` (NocoDB journalise les en-têtes réellement envoyés et la réponse reçue, c'est là qu'on voit le 403) et `POST /api/v2/meta/tables/<tableId>/hooks/test` (appel de test sans créer de ligne, pour itérer sur la configuration). Côté n8n, mettre `saveDataSuccessExecution` et `saveDataErrorExecution` à `all` : sans ça, « 0 exécution » se lit à tort comme « webhook non appelé ».
+
+Tests validés : `test@exemple.example` donne `StatutEmail = Erreur` sans qu'aucun e-mail ne parte, `david@salescloser.fr` donne `Envoye` avec le nœud d'envoi exécuté. Les 2 lignes de test sont supprimées, `AZ_Inscrits` est rendue à ses 5 lignes d'origine.
+
+Fait : e-mail de confirmation masterclass reçu dans la boîte david@salescloser.fr
+
 ## Retour arrière
 
 -> NocoDB : `DELETE $NC/api/v2/meta/hooks/<hookId>` (stoppe tout envoi immédiatement)
