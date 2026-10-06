@@ -13,11 +13,11 @@ Les messages déjà postés se corrigent en éditant le message dans Discord, pa
 
 ## Message 1 : fil du projet (livrable noté)
 
-Statut : **postés par David le 06/10/2026** dans le fil du salon « Défi-hebdomadaire », avant la limite du 09/10 17h00. Deux messages à la suite, 1966 et 1978 caractères (limite 2000). À copier tel quel, les `**` sont le gras Discord.
+Statut : **postés par David le 06/10/2026** dans le fil du salon `défi-hebdomadaire`, avant la limite du 09/10 17h00. Deux messages à la suite, 1966 et 1978 caractères (limite 2000). À copier tel quel, les `**` sont le gras Discord.
 
-Fait : messages 1/2 et 2/2 postés dans le fil du salon « Défi-hebdomadaire »
+Fait : messages 1/2 et 2/2 postés dans le fil du salon `défi-hebdomadaire`
 
-Fait : message de méthode posté dans le salon « Causons ici ! »
+Fait : message de méthode posté dans le salon `causons-ici`
 
 ### 1/2
 
@@ -163,9 +163,9 @@ Crochets remplis pour cette exécution (cas d'exemple, ni un témoignage de Davi
     Mon cas réel : en fin de deuxième journée d'atelier, un dirigeant de 34 salariés m'a dit "je ne suis pas fatigué de travailler, je suis fatigué de décider pour tout le monde". On a écrit ses décisions de la semaine sur une feuille : sur onze, sept ne lui appartenaient pas. Trois semaines plus tard il en avait rendu cinq à ses responsables.
     Ce qu'il doit faire après : poser la même feuille lundi matin et cocher les décisions qui ne sont pas les siennes.
 
-## Message 3 : salon « Causons ici ! » (méthode, sans lien)
+## Message 3 : salon `causons-ici` (méthode, sans lien)
 
-Statut : **posté par David le 06/10/2026** dans le salon « Causons ici ! » (et non dans un salon « Défis » : le nom réel du salon de discussion est « Causons ici ! »). Taille : 1691 caractères (limite 2000). Aucun lien : l'énoncé ne demande aucun outil, il n'y a ni base, ni formulaire, ni déploiement à montrer. La règle des 6 liens du skill ne peut pas s'appliquer (voir « Pourquoi aucun lien » ci-dessous).
+Statut : **posté par David le 06/10/2026** dans le salon `causons-ici` (et non dans un salon « Défis », qui n'existe pas sous ce nom). Taille : 1691 caractères (limite 2000). Aucun lien : l'énoncé ne demande aucun outil, il n'y a ni base, ni formulaire, ni déploiement à montrer. La règle des 6 liens du skill ne peut pas s'appliquer (voir « Pourquoi aucun lien » ci-dessous).
 
 Un prompt qui ne marche pas n'est presque jamais mal écrit. Il est vide.
 
@@ -195,15 +195,17 @@ Un prompt se répare en le remplissant, pas en l'enjolivant.
 
 Le skill v1.8.1 attend 3 messages (fil, salon Défis, salon Victoires), les deux derniers avec au minimum 6 liens, au minimum 2 par forme. L'Étape 10 bis lève cette règle pour la réponse au fil, pas pour les messages de salon.
 
-Ici les 6 liens sont structurellement impossibles. Trois issues avaient été proposées : ne rien poster, poster un message de méthode sans lien, ou construire après coup un outil pour retrouver les liens. **Issue 2 retenue par David** : message de méthode, appuyé sur la grille d'audit en 7 points de `DIAGNOSTIC.md`, posté dans « Causons ici ! ».
+Ici les 6 liens sont structurellement impossibles. Trois issues avaient été proposées : ne rien poster, poster un message de méthode sans lien, ou construire après coup un outil pour retrouver les liens. **Issue 2 retenue par David** : message de méthode, appuyé sur la grille d'audit en 7 points de `DIAGNOSTIC.md`, posté dans `causons-ici`.
 
 Pas de message salon Victoires cette semaine : rien de nouveau en ligne à annoncer.
 
-Noms réels des salons, à reprendre dans le skill : le fil du projet est dans « Défi-hebdomadaire », la discussion dans « Causons ici ! ». Le skill parle de « salon Défis » et « salon Victoires », qui ne correspondent pas aux noms du serveur.
+Noms réels des salons : les 10 salons du serveur sont relevés dans `dr-context/.claude/skills/defi-hebdo-alegria/references/SALONS_ALEGRIA.md` (S170z). Le skill parle de « salon Défis » et « salon Victoires », qui n'existent pas sous ces noms. Correspondance réelle : le fil du projet et le message 2 vont dans `défi-hebdomadaire`, le message 3 dans `partage-tes-victoires` (aussi le salon des Vendredi Victoire), et `causons-ici` est la discussion générale, retenue ici faute de lien à montrer. Correction du skill : session S178z.
 
 ## Changelog
 
--> 1.3.0 -- 2026-10-06 (S170z-ccweb) : les 3 messages sont postés (Fait David 06/10). Noms réels des salons enregistrés : fil du projet dans « Défi-hebdomadaire », message de méthode dans « Causons ici ! » (le skill dit « salon Défis » et « salon Victoires », qui n'existent pas sous ces noms). Bloc d'actions reformaté avec un `Fait :` par ligne (Cor David : « chaque ligne d'un fait doit comporter son `Fait :` »). Préfixe `AZNcDf` validé par David, enregistré dans `DR_Codes_Archivage` v0.43 NIVEAU 1-quater.
+-> 1.4.0 -- 2026-10-06 (S170z-ccweb) : noms de salons corrigés d'après la capture du serveur fournie par David. `défi-hebdomadaire` et `causons-ici` en minuscules avec tiret, pas « Défi-hebdomadaire » ni « Causons ici ! ». Les 10 salons sont relevés dans `dr-context/.claude/skills/defi-hebdo-alegria/references/SALONS_ALEGRIA.md`, avec la correspondance vers le vocabulaire du skill. Pour les Vendredi Victoire, David utilise `partage-tes-victoires`.
+
+-> 1.3.0 -- 2026-10-06 (S170z-ccweb) : les 3 messages sont postés (Fait David 06/10). Noms réels des salons enregistrés : fil du projet dans `défi-hebdomadaire`, message de méthode dans `causons-ici` (le skill dit « salon Défis » et « salon Victoires », qui n'existent pas sous ces noms). Bloc d'actions reformaté avec un `Fait :` par ligne (Cor David : « chaque ligne d'un fait doit comporter son `Fait :` »). Préfixe `AZNcDf` validé par David, enregistré dans `DR_Codes_Archivage` v0.43 NIVEAU 1-quater.
 
 -> 1.2.0 -- 2026-10-06 (S170z-ccweb) : message 3 (salon Défis, méthode sans lien, 1691 caractères) ajouté après arbitrage de David (issue 2 sur 3). Emploi de `Val` corrigé (Cor David : `Val` introduit ce que CC veut faire valider, pas une action que David doit exécuter) : la ligne de postage devient un bloc « À toi de jouer » au participe passé, recopiable derrière `Fait :`.
 
