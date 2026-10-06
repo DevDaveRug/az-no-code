@@ -33,7 +33,7 @@ Ce qu'il faut faire : « lister ce qui ne va pas dans ce prompt ; écrire ta ver
 | « Sonia, formatrice en gestion du stress pour dirigeants de PME » | - | Tutoiement de Sonia, bloc CONTEXTE du prompt corrigé rédigé à son métier, lecteur visé = dirigeant de PME | fait |
 | « 15 points de participation + 15 points de réussite » | 30 | Les 3 livrables de l'énoncé sont rendus dans l'ordre demandé | fait |
 | Indice de l'énoncé | - | Aucun indice dans cet énoncé : rien à exploiter, ligne conservée pour que l'absence soit vérifiée et non supposée | sans objet |
-| « Ouvert jusqu'au 09/10/2026 à 17h00. Poste ta réponse dans ce fil » | - | À poster par David dans le fil | Val David |
+| « Ouvert jusqu'au 09/10/2026 à 17h00. Poste ta réponse dans ce fil » | - | À poster par David dans le fil | à poster (David) |
 
 ## Protocole de preuve (les 2 prompts réellement exécutés)
 
@@ -69,7 +69,7 @@ Mesures faites avec `LC_ALL=C.UTF-8 wc -m` et un contrôle Python des points de 
 | `DIAGNOSTIC.md` anonymisé, sans nommer la cliente (Étape 10 bis) | fait |
 | Les 2 `INTERFACE.md` (Airtable + NocoDB) | sans objet : aucune base |
 | Ligne `AZ_Portfolio` décrite dans le message final | sans objet : rien à montrer en ligne |
-| Messages salon Défis et Victoires, 6 liens minimum, 2 par forme | impossible : aucun formulaire, aucune table, aucun déploiement. À trancher par David (voir `MESSAGES-DISCORD.md`) |
+| Messages salon Défis et Victoires, 6 liens minimum, 2 par forme | arbitré par David : message de méthode sans lien (issue 2), pas de message Victoires. Les 6 liens sont structurellement impossibles, aucun outil n'étant demandé par l'énoncé |
 | Aucune table créée en double de la base unifiée | sans objet : aucune table créée |
 | Aucun mot « défi », « Eva », « Alegria », « formation » dans les messages Discord | fait : le mot « formation » a été retiré du cas d'exemple et l'exécution relancée (voir « Écarts assumés ») |
 | Branche `claude/s<n>-defi-<slug>` | écart : la session impose `claude/eloquent-planck-97s4jt`, pas de push ailleurs sans accord |
@@ -80,6 +80,6 @@ Défi de type texte. Aucune base Airtable ou NocoDB, aucun déploiement, aucune 
 
 ## Changelog
 
--> 1.1.0 -- 2026-10-05 (S170z-ccweb) : relecture contre le skill v1.8.1 une fois `dr-context` cloné (Étape 1, 10.0, 10 bis, auto-check Étape 11). Ajouts : ligne « indice » (sans objet ici), statut `Val David` sur la date limite, section « Auto-check Étape 11 » avec les points sans objet et les 2 écarts assumés, renvoi vers `DIAGNOSTIC.md`.
+-> 1.1.0 -- 2026-10-05 (S170z-ccweb) : relecture contre le skill v1.8.1 une fois `dr-context` cloné (Étape 1, 10.0, 10 bis, auto-check Étape 11). Ajouts : ligne « indice » (sans objet ici), statut de la date limite rendu à David, section « Auto-check Étape 11 » avec les points sans objet et les 2 écarts assumés, renvoi vers `DIAGNOSTIC.md`.
 
--> 1.0.0 -- 2026-10-05 (S170z-ccweb) : création. Ordre réel de production : les 3 exécutions d'abord, puis les 2 messages, puis la grille relue ligne par ligne contre les messages. L'Étape 1 demande la grille avant construction : écart assumé, dû au fait que le skill n'était pas lisible au démarrage de la session (voir « Écarts assumés »). 13 attendus, 11 faits, 1 sans objet, 1 Val David.
+-> 1.0.0 -- 2026-10-05 (S170z-ccweb) : création. Ordre réel de production : les 3 exécutions d'abord, puis les 2 messages, puis la grille relue ligne par ligne contre les messages. L'Étape 1 demande la grille avant construction : écart assumé, dû au fait que le skill n'était pas lisible au démarrage de la session (voir « Écarts assumés »). 13 attendus, 11 faits, 1 sans objet, 1 à poster par David.

@@ -15,7 +15,11 @@ Les messages déjà postés se corrigent en éditant le message dans Discord, pa
 
 Statut : à poster par David dans le fil avant le 09/10/2026 17h00. Deux messages à la suite, 1966 et 1978 caractères (limite 2000). À copier tel quel, les `**` sont le gras Discord.
 
-Val : poster les messages 1/2 puis 2/2 dans le fil du projet avant le 09/10/2026 17h00.
+À toi de jouer, lignes déjà au participe passé à recopier derrière `Fait :` :
+
+-> messages 1/2 et 2/2 postés dans le fil du projet
+
+-> message de méthode posté dans le salon Défis
 
 ### 1/2
 
@@ -161,21 +165,45 @@ Crochets remplis pour cette exécution (cas d'exemple, ni un témoignage de Davi
     Mon cas réel : en fin de deuxième journée d'atelier, un dirigeant de 34 salariés m'a dit "je ne suis pas fatigué de travailler, je suis fatigué de décider pour tout le monde". On a écrit ses décisions de la semaine sur une feuille : sur onze, sept ne lui appartenaient pas. Trois semaines plus tard il en avait rendu cinq à ses responsables.
     Ce qu'il doit faire après : poser la même feuille lundi matin et cocher les décisions qui ne sont pas les siennes.
 
-## Salons Défis et Victoires -- à trancher par David
+## Message 3 : salon Défis (méthode, sans lien)
 
-Le skill v1.8.1 attend 3 messages (fil, salon Défis, salon Victoires), les deux derniers avec au minimum 6 liens, au minimum 2 par forme (formulaire + table) pour Airtable, NocoDB et le code. L'Étape 10 bis lève cette règle pour la réponse au fil, pas pour les messages de salon.
+Statut : à poster après les messages 1/2 et 2/2. Taille : 1691 caractères (limite 2000). Aucun lien : l'énoncé ne demande aucun outil, il n'y a ni base, ni formulaire, ni déploiement à montrer. La règle des 6 liens du skill ne peut pas s'appliquer (voir « Pourquoi aucun lien » ci-dessous).
 
-Ici les 6 liens sont impossibles : l'énoncé ne demande aucun outil, il n'y a donc ni base, ni formulaire, ni déploiement, donc rien à lier. Trois issues, à choisir par David :
+Un prompt qui ne marche pas n'est presque jamais mal écrit. Il est vide.
 
--> 1- ne rien poster en salon cette semaine (le livrable noté est complet sans cela)
+J'ai réparé celui d'une indépendante cette semaine. Il lui sortait des posts tous identiques, pleins de phrases creuses, avec des emojis malgré l'interdiction écrite noir sur blanc. Quatre phrases, zéro matière :
 
--> 2- poster un message de salon sans lien, sur la méthode : un prompt se répare en le remplissant, pas en l'enjolivant, avec la grille d'audit en 7 points de `DIAGNOSTIC.md`
+"Tu es un expert en copywriting de renommée mondiale. Écris un post LinkedIn engageant sur mon sujet. Sois percutant et impactant. Pas d'emojis. Le post doit être viral."
 
--> 3- construire après coup un petit outil à montrer (un formulaire qui assemble le prompt depuis les 5 crochets, dans les 3 stacks) pour retrouver les 6 liens, en sachant que l'énoncé ne le demande pas
+Je l'ai exécuté tel quel, pour voir. Il n'a produit aucun post : il a posé 5 questions. "Sur mon sujet" désigne une variable que personne n'avait remplie.
 
-Le skill ne prévoit pas le cas d'un défi `diagnostic` livré sans aucune stack : signal remonté à la session qui édite le skill.
+Ma grille d'audit, 7 points :
+
+1- Le sujet est-il écrit dans le prompt ?
+2- Le lecteur visé est-il décrit en une ligne ?
+3- Y a-t-il une matière vécue à raconter ?
+4- Les consignes décrivent-elles le texte, ou l'effet espéré ?
+5- Le format est-il donné en positif, dans son propre bloc ?
+6- L'invention est-elle explicitement bloquée ?
+7- Le prompt se relit-il avant de rendre ?
+
+Les points 4 et 5 expliquent les emojis qui reviennent. "Percutant", "impactant", "viral" commandent un style où les emojis font partie du format : quatre mots d'interdiction contre quatre mots qui appellent l'inverse, et c'est le style qui gagne. Une consigne négative isolée demande en plus de retenir quelque chose pendant toute la génération, là où "texte brut uniquement, aucun caractère décoratif" donne quelque chose à faire.
+
+Mesuré, même outil, même sujet. Avant : 1884 caractères, 3 flèches, 5 hashtags, 4 questions, aucun fait concret. Après : 964 caractères, zéro caractère décoratif, un cas réel raconté en trois phrases.
+
+Un prompt se répare en le remplissant, pas en l'enjolivant.
+
+### Pourquoi aucun lien
+
+Le skill v1.8.1 attend 3 messages (fil, salon Défis, salon Victoires), les deux derniers avec au minimum 6 liens, au minimum 2 par forme. L'Étape 10 bis lève cette règle pour la réponse au fil, pas pour les messages de salon.
+
+Ici les 6 liens sont structurellement impossibles. Trois issues avaient été proposées : ne rien poster, poster un message de méthode sans lien, ou construire après coup un outil pour retrouver les liens. **Issue 2 retenue par David** : message de méthode, appuyé sur la grille d'audit en 7 points de `DIAGNOSTIC.md`.
+
+Pas de message salon Victoires cette semaine : rien de nouveau en ligne à annoncer.
 
 ## Changelog
+
+-> 1.2.0 -- 2026-10-06 (S170z-ccweb) : message 3 (salon Défis, méthode sans lien, 1691 caractères) ajouté après arbitrage de David (issue 2 sur 3). Emploi de `Val` corrigé (Cor David : `Val` introduit ce que CC veut faire valider, pas une action que David doit exécuter) : la ligne de postage devient un bloc « À toi de jouer » au participe passé, recopiable derrière `Fait :`.
 
 -> 1.1.1 -- 2026-10-06 (S170z-ccweb) : note ajoutée sur les 3 flèches Unicode de l'annexe (sortie brute citée, pas du contenu rédigé) après lecture de `dr-context/CLAUDE.md` IV.
 
