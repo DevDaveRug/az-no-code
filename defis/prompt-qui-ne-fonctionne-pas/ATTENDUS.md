@@ -33,7 +33,7 @@ Ce qu'il faut faire : « lister ce qui ne va pas dans ce prompt ; écrire ta ver
 | « Sonia, formatrice en gestion du stress pour dirigeants de PME » | - | Tutoiement de Sonia, bloc CONTEXTE du prompt corrigé rédigé à son métier, lecteur visé = dirigeant de PME | fait |
 | « 15 points de participation + 15 points de réussite » | 30 | Les 3 livrables de l'énoncé sont rendus dans l'ordre demandé | fait |
 | Indice de l'énoncé | - | Aucun indice dans cet énoncé : rien à exploiter, ligne conservée pour que l'absence soit vérifiée et non supposée | sans objet |
-| « Ouvert jusqu'au 09/10/2026 à 17h00. Poste ta réponse dans ce fil » | - | Postés par David le 06/10/2026 dans le fil du salon « Défi-hebdomadaire », avant la limite | fait |
+| « Ouvert jusqu'au 09/10/2026 à 17h00. Poste ta réponse dans ce fil » | - | Postés par David le 06/10/2026 dans le fil du salon `défi-hebdomadaire`, avant la limite | fait |
 
 ## Protocole de preuve (les 2 prompts réellement exécutés)
 
@@ -69,7 +69,7 @@ Mesures faites avec `LC_ALL=C.UTF-8 wc -m` et un contrôle Python des points de 
 | `DIAGNOSTIC.md` anonymisé, sans nommer la cliente (Étape 10 bis) | fait |
 | Les 2 `INTERFACE.md` (Airtable + NocoDB) | sans objet : aucune base |
 | Ligne `AZ_Portfolio` décrite dans le message final | sans objet : rien à montrer en ligne |
-| Messages salon Défis et Victoires, 6 liens minimum, 2 par forme | arbitré par David : message de méthode sans lien (issue 2), posté dans « Causons ici ! ». Pas de message Victoires. Les 6 liens sont structurellement impossibles, aucun outil n'étant demandé par l'énoncé |
+| Messages salon Défis et Victoires, 6 liens minimum, 2 par forme | arbitré par David : message de méthode sans lien (issue 2), posté dans `causons-ici`. Pas de message Victoires. Les 6 liens sont structurellement impossibles, aucun outil n'étant demandé par l'énoncé |
 | Aucune table créée en double de la base unifiée | sans objet : aucune table créée |
 | Aucun mot « défi », « Eva », « Alegria », « formation » dans les messages Discord | fait : le mot « formation » a été retiré du cas d'exemple et l'exécution relancée (voir « Écarts assumés ») |
 | Branche `claude/s<n>-defi-<slug>` | écart : la session impose `claude/eloquent-planck-97s4jt`, pas de push ailleurs sans accord |
@@ -80,7 +80,9 @@ Défi de type texte. Aucune base Airtable ou NocoDB, aucun déploiement, aucune 
 
 ## Changelog
 
--> 1.2.0 -- 2026-10-06 (S170z-ccweb) : les 3 messages postés par David le 06/10, dans « Défi-hebdomadaire » (fil) et « Causons ici ! » (méthode). Dernier attendu passé à « fait » : 13 attendus, 12 faits, 1 sans objet. Préfixe `AZNcDf` validé et enregistré dans `DR_Codes_Archivage` v0.43.
+-> 1.3.0 -- 2026-10-06 (S170z-ccweb) : noms de salons corrigés d'après la capture du serveur (`défi-hebdomadaire`, `causons-ici`). Relevé complet des 10 salons dans `dr-context/.claude/skills/defi-hebdo-alegria/references/SALONS_ALEGRIA.md`.
+
+-> 1.2.0 -- 2026-10-06 (S170z-ccweb) : les 3 messages postés par David le 06/10, dans `défi-hebdomadaire` (fil) et `causons-ici` (méthode). Dernier attendu passé à « fait » : 13 attendus, 12 faits, 1 sans objet. Préfixe `AZNcDf` validé et enregistré dans `DR_Codes_Archivage` v0.43.
 
 -> 1.1.0 -- 2026-10-05 (S170z-ccweb) : relecture contre le skill v1.8.1 une fois `dr-context` cloné (Étape 1, 10.0, 10 bis, auto-check Étape 11). Ajouts : ligne « indice » (sans objet ici), statut de la date limite rendu à David, section « Auto-check Étape 11 » avec les points sans objet et les 2 écarts assumés, renvoi vers `DIAGNOSTIC.md`.
 
