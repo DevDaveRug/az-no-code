@@ -106,6 +106,8 @@ Aucun post produit. L'outil pose 5 questions, puis livre une trame générique. 
 
 Post de 1884 caractères. Mesuré : 3 flèches U+2192, 5 hashtags, 4 questions, aucun fait concret, aucun cas vécu. Aucun emoji littéral. Sortie complète :
 
+Les 3 flèches `→` ci-dessous sont volontaires : c'est la sortie brute de l'outil, citée telle quelle, et leur présence EST le constat. La convention `CLAUDE.md` IV (pas de flèche Unicode dans un contenu copiable) vise ce que CC rédige, pas une pièce à conviction. Rien dans ce fichier n'est à recopier depuis ce bloc.
+
     Votre entreprise ne tombera pas à cause d'un concurrent.
 
     Elle tombera le jour où vous ne tiendrez plus.
@@ -174,6 +176,8 @@ Ici les 6 liens sont impossibles : l'énoncé ne demande aucun outil, il n'y a d
 Le skill ne prévoit pas le cas d'un défi `diagnostic` livré sans aucune stack : signal remonté à la session qui édite le skill.
 
 ## Changelog
+
+-> 1.1.1 -- 2026-10-06 (S170z-ccweb) : note ajoutée sur les 3 flèches Unicode de l'annexe (sortie brute citée, pas du contenu rédigé) après lecture de `dr-context/CLAUDE.md` IV.
 
 -> 1.1.0 -- 2026-10-05 (S170z-ccweb) : relecture contre le skill v1.8.1 une fois `dr-context` cloné. Étiquettes alignées sur l'Étape 10.0 (`Message 1 : fil du projet (livrable noté)`), ligne `Val` ajoutée, section Salons réécrite avec les 3 issues possibles et le signal sur la règle des 6 liens. Exécution 3 relancée avec « atelier » au lieu de « formation » dans le cas d'exemple (auto-check Étape 11) : post de 964 caractères, message 2/2 à 1978 caractères.
 
