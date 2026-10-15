@@ -1,6 +1,6 @@
 # Grille des attendus -- défi 7 « Mon automatisation déconne » (Camille)
 
-Version : 1.0.0
+Version : 1.1.0
 Date : 2026-10-13
 Session : S261013z-ccdd
 Compagnon : `/defi-hebdo-alegria` v1.9.0 (Étape 1, Étape 10.0, Étape 10 bis), `MESSAGES-DISCORD.md`, `DIAGNOSTIC.md`
@@ -32,7 +32,7 @@ Ce qu'il faut faire : « Trouver les 3 problèmes de ce scénario ; Expliquer la
 | « par message (pas de PDF ou de document !) » | - | 2 messages texte, 1548 et 1736 caractères (`LC_ALL=C.UTF-8 wc -m` moins le saut de ligne final) | fait |
 | « 15 points de participation + 15 points de réussite » | 30 | Les 3 consignes rendues dans l'ordre demandé | fait |
 | Indice | - | Les 2 précisions de Camille sont exploitées (Statut vide -> Problème 3 ; plusieurs centres -> Problème 2) | fait |
-| « Ouvert jusqu'au 16/10/2026 à 17h00. Poste ta réponse dans ce fil » | - | À poster par David dans le fil du salon `défi-hebdomadaire` | à poster (David) |
+| « Ouvert jusqu'au 16/10/2026 à 17h00. Poste ta réponse dans ce fil » | - | Postés par David le 15/10/2026 dans le fil du salon `défi-hebdomadaire`, avant la limite | fait |
 
 ## Écarts assumés
 
@@ -44,7 +44,7 @@ Ce qu'il faut faire : « Trouver les 3 problèmes de ce scénario ; Expliquer la
 
 -> « Depuis mardi » : la cause du changement à cette date (ajout du module 5, changement du champ déclencheur) n'est pas connue ; la réponse ne l'invente pas.
 
--> Les remarques destinées aux autres participants ne sont pas archivées ici (pseudonymes de membres dans un repo public).
+-> Les remarques destinées aux autres participants ne sont pas archivées ici (pseudonymes de membres dans un repo public). Rédigées, mais non postées : choix de David le 15/10, faute de temps.
 
 ## Auto-check Étape 11 (skill v1.9.0)
 
