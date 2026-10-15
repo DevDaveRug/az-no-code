@@ -1,17 +1,19 @@
 # Messages Discord -- défi 7 « Mon automatisation déconne »
 
-Version : 1.0.0
+Version : 1.1.0
 Date : 2026-10-13
 Session : S261013z-ccdd
 Compagnon : `ATTENDUS.md`, `DIAGNOSTIC.md`, `/defi-hebdo-alegria` v1.9.0
 
-Archive des messages tels qu'ils sont à poster. Défi de type texte : aucun lien, aucune base, aucun code ; la règle des 6 liens ne s'applique pas (Étape 10 bis).
+Archive des messages tels qu'ils ont été postés. Défi de type texte : aucun lien, aucune base, aucun code ; la règle des 6 liens ne s'applique pas (Étape 10 bis).
 
 Comptage : `LC_ALL=C.UTF-8 wc -m` moins le saut de ligne final. Les `**` sont le gras Discord.
 
 ## Message 1 : fil du projet (livrable noté)
 
-Statut : **à poster** dans le fil « Mon automatisation déconne » du salon `défi-hebdomadaire`, avant le 16/10/2026 17h00. Deux messages à la suite.
+Statut : **postés par David le 15/10/2026** dans le fil « Mon automatisation déconne » du salon `défi-hebdomadaire`, avant la limite du 16/10/2026 17h00. Deux messages à la suite.
+
+Fait : messages 1/2 et 2/2 postés dans le fil « Mon automatisation déconne » du salon défi-hebdomadaire
 
 ### 1/2 (1548 caractères)
 
