@@ -1,0 +1,368 @@
+{
+  "objet": "Sauvegarde avant suppression de la table NocoDB AZ_Clients",
+  "date": "2026-10-17",
+  "session": "S261006z-ccweb",
+  "instance": "https://sb-nocodb.coolify.salescloser.fr",
+  "base": {
+    "id": "phwalskbrftv4o4",
+    "titre": "Sales Closer Souverain"
+  },
+  "table": {
+    "id": "my2gc6wwrlaqlh2",
+    "titre": "AZ_Clients"
+  },
+  "raison": "Table remplacee par SC_Prospects (table de personnes unique). Les 7 missions et les 10 demandes portent toutes leur lien Prospect, verifie par API juste avant la suppression.",
+  "retour_arriere": "NocoDB n'a pas de corbeille pour une table supprimee. Recreer la table avec les colonnes ci-dessous, puis reinjecter enregistrements par POST /api/v2/tables/<nouvelId>/records. Donnees d'origine aussi dans defis/demandes-clients-urgentes/import-csv/clients.csv.",
+  "colonnes": [
+    {
+      "id": "cynffyx8xtqxghp",
+      "title": "Id",
+      "uidt": "ID",
+      "pv": null,
+      "system": 0
+    },
+    {
+      "id": "c5takhynd9s97c2",
+      "title": "CreatedAt",
+      "uidt": "CreatedTime",
+      "pv": null,
+      "system": 1
+    },
+    {
+      "id": "c0xuc201zzwidtb",
+      "title": "UpdatedAt",
+      "uidt": "LastModifiedTime",
+      "pv": null,
+      "system": 1
+    },
+    {
+      "id": "cz8z7a32yd6mg7m",
+      "title": "nc_created_by",
+      "uidt": "CreatedBy",
+      "pv": null,
+      "system": 1
+    },
+    {
+      "id": "cqadgcxrgee4j8v",
+      "title": "nc_updated_by",
+      "uidt": "LastModifiedBy",
+      "pv": null,
+      "system": 1
+    },
+    {
+      "id": "crqovu4ksd21qdw",
+      "title": "nc_order",
+      "uidt": "Order",
+      "pv": null,
+      "system": 1
+    },
+    {
+      "id": "cziqa4resfnoj42",
+      "title": "__nc_deleted",
+      "uidt": "Deleted",
+      "pv": null,
+      "system": 1
+    },
+    {
+      "id": "c5x2madwt4exff6",
+      "title": "Nom",
+      "uidt": "SingleLineText",
+      "pv": 1,
+      "system": null
+    },
+    {
+      "id": "c1yrnt0fomnpz02",
+      "title": "Email",
+      "uidt": "SingleLineText",
+      "pv": null,
+      "system": null
+    },
+    {
+      "id": "cfyqvt7ijmn0jt1",
+      "title": "Telephone",
+      "uidt": "SingleLineText",
+      "pv": null,
+      "system": null
+    },
+    {
+      "id": "czw2uwrrtgpslj4",
+      "title": "nc_muxb___nc_m2m_AZ_Demandes_AZ_Clients",
+      "uidt": "LinkToAnotherRecord",
+      "pv": null,
+      "system": 1
+    },
+    {
+      "id": "csx4edckhvfhngd",
+      "title": "AZ_Demandes",
+      "uidt": "LinkToAnotherRecord",
+      "pv": null,
+      "system": 0
+    },
+    {
+      "id": "cvv6g21tdqs0xmk",
+      "title": "nc_muxb___nc_m2m_AZ_Clients_SC_Prospects",
+      "uidt": "LinkToAnotherRecord",
+      "pv": null,
+      "system": 1
+    },
+    {
+      "id": "ckh0r3l3eqlto16",
+      "title": "Prospect",
+      "uidt": "Links",
+      "pv": null,
+      "system": 0
+    },
+    {
+      "id": "cknsvqw43wnlc3j",
+      "title": "Missions",
+      "uidt": "Links",
+      "pv": null,
+      "system": null
+    },
+    {
+      "id": "c3azm1u5hefqqxt",
+      "title": "Entreprise",
+      "uidt": "SingleLineText",
+      "pv": null,
+      "system": 0
+    },
+    {
+      "id": "cil1jihu64kkvcd",
+      "title": "CAFacturé",
+      "uidt": "Rollup",
+      "pv": null,
+      "system": 0
+    },
+    {
+      "id": "cfr1djxjg3ont4p",
+      "title": "ResteAFacturer",
+      "uidt": "Rollup",
+      "pv": null,
+      "system": 0
+    },
+    {
+      "id": "cf7xqe8zfywzcwg",
+      "title": "MontantEnCours",
+      "uidt": "Rollup",
+      "pv": null,
+      "system": 0
+    }
+  ],
+  "enregistrements": [
+    {
+      "Id": 1,
+      "CreatedAt": "2026-09-25 04:07:41+00:00",
+      "UpdatedAt": "2026-09-28 23:18:04+00:00",
+      "Nom": "Alice Martin",
+      "Email": "alice.martin@legrand.example",
+      "Telephone": "+33 6 00 00 00 11",
+      "Prospect": 1,
+      "Missions": 3,
+      "Entreprise": "Cabinet Legrand",
+      "CAFacturé": 3000,
+      "ResteAFacturer": 0,
+      "MontantEnCours": 450,
+      "nc_muxb___nc_m2m_AZ_Demandes_AZ_Clients": [
+        {
+          "nc_muxb___AZ_Clients_id": 1,
+          "nc_muxb___AZ_Demandes_id": 1,
+          "nc_order": 1
+        },
+        {
+          "nc_muxb___AZ_Clients_id": 1,
+          "nc_muxb___AZ_Demandes_id": 4,
+          "nc_order": 1
+        },
+        {
+          "nc_muxb___AZ_Clients_id": 1,
+          "nc_muxb___AZ_Demandes_id": 10,
+          "nc_order": 1
+        }
+      ],
+      "AZ_Demandes": [
+        {
+          "Id": 1,
+          "Description": "Changer le logo dans le header du site, la nouvelle version est en pj."
+        },
+        {
+          "Id": 4,
+          "Description": "Le formulaire de contact ne renvoie plus d'email, urgent avant demain."
+        },
+        {
+          "Id": 10,
+          "Description": "Ajouter un pop up cookie conforme RGPD, on a un audit dans 15 jours."
+        }
+      ],
+      "nc_muxb___nc_m2m_AZ_Clients_SC_Prospects": [
+        {
+          "nc_muxb___SC_Prospects_id": 1,
+          "nc_muxb___AZ_Clients_id": 1,
+          "nc_order": 1
+        }
+      ]
+    },
+    {
+      "Id": 2,
+      "CreatedAt": "2026-09-25 04:07:41+00:00",
+      "UpdatedAt": "2026-09-28 23:18:05+00:00",
+      "Nom": "Bob Durand",
+      "Email": "bob.durand@techflow.example",
+      "Telephone": "+33 6 00 00 00 12",
+      "Prospect": 1,
+      "Missions": 1,
+      "Entreprise": "TechFlow SAS",
+      "CAFacturé": 80000,
+      "ResteAFacturer": 0,
+      "MontantEnCours": 0,
+      "nc_muxb___nc_m2m_AZ_Demandes_AZ_Clients": [
+        {
+          "nc_muxb___AZ_Clients_id": 2,
+          "nc_muxb___AZ_Demandes_id": 2,
+          "nc_order": 1
+        },
+        {
+          "nc_muxb___AZ_Clients_id": 2,
+          "nc_muxb___AZ_Demandes_id": 7,
+          "nc_order": 1
+        }
+      ],
+      "AZ_Demandes": [
+        {
+          "Id": 2,
+          "Description": "Ajouter un bouton Contact dans le menu mobile, il manque depuis la refonte."
+        },
+        {
+          "Id": 7,
+          "Description": "Peux tu me faire une version anglaise de la page tarifs ?"
+        }
+      ],
+      "nc_muxb___nc_m2m_AZ_Clients_SC_Prospects": [
+        {
+          "nc_muxb___SC_Prospects_id": 2,
+          "nc_muxb___AZ_Clients_id": 2,
+          "nc_order": 1
+        }
+      ]
+    },
+    {
+      "Id": 3,
+      "CreatedAt": "2026-09-25 04:07:41+00:00",
+      "UpdatedAt": "2026-09-28 23:18:06+00:00",
+      "Nom": "Chloe Dubois",
+      "Email": "chloe.dubois@studio-zenith.example",
+      "Telephone": "+33 6 00 00 00 13",
+      "Prospect": 1,
+      "Missions": 1,
+      "Entreprise": "Studio Zenith",
+      "CAFacturé": 0,
+      "ResteAFacturer": 0,
+      "MontantEnCours": 1200,
+      "nc_muxb___nc_m2m_AZ_Demandes_AZ_Clients": [
+        {
+          "nc_muxb___AZ_Clients_id": 3,
+          "nc_muxb___AZ_Demandes_id": 3,
+          "nc_order": 1
+        },
+        {
+          "nc_muxb___AZ_Clients_id": 3,
+          "nc_muxb___AZ_Demandes_id": 8,
+          "nc_order": 1
+        }
+      ],
+      "AZ_Demandes": [
+        {
+          "Id": 3,
+          "Description": "Corriger la fonte du prix sur la landing, elle passe en Comic Sans en prod."
+        },
+        {
+          "Id": 8,
+          "Description": "Refresh du menu principal, on veut inverser l'ordre de 2 items."
+        }
+      ],
+      "nc_muxb___nc_m2m_AZ_Clients_SC_Prospects": [
+        {
+          "nc_muxb___SC_Prospects_id": 3,
+          "nc_muxb___AZ_Clients_id": 3,
+          "nc_order": 1
+        }
+      ]
+    },
+    {
+      "Id": 4,
+      "CreatedAt": "2026-09-25 04:07:41+00:00",
+      "UpdatedAt": "2026-09-28 23:18:06+00:00",
+      "Nom": "Emma Petit",
+      "Email": "emma.petit@marketpro.example",
+      "Telephone": "+33 6 00 00 00 14",
+      "Prospect": 1,
+      "Missions": 1,
+      "Entreprise": "MarketPro",
+      "CAFacturé": 0,
+      "ResteAFacturer": 3200,
+      "MontantEnCours": 0,
+      "nc_muxb___nc_m2m_AZ_Demandes_AZ_Clients": [
+        {
+          "nc_muxb___AZ_Clients_id": 4,
+          "nc_muxb___AZ_Demandes_id": 5,
+          "nc_order": 1
+        },
+        {
+          "nc_muxb___AZ_Clients_id": 4,
+          "nc_muxb___AZ_Demandes_id": 9,
+          "nc_order": 1
+        }
+      ],
+      "AZ_Demandes": [
+        {
+          "Id": 5,
+          "Description": "Retirer un ancien post du blog qui reference un partenariat termine."
+        },
+        {
+          "Id": 9,
+          "Description": "La photo hero est pixellisee sur mobile, elle prend toute la largeur mal."
+        }
+      ],
+      "nc_muxb___nc_m2m_AZ_Clients_SC_Prospects": [
+        {
+          "nc_muxb___SC_Prospects_id": 4,
+          "nc_muxb___AZ_Clients_id": 4,
+          "nc_order": 1
+        }
+      ]
+    },
+    {
+      "Id": 5,
+      "CreatedAt": "2026-09-25 04:07:41+00:00",
+      "UpdatedAt": "2026-09-28 23:18:07+00:00",
+      "Nom": "Fabien Roux",
+      "Email": "fabien.roux@atelier-nord.example",
+      "Telephone": "+33 6 00 00 00 15",
+      "Prospect": 1,
+      "Missions": 1,
+      "Entreprise": "Atelier Nord",
+      "CAFacturé": 0,
+      "ResteAFacturer": 0,
+      "MontantEnCours": 0,
+      "nc_muxb___nc_m2m_AZ_Demandes_AZ_Clients": [
+        {
+          "nc_muxb___AZ_Clients_id": 5,
+          "nc_muxb___AZ_Demandes_id": 6,
+          "nc_order": 1
+        }
+      ],
+      "AZ_Demandes": [
+        {
+          "Id": 6,
+          "Description": "Ajouter un lien vers ma nouvelle chaine YouTube dans le footer."
+        }
+      ],
+      "nc_muxb___nc_m2m_AZ_Clients_SC_Prospects": [
+        {
+          "nc_muxb___SC_Prospects_id": 5,
+          "nc_muxb___AZ_Clients_id": 5,
+          "nc_order": 1
+        }
+      ]
+    }
+  ]
+}
