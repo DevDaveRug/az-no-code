@@ -1,7 +1,7 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.3.1
-Date : 2026-10-05
+Version : 1.3.4
+Date : 2026-10-17
 Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
 
@@ -95,6 +95,8 @@ Pièges constatés au montage (02/10, capture David) :
 
 -> Sélecteur « Utiliser les données de... » : colonne de gauche = la source, colonne de droite = le champ. Pour tout ce que le contact a tapé (prénom, nom, e-mail, téléphone) et pour l'ID de la demande : source « Lorsqu'une entrée correspond aux conditions ». Pour le contact trouvé : source « Rechercher des entrées ». Pour le contact créé : source « Créer une entrée ». Jamais « Structure de la base » (liste les tables et leurs identifiants, pas les données). `Statut` et `Source` se choisissent directement dans leur liste, sans « + »
 
+-> Champ `Prospect` des 2 actions « Mettre à jour l'entrée » (constaté le 17/10) : dans « Utiliser les données de... », colonne de GAUCHE = l'étape qui a produit la donnée, colonne de DROITE = la donnée. Branche `length = 0` : gauche « Créer une entrée », droite « Airtable record ID ». Branche « Otherwise » : gauche « Rechercher des entrées », droite (faire défiler sous « List Properties ») « Airtable record ID ». Contrôle : l'étiquette insérée affiche « Airtable record ID ». Si elle affiche « ID de champ fld... », c'est « Structure de la base » qui a été prise : supprimer l'étiquette et recommencer (le lien viserait un enregistrement nommé `fld...`, inexistant)
+
 -> 2e branche du groupe : « + Ajouter une condition » crée un « Otherwise if » qui demande une condition. Condition à mettre : `Records` (de « Rechercher des entrées ») -> `length` -> `=` -> `0`. Elle couvre exactement le cas « aucun contact trouvé »
 
 -> Triangle rouge sur le déclencheur : normal tant qu'aucune demande ne remplit les conditions (les 10 demandes existantes ont déjà leur contact, vérifié par API le 02/10). Il disparaît après le 1er test avec une demande soumise par le formulaire
@@ -114,6 +116,15 @@ Pièges constatés au montage (02/10, capture David) :
    f- Historique des exécutions (Run history) : 2 exécutions vertes.
 
    g- Nettoyage : CC vérifie par API puis supprime les demandes et la fiche de test sur le Go de David.
+
+**Validé le 17/10/2026 (vérifié par API)** : automatisation « Demande urgente : rattacher le contact » activée. Branche `length = 0` : contact `RATTACHEMENT Test` créé (`recbgk0zsVO6hCpcf`, Statut Nouveau, Source Site) et demande `recNZTjLGVppv6bKI` reliée. Branche Otherwise : formulaire « TEST 3 » au même e-mail -> demande `recZmSF7hGywMhA8U` reliée à la même fiche, aucune nouvelle fiche (exécution 10h29 verte). La demande « TEST 2 » (`recowOoeXwj1OOQ9y`) est restée sans lien : exécutée avant la correction de l'étiquette `Prospect` (venait du déclencheur au lieu de « Rechercher des entrées »). Nettoyage fait le 17/10 sur Go de David (API) :
+
+```bash
+curl -s "${AH[@]}" -X DELETE "$AT/$AB/AZ_Demandes?records%5B%5D=recNZTjLGVppv6bKI&records%5B%5D=recowOoeXwj1OOQ9y&records%5B%5D=recZmSF7hGywMhA8U"
+curl -s "${AH[@]}" -X DELETE "$AT/$AB/SC_Prospects/recbgk0zsVO6hCpcf"
+```
+
+Réponses : `deleted: true` x 4. Contrôle : `AZ_Demandes` 10 enregistrements, `SC_Prospects` 8, aucune fiche `test.rattachement@exemple.fr`. Retour arrière : corbeille de la base (Trash), sauvegarde JSON des 4 enregistrements prise juste avant (journal de session).
 
 Si le groupe conditionnel n'est pas proposé par ton offre Airtable, le dire à CC : le rattachement passe alors par n8n (même logique que NocoDB).
 
@@ -233,6 +244,12 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.3.4 -- 2026-10-17 (S163z-ccweb) : données de test de l'automatisation du projet 4 supprimées sur Go de David (trace).
+
+-> 1.3.3 -- 2026-10-17 (S163z-ccweb) : automatisation du projet 4 validée sur les 2 branches (trace API), nettoyage en attente du Go de David.
+
+-> 1.3.2 -- 2026-10-17 (S163z-ccweb) : piège « Structure de la base » sur le champ `Prospect` des actions « Mettre à jour l'entrée », source exacte par branche (colonne gauche / droite) et contrôle de l'étiquette.
 
 -> 1.3.1 -- 2026-10-05 (S163z-ccweb) : « Quantité » (libellé français du Count) ; colonnes visibles de la vue « Clients et CA » ; cumuls vérifiés ; étape 6 (champ texte `AZ_Missions` résiduel dans `SC_Prospects`) ; état des suppressions.
 
