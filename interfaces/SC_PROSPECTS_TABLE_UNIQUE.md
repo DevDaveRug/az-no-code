@@ -209,6 +209,26 @@ Dupliquer la vue de travail, masquer dans la copie `Email`, `Téléphone` et `No
 
 Envoyer les 5 liens à CC : il les reporte dans `AZ_Portfolio` et dans les messages Discord.
 
+#### Fait le 17/10/2026 : les 5 liens sont posés
+
+| Projet | Table et vue | Lien partagé |
+|---|---|---|
+| 1 | `SC_Prospects` / « Prospects partagée » | `shr0rBkW1tzUUP8iM` |
+| 2 | `SC_CRs_de_RDV` / « Récents » | `shrBANd0o3QrTlOMr` |
+| 3 | `AZ_Inscrits` / « Par masterclass partagée » | `shrPkZvY8ePkGIKTj` |
+| 4 | `AZ_Demandes` / « Urgentes en premier partagée » | `shr4i0jd3dnKl1gbz` |
+| 5 | `SC_Prospects` / « Clients et CA partagée » | `shrACptSkNeVSZWxr` |
+
+Écrits par API dans `AZ_Portfolio.Lien_Airtable_Base` (`typecast: false`), relus ligne par ligne, et les 5 répondent en HTTP 200 sans compte. Retour arrière : `PATCH` du même champ à vide.
+
+**Les colonnes à masquer ne sont pas les mêmes partout, et une consigne générique fait perdre du temps** : `SC_CRs_de_RDV` ne porte ni `Email` ni `Téléphone` ni `Notes`, donc rien à masquer et pas de duplication (la vue d'origine se partage telle quelle) ; `AZ_Inscrits` n'a que `Email` et `Notes` ; `AZ_Demandes` a `EmailClientTemp` et `TelephoneClientTemp`, pas d'`Email` tout court. Vérifier les champs de la table **avant** d'écrire la consigne.
+
+**Une vue partagée qui s'affiche blanche n'est presque jamais un problème de lien.** Constaté le 17/10 : page blanche sous Brave, cause réelle = l'extension **NoScript**. Le bon réflexe est d'ouvrir le lien dans un autre navigateur avant de toucher aux « Paramètres du lien ». Signe qui confirme : la page répond HTTP 200 avec 310 Ko de HTML, mais ce HTML ne contient **aucune** donnée (ni identifiant de base, ni de vue) -- tout se charge par un second appel, et c'est lui qui est bloqué.
+
+**Décision du 17/10 (Val David)** : on garde les vues partagées pour `Lien_Airtable_Base`. Airtable propose désormais de publier des **pages d'interface**, plus présentables qu'une grille ; elles sont retenues comme montée en gamme future de `Lien_Airtable_Demo`, pas comme remplacement. Raison : `Lien_Airtable_Base` doit montrer la **structure** de la base, qui est le sujet pour un public Alegria ; une page d'interface vise le prospect en rendez-vous.
+
+**Décision du 17/10 (Val David) sur le partage NocoDB `22ca37d4`** : au lieu de le couper en silence, poster un **nouveau message dans Discord avec les nouveaux liens**, avertir de l'obsolescence dans les anciens messages, et couper ensuite. Les anciens messages sont noyés dans la masse et peu relus. Ordre imposé : nouveau lien, nouveau message, avertissement, puis coupure.
+
 ### 7- Suppressions (seulement après 1 à 4)
 
 Principe : d'abord tout ce qui **lit** l'ancien lien (vues, automatisations, interfaces) passe sur `Prospect`, ensuite seulement on supprime. Airtable ne recalcule pas une vue groupée sur un champ supprimé : elle perd son regroupement.
@@ -344,6 +364,8 @@ Les 10 CR existants rendent exactement comme avant : aucun n'avait de date vide,
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.6.0 -- 2026-10-17 (S261006z-ccweb, suite 3) : §6 -- **les 5 vues partagées sont faites**, table des liens, écriture par API relue, les 5 répondent en HTTP 200 sans compte. Trois enseignements consignés : les colonnes à masquer diffèrent d'une table à l'autre et une consigne générique fait perdre du temps ; une vue partagée blanche vient d'un bloqueur de scripts (NoScript constaté), pas du lien ; deux décisions de David -- les pages d'interface Airtable sont retenues pour `Lien_Airtable_Demo` plus tard et non en remplacement des vues, et le partage `22ca37d4` sera remplacé par un nouveau message Discord avant d'être coupé.
 
 -> 1.5.0 -- 2026-10-17 (S261006z-ccweb, suite 3) : nouveau **§I.8, mode d'emploi de l'automatisation du projet 3** (inscriptions masterclass), sur le modele valide du projet 4. Porte les trois differences qui cassent une recopie aveugle : le lien s'appelle `Prospects` au pluriel, les champs sas n'ont pas le suffixe `Temp` et il n'y a pas de telephone mais une `Entreprise`, et **une automatisation tourne deja sur cette table** -- si elle se declenche sur modification, poser le lien enverra un second e-mail de confirmation. Porte aussi les deux corrections de donnees a faire AVANT le montage : l'e-mail incoherent de Karim Bouziane, qui ferait un doublon, et les deux inscriptions sans contact, qui servent de banc d'essai a la branche creation.
 
