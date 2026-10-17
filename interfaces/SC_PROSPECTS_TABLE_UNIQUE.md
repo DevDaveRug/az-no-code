@@ -1,6 +1,6 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.3.2
+Version : 1.3.3
 Date : 2026-10-17
 Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
@@ -116,6 +116,8 @@ Pièges constatés au montage (02/10, capture David) :
    f- Historique des exécutions (Run history) : 2 exécutions vertes.
 
    g- Nettoyage : CC vérifie par API puis supprime les demandes et la fiche de test sur le Go de David.
+
+**Validé le 17/10/2026 (vérifié par API)** : automatisation « Demande urgente : rattacher le contact » activée. Branche `length = 0` : contact `RATTACHEMENT Test` créé (`recbgk0zsVO6hCpcf`, Statut Nouveau, Source Site) et demande `recNZTjLGVppv6bKI` reliée. Branche Otherwise : formulaire « TEST 3 » au même e-mail -> demande `recZmSF7hGywMhA8U` reliée à la même fiche, aucune nouvelle fiche (exécution 10h29 verte). La demande « TEST 2 » (`recowOoeXwj1OOQ9y`) est restée sans lien : exécutée avant la correction de l'étiquette `Prospect` (venait du déclencheur au lieu de « Rechercher des entrées »). Nettoyage des 3 demandes et de la fiche de test : sur Go de David.
 
 Si le groupe conditionnel n'est pas proposé par ton offre Airtable, le dire à CC : le rattachement passe alors par n8n (même logique que NocoDB).
 
@@ -235,6 +237,8 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.3.3 -- 2026-10-17 (S163z-ccweb) : automatisation du projet 4 validée sur les 2 branches (trace API), nettoyage en attente du Go de David.
 
 -> 1.3.2 -- 2026-10-17 (S163z-ccweb) : piège « Structure de la base » sur le champ `Prospect` des actions « Mettre à jour l'entrée », source exacte par branche (colonne gauche / droite) et contrôle de l'étiquette.
 
