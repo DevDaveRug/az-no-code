@@ -1,8 +1,8 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.3.4
+Version : 1.4.0
 Date : 2026-10-17
-Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
+Session : S163z-ccweb, puis S261006z-ccweb (suite 3) (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
 
 ## La règle
@@ -175,7 +175,7 @@ Principe : d'abord tout ce qui **lit** l'ancien lien (vues, automatisations, int
 
 6- `SC_Prospects` : supprimer le champ texte `AZ_Missions`, reste vide de l'étape 4 (Airtable convertit en texte le symétrique d'un lien supprimé).
 
-État au 05/10 (API) : étapes 1, 3, 4, 5 faites par David ; reste l'étape 6.
+État au 17/10 (API) : **les 6 étapes sont faites**. `AZ_Clients` n'existe plus dans la base, `AZ_Missions` n'a plus de champ `Client`, et le champ texte résiduel `AZ_Missions` a disparu de `SC_Prospects`. Le « reste l'étape 6 » du 05/10 était périmé.
 
 Vérifié par API le 05/10 : les 7 missions et les 10 demandes d'origine ont leur lien `Prospect`, rien ne se perd. Retour arrière : corbeille de la base (Trash) pour restaurer un champ ou une table supprimés ; données d'origine aussi dans `defis/demandes-clients-urgentes/import-csv/clients.csv`.
 
@@ -227,13 +227,63 @@ Réponses : 10 enregistrements Airtable, `[{"Id":1},...,{"Id":10}]` NocoDB. GET 
 
 Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automatisation de mise en forme du CR peut le lire. Il sera retiré en S170z après vérification.
 
-### En attente du Go de David
+### Fait par API le 17/10/2026, sur Go de David (trace et retour arrière)
 
--> Suppression de la table `AZ_Clients` (`my2gc6wwrlaqlh2`) : retire aussi les liens `Client` de `AZ_Missions` et `AZ_Demandes`, le lien `AZ_Clients` de `SC_Prospects` et le partage `ebd6edc5`. Vérifié par API : 7 missions sur 7 et 10 demandes sur 10 ont leur lien `Prospect`.
+-> **Sauvegarde d'abord, poussée sur le remote avant toute destruction** : `interfaces/261017_AZNcIn_Sauvegarde-AZ_Clients-NocoDB.json` porte les 5 enregistrements, les 19 colonnes et la procédure de recréation. Il n'y a **pas de corbeille NocoDB** pour une table supprimée : sans ce fichier, rien n'est récupérable.
 
--> Désactivation du partage de la base entière `22ca37d4` (plus utilisé par le portfolio depuis le 30/09).
+-> **Contrôle passé juste avant** : 7 missions sur 7 et 10 demandes sur 10 portaient leur lien `Prospect`. Rien ne s'est perdu.
 
--> Retour arrière : pas de corbeille NocoDB pour une table supprimée ; sauvegarde JSON des 5 enregistrements prise par CC juste avant la suppression, versionnée ici.
+-> `DELETE /api/v2/meta/views/vwdjor0cywxw7ztv/share` -> partage `ebd6edc5` supprimé.
+
+-> `DELETE /api/v2/meta/tables/my2gc6wwrlaqlh2` -> table `AZ_Clients` supprimée.
+
+-> **La suppression ne retire pas les liens, elle les convertit** (le guide annonçait l'inverse) : `AZ_Missions.Client`, `AZ_Demandes.Client` et `SC_Prospects.AZ_Clients` sont devenues des colonnes `SingleLineText` **ayant gardé les noms**. Même comportement qu'Airtable au §7 étape 6. Les 17 valeurs ont été ajoutées à la sauvegarde, puis les 3 colonnes supprimées (`DELETE /api/v2/meta/columns/{crc3w1w9uhqbqc6,c5ss51nt77najkt,c1j838sefngkase}`).
+
+-> Contrôle final : 7 missions, 10 demandes, 8 prospects, aucun résidu, aucun lien `Prospect` manquant.
+
+### Partage de la base entière `22ca37d4` : NON désactivé, et il ne doit pas l'être tel quel
+
+Le Go portait aussi sur ce partage, décrit ici comme « plus utilisé par le portfolio depuis le 30/09 ». **C'est vrai pour la table `AZ_Portfolio` et faux pour le reste** : l'UUID est cité comme lien public vivant dans les SPECS des projets 1, 2, 3 et 5 (« URL publique unifiée, partagée par les 4 défis ») et dans le README du projet 4, et `SESSION_DECISIONS_260927z` précise qu'il avait été **préservé exprès** pour que l'URL Discord du défi 4 continue de fonctionner.
+
+Le désactiver casse donc un lien posté chez Alegria. À traiter comme une migration (nouveau lien, édition des messages Discord, mise à jour des 6 références), pas comme un nettoyage.
+
+### Vérifié par API et non lisible autrement
+
+-> La configuration d'un **formulaire Airtable** n'est pas exposée : `pagBUbRHnk0WYY4yM` est une page d'interface, absente de la liste des vues, et `GET /meta/bases/{base}/views/pag...` répond 404. Testé le 17/10. Cette vérification passe par l'écran de David.
+
+-> La **création de vue par API** ne marche pas sur cette base : `POST /meta/bases/{base}/tables/{table}/views` répond 422 sur les 4 formes essayées, y compris la minimale `{"name","type":"grid"}`. L'endpoint existe (il répondrait 404 sinon) mais refuse. Les 5 vues du §6 restent manuelles.
+
+-> La **modification d'une formule par API fonctionne** : `PATCH /meta/bases/{base}/tables/{table}/fields/{field}` avec `{"options":{"formula":...}}` renvoie 200 et `isValid: true`.
+
+## II-bis- Formules et rattachements : trois défauts relevés le 17/10
+
+### 1- Le séparateur orphelin, et la seule autre table concernée
+
+`SC_Prospects.NOM Complet` affichait « NOM Prénom - » quand l'entreprise est vide, cas normal d'un contact créé par un formulaire public. David a corrigé lui-même :
+
+```
+UPPER({Nom}) & " " & {Prénom} & IF({Entreprise}, " - " & {Entreprise})
+```
+
+Les 9 autres formules de la base ont été relues. **Une seule portait le même défaut** : `SC_CRs_de_RDV.Nom Complet` gardait le « - » quand `Date RDV` est vide, parce que le `IF` protégeait `Interlocuteur` et pas la date. Corrigée par API le 17/10 :
+
+```
+IF({Interlocuteur},
+   {Interlocuteur} & IF({Date RDV}, " - " & DATETIME_FORMAT({Date RDV}, "DD/MM/YYYY")),
+   "CR du " & DATETIME_FORMAT(CREATED_TIME(), "DD/MM/YYYY HH:mm"))
+```
+
+Les 10 CR existants rendent exactement comme avant : aucun n'avait de date vide, la garde ne sert donc que pour la suite. Retour arrière : même `PATCH` avec l'ancienne formule.
+
+`AZ_Portfolio.Nom du projet` (`"Projet " & {Numéro} & " - " & {Slug}`) porte aussi un séparateur en dur mais n'est pas concerné : les 5 lignes ont leurs deux champs remplis, et c'est une table interne.
+
+### 2- Une colonne primaire vide n'est pas un bug d'Airtable, c'est un rattachement manquant
+
+`AZ_Inscrits.Nom complet` est une **formule** qui vaut `{Prospects}`, rien de plus : elle recopie le lien. Pas de lien, cellule vide. Deux inscriptions sur sept sont dans ce cas, `jp.hartmann@techflow.example` et `c.renaud@zenith.example`, et **ni l'un ni l'autre n'existe dans `SC_Prospects`**. C'est le trou que l'automatisation du projet 3 doit boucher, sur le modèle du projet 4.
+
+### 3- Un rattachement posé à la main, qui créerait un doublon
+
+`BOUZIANE Karim - BTP+` est bien relié, mais sa fiche `SC_Prospects` porte `k.bouziane@legrand.example` quand son inscription porte `k.bouziane@btp.example`. Le lien a donc été posé manuellement. Une automatisation de rattachement par e-mail ne le retrouverait pas et **créerait un second contact**. `legrand` est le domaine d'Alice Martin : vraisemblablement un copier-coller dans les données de démo, à corriger avant de brancher l'automatisation du projet 3.
 
 ## III- Code (session S170z)
 
@@ -244,6 +294,8 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.4.0 -- 2026-10-17 (S261006z-ccweb, suite 3) : **P2 NocoDB exécuté sur Go de David** -- sauvegarde JSON poussée avant destruction, table `AZ_Clients` et partage `ebd6edc5` supprimés, 3 colonnes résiduelles converties en texte puis retirées (la suppression d'une table NocoDB **convertit** les liens, elle ne les retire pas, contrairement à ce que ce guide annonçait). **Partage de base `22ca37d4` NON désactivé** : il est cité comme lien public vivant dans 6 fichiers du repo et avait été préservé exprès pour l'URL Discord du défi 4 -- le désactiver casse un lien posté chez Alegria, c'est une migration, pas un nettoyage. §7 Airtable : les 6 étapes sont faites, le « reste l'étape 6 » du 05/10 était périmé. Nouveau §II-bis : la formule `SC_CRs_de_RDV.Nom Complet` portait le même « - » orphelin que `NOM Complet` et est corrigée ; 2 inscriptions sur 7 sans contact rattaché ; e-mail incohérent de Karim Bouziane qui ferait un doublon. Trois limites d'API établies par test : configuration de formulaire illisible, création de vue refusée (422), modification de formule possible (200).
 
 -> 1.3.4 -- 2026-10-17 (S163z-ccweb) : données de test de l'automatisation du projet 4 supprimées sur Go de David (trace).
 
