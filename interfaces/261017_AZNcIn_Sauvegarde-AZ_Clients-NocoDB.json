@@ -364,5 +364,104 @@
         }
       ]
     }
-  ]
+  ],
+  "colonnes_residuelles_supprimees": {
+    "explication": "La suppression de la table a converti les liens Client en colonnes texte, qui ont garde les noms. Elles font doublon avec le lien Prospect et sont retirees dans la foulee. Valeurs conservees ici.",
+    "colonnes": [
+      "AZ_Missions.Client (crc3w1w9uhqbqc6)",
+      "AZ_Demandes.Client (c5ss51nt77najkt)",
+      "SC_Prospects.AZ_Clients (c1j838sefngkase, vide)"
+    ],
+    "valeurs": {
+      "AZ_Missions": [
+        {
+          "Id": 1,
+          "Client_texte": "Alice Martin",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 2,
+          "Client_texte": "Bob Durand",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 3,
+          "Client_texte": "Alice Martin",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 4,
+          "Client_texte": "Chloe Dubois",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 5,
+          "Client_texte": "Alice Martin",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 6,
+          "Client_texte": "Emma Petit",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 7,
+          "Client_texte": "Fabien Roux",
+          "Prospect_lien": null
+        }
+      ],
+      "AZ_Demandes": [
+        {
+          "Id": 1,
+          "Client_texte": "Alice Martin",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 2,
+          "Client_texte": "Bob Durand",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 3,
+          "Client_texte": "Chloe Dubois",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 4,
+          "Client_texte": "Alice Martin",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 5,
+          "Client_texte": "Emma Petit",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 6,
+          "Client_texte": "Fabien Roux",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 7,
+          "Client_texte": "Bob Durand",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 8,
+          "Client_texte": "Chloe Dubois",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 9,
+          "Client_texte": "Emma Petit",
+          "Prospect_lien": null
+        },
+        {
+          "Id": 10,
+          "Client_texte": "Alice Martin",
+          "Prospect_lien": null
+        }
+      ]
+    }
+  }
 }
