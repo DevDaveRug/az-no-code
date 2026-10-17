@@ -1,7 +1,7 @@
 # Une seule table de personnes : SC_Prospects -- guide d'uniformisation des 3 formats
 
-Version : 1.3.1
-Date : 2026-10-05
+Version : 1.3.2
+Date : 2026-10-17
 Session : S163z-ccweb (Cor David : « sélectionner un client ou un prospect et en ajouter un, il me faut ça partout »)
 Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ_PORTFOLIO_INTERFACE.md`
 
@@ -94,6 +94,8 @@ Pièges constatés au montage (02/10, capture David) :
 -> Valeur tapée au clavier : si le résumé de l'étape affiche `Lorsque Email est "EmailClientTemp"` (entre guillemets), le mot a été tapé comme du texte ; la recherche porte alors sur le mot « EmailClientTemp » et ne trouve jamais personne. Une valeur dynamique s'insère uniquement par le « + » et apparaît comme une étiquette colorée
 
 -> Sélecteur « Utiliser les données de... » : colonne de gauche = la source, colonne de droite = le champ. Pour tout ce que le contact a tapé (prénom, nom, e-mail, téléphone) et pour l'ID de la demande : source « Lorsqu'une entrée correspond aux conditions ». Pour le contact trouvé : source « Rechercher des entrées ». Pour le contact créé : source « Créer une entrée ». Jamais « Structure de la base » (liste les tables et leurs identifiants, pas les données). `Statut` et `Source` se choisissent directement dans leur liste, sans « + »
+
+-> Champ `Prospect` des 2 actions « Mettre à jour l'entrée » (constaté le 17/10) : dans « Utiliser les données de... », colonne de GAUCHE = l'étape qui a produit la donnée, colonne de DROITE = la donnée. Branche `length = 0` : gauche « Créer une entrée », droite « Airtable record ID ». Branche « Otherwise » : gauche « Rechercher des entrées », droite (faire défiler sous « List Properties ») « Airtable record ID ». Contrôle : l'étiquette insérée affiche « Airtable record ID ». Si elle affiche « ID de champ fld... », c'est « Structure de la base » qui a été prise : supprimer l'étiquette et recommencer (le lien viserait un enregistrement nommé `fld...`, inexistant)
 
 -> 2e branche du groupe : « + Ajouter une condition » crée un « Otherwise if » qui demande une condition. Condition à mettre : `Records` (de « Rechercher des entrées ») -> `length` -> `=` -> `0`. Elle couvre exactement le cas « aucun contact trouvé »
 
@@ -233,6 +235,8 @@ Le formulaire « Nouveau CR de RDV » garde son champ texte `Client` : l'automat
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.3.2 -- 2026-10-17 (S163z-ccweb) : piège « Structure de la base » sur le champ `Prospect` des actions « Mettre à jour l'entrée », source exacte par branche (colonne gauche / droite) et contrôle de l'étiquette.
 
 -> 1.3.1 -- 2026-10-05 (S163z-ccweb) : « Quantité » (libellé français du Count) ; colonnes visibles de la vue « Clients et CA » ; cumuls vérifiés ; étape 6 (champ texte `AZ_Missions` résiduel dans `SC_Prospects`) ; état des suppressions.
 
