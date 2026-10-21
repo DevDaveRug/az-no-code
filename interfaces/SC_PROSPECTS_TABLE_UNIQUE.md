@@ -35,7 +35,7 @@ Compagnons : `/defi-hebdo-alegria` v1.8.1+ (règle table unique), `interfaces/AZ
 |---|---|---|---|---|
 | Ajouter un prospect (projet 1) | Équipe | `page28aUl1MwHBuqv` : ajouter `Statut` (David) | fait : `Statut` ajouté, liens et cumuls masqués (API) | `/nouveau` : table elle-même |
 | Nouveau CR de RDV (projet 2) | Équipe | `pag5VRfyhBBi1lKfy` : champ `Prospect` + aide (David) | fait : `Prospect` ajouté, obligatoire, aide avec lien (API) | à faire S170z : liste + « + Nouveau prospect » |
-| Inscription masterclass (projet 3) | Prospect | champs nom/e-mail + automatisation (S170z) | champs nom/e-mail + n8n (S170z) | à faire S170z : rattachement par e-mail côté serveur |
+| Inscription masterclass (projet 3) | Prospect | automatisation « Inscription masterclass : rattacher le contact » **faite et activée** (S261019z) | champs nom/e-mail + n8n (S170z) | à faire S170z : rattachement par e-mail côté serveur |
 | Demande urgente (projet 4) | Prospect | automatisation à recibler sur `SC_Prospects` (David) | champs temporaires en place ; rattachement n8n (S170z) | à faire S170z : rattachement par e-mail côté serveur |
 | Nouvelle mission (projet 5) | Équipe | `pagv1Q04c5KbdNJkM` : `Client` -> `Prospect` (David) | fait : `Prospect` libellé « Client », obligatoire, aide avec lien (API) | fait : liste + « + Nouveau client » |
 
@@ -161,6 +161,12 @@ Automations -> + Creer une automatisation, nom « Inscription masterclass : ratt
    -> Sinon (Otherwise) -> « Mettre a jour l'enregistrement », table `AZ_Inscrits`, ID = `Airtable record ID` du declencheur, champ `Prospects` = `Airtable record ID` **des entrees trouvees a l'etape 2**.
 
 Les pieges du §4 valent tous ici, sans exception : source du selecteur (jamais « Structure de la base »), valeur tapee au clavier contre etiquette coloree, colonne de GAUCHE = l'etape, colonne de DROITE = la donnee, et le triangle rouge du declencheur qui est normal tant qu'aucune inscription ne remplit les conditions. Les relire avant de commencer fait gagner le temps qu'ils ont coute au projet 4.
+
+**Fait et active le 21/10/2026 (S261019z-ccweb), deux pieges de plus constates au montage** :
+
+-> **Ne JAMAIS monter la nouvelle automatisation en modifiant le declencheur de celle qui existe deja.** David a modifie en place le declencheur de « Envoi email confirmation inscrit MasterClass » (qui tournait sur « Lorsqu'une entree est creee ») pour y poser les conditions Email/Prospects, puis ajoute Rechercher + groupe conditionnel par-dessus -- resultat : une seule automatisation portant les deux declencheurs intentions, au lieu de deux automatisations separees comme pour le projet 4. Corrige sans tout refaire : **Dupliquer** l'automatisation fusionnee (menu `...`), puis dans une copie restaurer le declencheur d'origine (« Lorsqu'une entree est creee ») et supprimer Rechercher + groupe conditionnel, dans l'autre copie supprimer les actions de confirmation (`Envoyer un e-mail`, `Mettre a jour l'entree / Statut Email`) et garder le reste. Toujours creer la nouvelle automatisation **a part**, jamais en editant celle qui existe.
+
+-> **Vocabulaire d'interface different de celui documente ici** (version Airtable 2026 constatee le 21/10) : l'etiquette a inserer pour lier un champ de type lien ne s'appelle plus « Airtable record ID » dans tous les cas -- sur une action qui lit le resultat de « Rechercher des entrees » (une liste), elle apparait **« List of 'ID de l'entree' -> Premier element »**. Prendre « Airtable record ID » brut sur ce type de source produit une chaine qui ressemble a un ID valide mais qui echoue au test avec `Field "Prospects" cannot accept the provided value: Could not find matching rows for string` -- Airtable l'interprete comme le texte du champ principal, pas comme un identifiant de lien. Controle : l'apercu du test doit afficher le nom du prospect en vert dans le champ lien, pas une erreur rouge.
 
 #### Le test
 
@@ -364,6 +370,8 @@ Les 10 CR existants rendent exactement comme avant : aucun n'avait de date vide,
 -> Chaque projet garde son schéma Neon (`crm`, `masterclass`, `demandes`, `missions`, `public`) : la table de prospects commune côté code est un chantier de feuille de route (schéma partagé `crm` lu par les autres projets).
 
 ## Changelog
+
+-> 1.7.0 -- 2026-10-21 (S261019z-ccweb) : **automatisation du projet 3 faite et activee**, guidage pas a pas de David. Deux pieges de plus consignes au §I.8 : ne jamais monter la nouvelle automatisation en modifiant le declencheur de celle qui existe deja (incident reel, corrige par duplication puis separation sans tout refaire) ; le vocabulaire d'interface a change sur la version Airtable 2026 (« List of 'ID de l'entree' -> Premier element » au lieu de « Airtable record ID » brut sur une source liste). Les deux inscriptions orphelines (jp.hartmann, c.renaud) sont rattachees, l'automatisation de confirmation d'origine restauree et reactivee sans risque de doublon d'e-mail. Tableau d'etat §(au 01/10/2026) mis a jour pour le projet 3.
 
 -> 1.6.0 -- 2026-10-17 (S261006z-ccweb, suite 3) : §6 -- **les 5 vues partagées sont faites**, table des liens, écriture par API relue, les 5 répondent en HTTP 200 sans compte. Trois enseignements consignés : les colonnes à masquer diffèrent d'une table à l'autre et une consigne générique fait perdre du temps ; une vue partagée blanche vient d'un bloqueur de scripts (NoScript constaté), pas du lien ; deux décisions de David -- les pages d'interface Airtable sont retenues pour `Lien_Airtable_Demo` plus tard et non en remplacement des vues, et le partage `22ca37d4` sera remplacé par un nouveau message Discord avant d'être coupé.
 
