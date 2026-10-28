@@ -74,7 +74,7 @@ Une automatisation Airtable poste-lie ces demandes aux `AZ_Clients` existants pa
 
 - **Airtable formulaire public** : https://airtable.com/appTqLo3JDg7d1fak/pagBUbRHnk0WYY4yM/form
 
-- **NocoDB base publique read-only** (dashboard admin, Kanban, Grid urgentes en premier, formulaire complet) : https://sb-nocodb.coolify.salescloser.fr/#/base/22ca37d4-9d7a-4cf2-86ed-6e569babae1d
+- **NocoDB base publique read-only** -- **partage coupé le 27/10/2026 (S261019z-ccweb, décision S261006z-J)**, remplacé par les 5 liens de vues partagées Airtable à jour (`interfaces/SC_PROSPECTS_TABLE_UNIQUE.md` §6, annoncés dans `defis/masterclass-inscriptions/MESSAGES-DISCORD.md`). L'ancienne URL `https://sb-nocodb.coolify.salescloser.fr/#/base/22ca37d4-9d7a-4cf2-86ed-6e569babae1d` ne répond plus.
 
 - **NocoDB formulaire de soumission public read-write** (submission directe, sans navigation admin) : https://sb-nocodb.coolify.salescloser.fr/#/nc/form/1a730f9f-2091-47c5-88e5-3d6f40c145fa
 
