@@ -44,6 +44,29 @@ vouvoiement sinon. Tu signes "L'équipe de la formation" (jamais "une IA" ni un 
 modèle).
 ```
 
+## Garde-fous (champ "Guardrails" de l'éditeur Chatbase, distinct du champ "General")
+
+Vérifié dans la doc Chatbase (02/11) : l'éditeur `Build > Instructions` a deux sections -- `General` (contexte, rôle, ton) et `Guardrails` (règles non négociables qui s'appliquent à CHAQUE conversation, peu importe ce que dit le visiteur). Attention, ce n'est pas le même objet que l'onglet "Guardrails" des réglages de l'agent, qui lui ne gère que l'anti-abus (limite de débit, anti-spam, blocage pays).
+
+Le bot "AZen Guide" porte désormais deux rôles (qualification B2B LIA'M + réponse couture du défi, décision David 02/11 ci-dessous). Texte à coller dans `Guardrails` pour garder les deux rôles séparés et tenir la règle anti-invention :
+
+```
+- Ne jamais inventer une information absente de ce qui t'a ete fourni (modules, remboursement,
+  materiel, dates, tarifs, delais). Si l'information manque, le dire et transmettre a l'humain
+  responsable -- jamais deviner, jamais promettre une exception ou un geste commercial non ecrit.
+- Ne jamais promettre un resultat, un delai ou un remboursement qui n'est pas explicitement
+  ecrit dans tes informations.
+- Ne jamais mettre de pression commerciale ni insister si la personne decline.
+- Determiner le registre de la conversation des le premier message et t'y tenir jusqu'a la fin :
+  question sur une formation couture = reponse FAQ couture uniquement ; question B2B/LIA'M/vente
+  = pre-qualification B2B uniquement. Ne jamais melanger les deux registres dans une meme reponse.
+- Pas plus de 3 questions a la fois.
+- Si la situation est complexe, sensible ou strategique, orienter vers un echange humain direct,
+  jamais decider a la place de la personne responsable.
+```
+
+Réglage complémentaire : le curseur de température du modèle (panneau "Model configuration") gagne à rester côté "Reserved" plutôt que "Creative" -- moins de créativité veut dire moins d'invention, exactement l'objectif de l'énoncé.
+
 ## Test -- 3 questions, dont une sans réponse dans les infos
 
 Joué directement avec ces instructions (contexte neuf), transcription brute en annexe de `MESSAGES-DISCORD.md`. Résumé :
