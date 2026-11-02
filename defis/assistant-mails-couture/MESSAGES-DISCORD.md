@@ -26,9 +26,14 @@ Les 3 échanges complets, instructions prêtes à coller et procédure de mise e
 
 Mesuré : 1835 caractères (`LC_ALL=C.UTF-8 wc -m`, moins le saut de ligne final) -- sous la limite de 2000.
 
-## Message 2 : salon défi-hebdomadaire -- BROUILLON, en attente du lien CTA LIA'M Libre (Cor David 02/11)
+## Message 2 : salon défi-hebdomadaire -- BROUILLON, lien CTA à confirmer (Cor David 02/11)
 
-Statut : brouillon, pas prêt à poster -- il manque le lien CTA pour LIA'M Libre (UQ posée en fin de tour). Décision David : 2 visions, ChatBase (méthode) + LIA'M Libre (offre, 3 places communauté). Jamais nommer "Alegria"/"défi"/"formation" dans ce message (vocabulaire public, CLAUDE.md IV) -- la communauté sait déjà le contexte sans qu'on ait besoin de le nommer.
+Statut : brouillon. Décision David : 2 visions, Chatbase (méthode) + LIA'M Libre (offre, 3 places communauté). Jamais nommer "Alegria"/"défi"/"formation" dans ce message (vocabulaire public, CLAUDE.md IV).
+
+**Vérifié par WebFetch le 02/11** (RACINE règle 6, aucun fait sans source) :
+-> `salescloser.fr` ne porte **aucun** paramètre de tracking `?src=` ni équivalent -- en ajouter un dans un lien ne ferait rien tant que le site n'est pas codé pour le lire. Pas de tracking automatique pour l'instant, à construire en session code si David le veut vraiment.
+-> `salescloser.fr` ne mentionne **nulle part** "LIA'M Libre" -- c'est une offre interne, pas encore publique. Un visiteur qui clique le lien verra l'offre standard LIA'M (500 EUR/mois), pas Libre : l'offre doit donc être annoncée dans le texte du message Discord lui-même, pas sur la page.
+-> `/joignable-partout` est une page réelle du site (répond aux messages clients sur WhatsApp/Telegram/voix, CTA "Essaie, parle-lui") -- le choix de David est confirmé comme le plus proche du sujet du défi parmi les 6 pages existantes.
 
 ++++++
 
@@ -39,11 +44,13 @@ Cette semaine : un assistant qui répond aux mails répétitifs d'une vendeuse d
 1- Chatbase (l'outil que pas mal d'entre vous ont déjà croisé) -> agent conversationnel, pas agent de création : il répond depuis une base de connaissance qu'on lui donne, il n'invente pas. 15 minutes à configurer, gratuit pour démarrer.
    Méthode complète : {LIEN_OU_PROCEDURE_CHATBASE}
 
-2- LIA'M -> même principe, mais chez toi : ton propre moteur, pas un abonnement à vie chez un tiers. 3 places en LIA'M Libre ouvertes pour la communauté : si ça t'intéresse, demande-moi en privé ce que "Libre" veut dire, ou dis-le directement à LIA'M en arrivant sur {LIEN_CTA_LIAM} -- il saura pourquoi tu viens.
+2- LIA'M -> même principe, mais chez toi : ton propre moteur, pas un abonnement à vie chez un tiers. 3 places en LIA'M Libre ouvertes pour la communauté : si ça t'intéresse, teste-le sur https://www.salescloser.fr/joignable-partout, et demande-moi en privé ce que "Libre" veut dire.
 
 Choisis selon où tu en es.
 
 ++++++
+
+**Note technique (02/11)** : pas de `?src=` -- vérifié, le site ne lit aucun paramètre de ce genre aujourd'hui. Le suivi de l'origine "Alegria" passe par le texte du message (qui donne le contexte) et par la mention en privé, pas par un lien traqué. Un vrai tracking se construirait en session code, hors périmètre de ce défi.
 
 ## Message 3 : partage-tes-victoires -- BROUILLON, dépend du Message 2
 
