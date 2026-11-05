@@ -11,11 +11,13 @@
 | "Le tester avec au moins 3 questions d'élèves, dont une à laquelle les infos ne permettent pas de répondre" | barème | Message 1, section "Test" (réponses réelles du bot, 05/11) + annexe `MESSAGES-DISCORD.md` + 3 captures | fait |
 | "Il ne doit dire que ce qui est vrai" (crainte du client sur le remboursement inventé) | barème implicite | 1re ligne du Message 1 + question-test 2 (cas limite 4 modules vus) | fait |
 | "Envoie des captures d'écran de ce que tu as fait" / "Aucun document .docx ou présentation" | format | `captures/` : 3 captures réelles du bot Chatbase (05/11), jointes au Message 1 ; aucun .docx | fait |
-| "La correction sera disponible ce vendredi" + "Ouvert jusqu'au 06/11/2026 à 17h00. Poste ta réponse dans ce fil" | délai, lieu | à poster par David dans le fil | à poster (David) |
+| "La correction sera disponible ce vendredi" + "Ouvert jusqu'au 06/11/2026 à 17h00. Poste ta réponse dans ce fil" | délai, lieu | Message 1 posté par David dans le fil du projet le 05/11, avant l'échéance du 06/11 17h00, 3 captures jointes | fait |
 
 ## Écarts assumés
 
 -> **Captures prises par David, pas par CC (05/11).** CC n'a pas d'accès au compte Chatbase de David : les 3 tests ont été joués par David dans le Playground (conversation neuve à chaque fois), réponses collées dans la session et captures jointes. Écarts constatés entre la simulation du 02/11 et le bot réel : le bot vouvoie (l'élève ne tutoie pas, conforme à la consigne), signe "L'équipe de la formation", et au test 3 ne promet aucun délai ("très vite" de la simulation supprimé). Le bot réel est plus fidèle à la règle anti-invention que la simulation : Message 1 réécrit sur ses vraies réponses, détail en annexe de `MESSAGES-DISCORD.md`.
+
+-> **Messages 2 et 3 corrigés sur le fond avant publication (05/11).** Les brouillons présentaient LIA'M Libre comme "chez toi, ton propre moteur" : faux selon la fiche LIA'M Libre v1.0.3 §V (service hébergé, pas d'infrastructure dédiée), qui est aussi une source du bot. Remplacé par le périmètre réel de la fiche. Méthode Chatbase écrite dans le Message 2 (Val David 05/11) plutôt qu'un lien vers le bot fusionné, qui aurait ouvert aussi la qualification LIA'M au public. Règle des 6 liens de l'Étape 11 : sans objet, l'énoncé ne demande aucune base ni formulaire (Étape 10 bis, voir plus bas).
 
 -> **En-tête des captures : "David Ruggieri IA"**, nom public du widget du bot fusionné (décision David du 02/11), pas un nom de cliente. Rien à flouter : aucune donnée personnelle d'élève dans les tests.
 

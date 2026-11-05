@@ -24,9 +24,9 @@ Testé en vrai dans Chatbase avec 3 questions, dont une sans réponse dans tes i
 
 Mesuré : 1867 caractères (`LC_ALL=C.UTF-8 wc -m` sur le texte entre les deux `++++++`, lignes vides de bord retirées) -- sous la limite de 2000. À poster avec les 3 fichiers de `captures/` joints (énoncé : captures d'écran, pas de document).
 
-## Message 2 : salon défi-hebdomadaire -- BROUILLON, lien CTA à confirmer (Cor David 02/11)
+## Message 2 : salon défi-hebdomadaire -- à poster (méthode en texte, Val David 05/11)
 
-Statut : brouillon. Décision David : 2 visions, Chatbase (méthode) + LIA'M Libre (offre, 3 places communauté). Jamais nommer "Alegria"/"défi"/"formation" dans ce message (vocabulaire public, CLAUDE.md IV).
+Statut : à poster. Val David 05/11 : méthode écrite dans le message, pas de lien Chatbase (le lien public du bot fusionné ouvrirait aussi la qualification LIA'M). Décision David 02/11 : 2 visions, Chatbase (méthode) + LIA'M Libre (offre, 3 places communauté). Jamais nommer "Alegria"/"défi"/"formation" dans ce message (vocabulaire public, CLAUDE.md IV).
 
 **Vérifié par WebFetch le 02/11** (RACINE règle 6, aucun fait sans source) :
 -> `salescloser.fr` ne porte **aucun** paramètre de tracking `?src=` ni équivalent -- en ajouter un dans un lien ne ferait rien tant que le site n'est pas codé pour le lire. Pas de tracking automatique pour l'instant, à construire en session code si David le veut vraiment.
@@ -40,25 +40,27 @@ Cette semaine : un assistant qui répond aux mails répétitifs d'une vendeuse d
 2 façons de le construire :
 
 1- Chatbase (l'outil que pas mal d'entre vous ont déjà croisé) -> agent conversationnel, pas agent de création : il répond depuis une base de connaissance qu'on lui donne, il n'invente pas. 15 minutes à configurer, gratuit pour démarrer.
-   Méthode complète : {LIEN_OU_PROCEDURE_CHATBASE}
+   La méthode en 3 gestes : a- donne-lui tes infos comme seule source ; b- écris la règle "si ce n'est pas dans la liste, tu dis que tu ne sais pas et tu transmets" ; c- teste-le d'abord sur la question qui fâche (chez moi : un remboursement hors conditions, il a tenu bon).
 
-2- LIA'M -> même principe, mais chez toi : ton propre moteur, pas un abonnement à vie chez un tiers. 3 places en LIA'M Libre ouvertes pour la communauté : si ça t'intéresse, teste-le sur https://www.salescloser.fr/joignable-partout, et demande-moi en privé ce que "Libre" veut dire.
+2- LIA'M -> même principe, appliqué à tes prospects : il qualifie, relance et prend les RDV sur WhatsApp ou Telegram, et passe la main quand il ne sait pas. Pas d'abonnement, tu paies les crédits que tu consommes. 3 places en LIA'M Libre ouvertes pour la communauté : si ça t'intéresse, teste-le sur https://www.salescloser.fr/joignable-partout, et demande-moi en privé ce que "Libre" veut dire.
 
 Choisis selon où tu en es.
 
 ++++++
 
+**Correction de fond (05/11, S261105z)** : "chez toi, ton propre moteur" (Message 2) et "la version chez soi [...] ZDR" (Message 3) retirés -- contraires à la fiche LIA'M Libre v1.0.3 §V ("accès à un service hébergé, pas un logiciel à installer chez toi", "pas d'infrastructure dédiée"), qui est aussi la source du bot. Remplacés par le périmètre réel de la fiche (§II-III : 1 canal WhatsApp ou Telegram, qualification, relances, RDV, crédits sans abonnement). Message 3 : "il dit non" remplacé par ce que le bot a réellement répondu.
+
 **Note technique (02/11)** : pas de `?src=` -- vérifié, le site ne lit aucun paramètre de ce genre aujourd'hui. Le suivi de l'origine "Alegria" passe par le texte du message (qui donne le contexte) et par la mention en privé, pas par un lien traqué. Un vrai tracking se construirait en session code, hors périmètre de ce défi.
 
-## Message 3 : partage-tes-victoires -- BROUILLON, dépend du Message 2
+## Message 3 : partage-tes-victoires -- à poster
 
-Statut : brouillon, dépend des mêmes éléments manquants que le Message 2.
+Statut : à poster, après le Message 2. Plus aucun élément manquant.
 
 ++++++
 
-Petite victoire cette semaine : un assistant mail qui refuse de promettre ce qui n'est pas vrai, testé sur le cas qui fâche (une élève qui a dépassé le quota de modules vus et demande quand même un remboursement -- il dit non, sans céder).
+Petite victoire cette semaine : un assistant mail qui refuse de promettre ce qui n'est pas vrai, testé sur le cas qui fâche (une élève qui a dépassé le quota de modules vus et demande quand même un remboursement -- il refuse de le confirmer et transmet, sans rien promettre).
 
-Ce que je retiens : un agent qui répond depuis une base de connaissance plutôt que de deviner règle d'office le problème de l'IA qui invente. Et avoir la version chez soi (LIA'M) plutôt que chez un tiers, c'est la même logique que je répète chaque semaine ici : ZDR, pour ne pas laisser tourner tes données ailleurs que chez toi.
+Ce que je retiens : un agent qui répond depuis une base de connaissance plutôt que de deviner règle d'office le problème de l'IA qui invente. C'est le même principe qui fait tourner LIA'M côté vente : il répond depuis ce qu'on lui a donné, et passe la main quand il ne sait pas.
 
 3 places en LIA'M Libre pour la communauté -- demande en privé ce que "Libre" veut dire.
 
