@@ -10,14 +10,20 @@ Client fictif (David Ruggieri, exercice hebdomadaire Alegria) : Nadia vend une f
 
 -> `ATTENDUS.md` -- grille des attendus + écarts assumés
 
--> `CONSIGNES.md` -- outil choisi (Projet Claude / GPT personnalisé), justification, instructions prêtes à coller, résumé du test
+-> `CONSIGNES.md` -- outil choisi (Chatbase ; Projet Claude / GPT personnalisé en alternative), justification, instructions prêtes à coller, résumé du test
 
 -> `MESSAGES-DISCORD.md` -- Message 1 (livrable noté, fil du projet) + annexe des 3 échanges de test bruts
 
--> `captures/` -- vide pour l'instant, captures réelles à ajouter par David après reproduction de la configuration dans son compte
+-> `captures/` -- 3 captures réelles du bot Chatbase, prises par David le 05/11 (une par question-test)
 
-## Captures attendues
+## Captures
 
-Deux captures minimum une fois le Projet Claude (ou GPT) créé par David :
-1- les instructions collées dans le Projet
-2- la conversation de test (au moins la question 2, celle qui refuse le remboursement)
+Prises dans le Playground Chatbase, conversation neuve à chaque test :
+
+1- `captures/261105_AZNcDf_Test1-Surjeteuse.png`
+
+2- `captures/261105_AZNcDf_Test2-Remboursement-Refuse.png` (la capture clé : refus du remboursement à 4 modules vus)
+
+3- `captures/261105_AZNcDf_Test3-Paiement-Transmis.png`
+
+Pas de capture des instructions collées : elles sont dans `CONSIGNES.md`, et le Message 1 en donne l'essentiel en texte.

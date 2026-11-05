@@ -8,14 +8,16 @@
 |---|---|---|---|
 | "Trouver le meilleur outil pour créer cet assistant" | barème | Message 1, section "Outil" | fait |
 | "Écrire les consignes de l'assistant" | barème | Message 1, section "Consignes" + `CONSIGNES.md` | fait |
-| "Le tester avec au moins 3 questions d'élèves, dont une à laquelle les infos ne permettent pas de répondre" | barème | Message 1, section "Test" + annexe `MESSAGES-DISCORD.md` | fait |
+| "Le tester avec au moins 3 questions d'élèves, dont une à laquelle les infos ne permettent pas de répondre" | barème | Message 1, section "Test" (réponses réelles du bot, 05/11) + annexe `MESSAGES-DISCORD.md` + 3 captures | fait |
 | "Il ne doit dire que ce qui est vrai" (crainte du client sur le remboursement inventé) | barème implicite | 1re ligne du Message 1 + question-test 2 (cas limite 4 modules vus) | fait |
-| "Envoie des captures d'écran de ce que tu as fait" / "Aucun document .docx ou présentation" | format | voir Écarts assumés -- captures réelles à prendre par David | sans objet (raison ci-dessous) |
+| "Envoie des captures d'écran de ce que tu as fait" / "Aucun document .docx ou présentation" | format | `captures/` : 3 captures réelles du bot Chatbase (05/11), jointes au Message 1 ; aucun .docx | fait |
 | "La correction sera disponible ce vendredi" + "Ouvert jusqu'au 06/11/2026 à 17h00. Poste ta réponse dans ce fil" | délai, lieu | à poster par David dans le fil | à poster (David) |
 
 ## Écarts assumés
 
--> **Pas de captures d'écran réelles produites par CC.** L'énoncé demande des captures d'un outil SaaS (Projet Claude, ou GPT personnalisé) configuré avec les consignes. CC n'a pas d'identifiants pour se connecter à un compte claude.ai ou ChatGPT au nom de David ou de Nadia depuis cette session -- impossible de produire une vraie capture d'écran d'une interface qu'il n'a pas ouverte. À la place : les 3 échanges de test sont joués ici même, texte brut, en appliquant exactement les consignes écrites (même rigueur que le protocole "3 exécutions" du défi 6). David reproduit la configuration en 5 minutes (instructions prêtes à coller) et prend les vraies captures avant de poster.
+-> **Captures prises par David, pas par CC (05/11).** CC n'a pas d'accès au compte Chatbase de David : les 3 tests ont été joués par David dans le Playground (conversation neuve à chaque fois), réponses collées dans la session et captures jointes. Écarts constatés entre la simulation du 02/11 et le bot réel : le bot vouvoie (l'élève ne tutoie pas, conforme à la consigne), signe "L'équipe de la formation", et au test 3 ne promet aucun délai ("très vite" de la simulation supprimé). Le bot réel est plus fidèle à la règle anti-invention que la simulation : Message 1 réécrit sur ses vraies réponses, détail en annexe de `MESSAGES-DISCORD.md`.
+
+-> **En-tête des captures : "David Ruggieri IA"**, nom public du widget du bot fusionné (décision David du 02/11), pas un nom de cliente. Rien à flouter : aucune donnée personnelle d'élève dans les tests.
 
 -> **Aucune des deux stacks no-code/NocoDB habituelles, aucun code souverain Next.js.** Le fondamental "deux stacks toujours en miroir" (Airtable/NocoDB) vise les défis CRM/base de données. Cet énoncé ne demande ni table, ni formulaire, ni base : c'est un assistant conversationnel, pas une application de gestion. Construire une base pour cet énoncé serait une page de plus que ce qui est demandé, exactement l'erreur citée dans "Erreurs à éviter" (vouloir tout livrer, ou livrer ce qui n'est pas demandé).
 

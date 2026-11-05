@@ -2,7 +2,7 @@
 
 ## Message 1 : fil du projet (livrable noté, à poster avant le 06/11/2026 17h00)
 
-Statut : à poster. v2 (Cor David 02/11) -- outil changé de Projet Claude à Chatbase.
+Statut : à poster. v3 (S261105z-ccweb) -- réponses réelles du bot Chatbase (tests du 05/11, captures dans `captures/`). v2 (Cor David 02/11) : outil changé de Projet Claude à Chatbase.
 
 ++++++
 
@@ -15,16 +15,14 @@ Consignes de l'assistant (à coller dans les instructions du bot Chatbase) :
 - Règle absolue : si l'info n'est pas dans la liste, l'assistant dit qu'il ne sait pas et transmet la question à toi, jamais d'invention, jamais d'exception promise.
 - Les 6 infos : 12 modules à vie, remboursement 14 jours si moins de 3 modules vus, machine d'entrée de gamme suffisante, live le 1er mardi du mois à 19h, patrons PDF taille réelle, tout le reste écrit directement à toi.
 
-Testé avec 3 questions, dont une sans réponse dans tes infos :
-1- "Faut-il une surjeteuse ?" -> Non, une machine d'entrée de gamme suffit.
-2- "J'ai regardé 4 modules, je peux être remboursée ?" -> Non, la règle demande moins de 3 modules vus, transmis à toi si besoin. C'est ce test qui prouve que l'assistant ne cède pas à la tentation de faire plaisir à l'élève : exactement ton inquiétude de départ.
-3- "Paiement en plusieurs fois possible ?" -> Pas d'info là-dessus, l'assistant transmet directement à toi au lieu de deviner.
-
-Les 3 échanges complets, instructions prêtes à coller et procédure de mise en place sont dans le fichier joint à ma réponse.
+Testé en vrai dans Chatbase avec 3 questions, dont une sans réponse dans tes infos (captures jointes) :
+1- "Faut-il une surjeteuse ?" -> "Une machine à coudre d'entrée de gamme suffit, vous n'avez pas besoin de surjeteuse."
+2- "J'ai regardé 4 modules, je peux être remboursée ?" -> "Vous en avez regardé 4, donc je ne peux pas vous confirmer un remboursement", puis il te transmet la demande sans rien promettre. C'est ce test qui prouve qu'il ne cède pas pour faire plaisir à l'élève : exactement ton inquiétude de départ.
+3- "Paiement en plusieurs fois possible ?" -> "Je n'ai pas cette information. Je transmets votre question à la formatrice." Il ne devine pas, il te passe la main.
 
 ++++++
 
-Mesuré : 1835 caractères (`LC_ALL=C.UTF-8 wc -m`, moins le saut de ligne final) -- sous la limite de 2000.
+Mesuré : 1867 caractères (`LC_ALL=C.UTF-8 wc -m` sur le texte entre les deux `++++++`, lignes vides de bord retirées) -- sous la limite de 2000. À poster avec les 3 fichiers de `captures/` joints (énoncé : captures d'écran, pas de document).
 
 ## Message 2 : salon défi-hebdomadaire -- BROUILLON, lien CTA à confirmer (Cor David 02/11)
 
@@ -70,22 +68,36 @@ Ce que je retiens : un agent qui répond depuis une base de connaissance plutôt
 
 Entre les 3 options de l'Étape 10 bis (pas de message / méthode sans lien / construire un outil réel), David a tranché : construire réellement (Chatbase + a minima un contexte LIA'M dédié), puis écrire les 2 messages avec leurs vrais liens une fois les outils en place -- voir pas-à-pas en cours dans la session.
 
-## Annexe -- les 3 échanges de test, bruts (contexte neuf, instructions de `CONSIGNES.md` appliquées à la lettre)
+## Annexe -- les 3 échanges de test, réels (bot Chatbase "AZen Guide", Playground, conversation neuve à chaque test, 05/11/2026)
+
+Réponses recopiées telles que David les a collées depuis Chatbase (apostrophes typographiques du bot ramenées en apostrophes droites). Captures : `captures/261105_AZNcDf_Test1-Surjeteuse.png`, `..._Test2-Remboursement-Refuse.png`, `..._Test3-Paiement-Transmis.png`.
 
 ### Test 1
 
 **Question élève :** "Bonjour, est-ce qu'il faut une surjeteuse pour suivre la formation ou une machine à coudre normale suffit ?"
 
-**Réponse de l'assistant :** "Bonjour ! Non, pas besoin de surjeteuse : une machine à coudre d'entrée de gamme suffit très bien pour suivre la formation. Bonne couture !"
+**Réponse du bot :** "Bonjour, une machine à coudre d'entrée de gamme suffit pour suivre la formation : vous n'avez pas besoin de surjeteuse. L'équipe de la formation"
 
 ### Test 2 (cas limite volontaire, répond à la crainte du client)
 
 **Question élève :** "Bonjour, j'ai acheté la formation il y a une semaine et j'ai regardé 4 modules sur les 12. Est-ce que je peux être remboursée, je n'ai pas le temps de continuer ?"
 
-**Réponse de l'assistant :** "Bonjour, je comprends la question. Le remboursement est possible dans les 14 jours après l'achat, à condition d'avoir regardé moins de 3 modules. Comme tu as déjà regardé 4 modules, tu n'es malheureusement plus dans les conditions du remboursement. Si tu penses qu'il y a un cas particulier, je transmets ta question directement à la formatrice qui pourra te répondre."
+**Réponse du bot :** "Bonjour, le remboursement est possible dans les 14 jours suivant l'achat uniquement si moins de 3 modules ont été regardés. Vous en avez regardé 4, donc je ne peux pas vous confirmer un remboursement selon ces conditions. Je transmets tout de même votre demande à la formatrice, qui vous répondra personnellement. L'équipe de la formation"
 
 ### Test 3 (sans réponse dans les infos fournies)
 
 **Question élève :** "Bonjour, est-ce que je peux payer la formation en plusieurs fois sans frais ?"
 
-**Réponse de l'assistant :** "Bonjour, je n'ai pas cette information sous la main concernant un paiement en plusieurs fois. Je transmets directement ta question à la formatrice, qui va te répondre personnellement très vite."
+**Réponse du bot :** "Bonjour, je n'ai pas cette information. Je transmets votre question à la formatrice, qui vous répondra personnellement. L'équipe de la formation"
+
+### Écarts entre la simulation du 02/11 et le bot réel
+
+-> **Vouvoiement partout** : l'élève ne tutoie pas, le bot vouvoie -- conforme à la consigne "tutoiement si l'élève tutoie, vouvoiement sinon". La simulation du 02/11 tutoyait à tort au test 2.
+
+-> **Signature présente** ("L'équipe de la formation") : conforme, absente de la simulation.
+
+-> **Test 2, plus prudent que la simulation** : le bot écrit "je ne peux pas vous confirmer un remboursement" plutôt qu'un non sec, et transmet d'office à la formatrice. Aucune promesse, aucune exception : le garde-fou tient.
+
+-> **Test 3, plus court** : "je n'ai pas cette information", sans "très vite" -- la simulation promettait un délai qui n'est écrit nulle part. Le bot réel est plus fidèle à la règle anti-invention que la simulation.
+
+-> **Nom affiché dans l'en-tête des captures : "David Ruggieri IA"**, pas "AZen Guide" -- c'est le nom public du widget du bot fusionné (décision David du 02/11). Visible sur les captures 1 et 2.
