@@ -48,7 +48,7 @@ modèle).
 
 Vérifié dans la doc Chatbase (02/11) : l'éditeur `Build > Instructions` a deux sections -- `General` (contexte, rôle, ton) et `Guardrails` (règles non négociables qui s'appliquent à CHAQUE conversation, peu importe ce que dit le visiteur). Attention, ce n'est pas le même objet que l'onglet "Guardrails" des réglages de l'agent, qui lui ne gère que l'anti-abus (limite de débit, anti-spam, blocage pays).
 
-Le bot "AZen Guide" porte désormais deux rôles (qualification B2B LIA'M + réponse couture du défi, décision David 02/11 ci-dessous). Texte à coller dans `Guardrails` pour garder les deux rôles séparés et tenir la règle anti-invention :
+Le bot "AZen Guide" porte désormais deux rôles (qualification B2B LIA'M + réponse FAQ couture, décision David 02/11 ci-dessous). Texte à coller dans `Guardrails` pour garder les deux rôles séparés et tenir la règle anti-invention :
 
 ```
 - Ne jamais inventer une information absente de ce qui t'a ete fourni (modules, remboursement,

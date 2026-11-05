@@ -2,7 +2,7 @@
 
 ## Message 1 : fil du projet (livrable noté, à poster avant le 06/11/2026 17h00)
 
-Statut : à poster. v3 (S261105z-ccweb) -- réponses réelles du bot Chatbase (tests du 05/11, captures dans `captures/`). v2 (Cor David 02/11) : outil changé de Projet Claude à Chatbase.
+Statut : POSTÉ par David le 05/11 dans le fil du projet, 3 captures jointes. v3 (S261105z-ccweb) -- réponses réelles du bot Chatbase (tests du 05/11, captures dans `captures/`). v2 (Cor David 02/11) : outil changé de Projet Claude à Chatbase.
 
 ++++++
 
@@ -24,7 +24,7 @@ Testé en vrai dans Chatbase avec 3 questions, dont une sans réponse dans tes i
 
 Mesuré : 1867 caractères (`LC_ALL=C.UTF-8 wc -m` sur le texte entre les deux `++++++`, lignes vides de bord retirées) -- sous la limite de 2000. À poster avec les 3 fichiers de `captures/` joints (énoncé : captures d'écran, pas de document).
 
-## Message 2 : salon défi-hebdomadaire -- v2 (Cor David 05/11) : d'abord les manières de faire (no-code / code assisté IA), puis renvoi vers la réponse dans le fil
+## Message 2 : salon défi-hebdomadaire -- POSTÉ le 05/11 -- v2 (Cor David 05/11) : d'abord les manières de faire (no-code / code assisté IA), puis renvoi vers la réponse dans le fil
 
 Statut : à poster. Val David 05/11 : méthode écrite dans le message, pas de lien Chatbase (le lien public du bot fusionné ouvrirait aussi la qualification LIA'M). Décision David 02/11 : 2 visions, Chatbase (méthode) + LIA'M Libre (offre, 3 places communauté). Jamais nommer "Alegria"/"défi"/"formation" dans ce message (vocabulaire public, CLAUDE.md IV).
 
@@ -47,9 +47,9 @@ Ma réponse complète, consignes et captures des 3 tests, est dans le fil juste 
 
 **Note technique (02/11)** : pas de `?src=` -- vérifié, le site ne lit aucun paramètre de ce genre aujourd'hui. Le suivi de l'origine "Alegria" passe par le texte du message (qui donne le contexte) et par la mention en privé, pas par un lien traqué. Un vrai tracking se construirait en session code, hors périmètre de ce défi.
 
-## Message 3 : partage-tes-victoires -- v2 (Cor David 05/11) : autonome, solutions + quand choisir + LIA'M Libre expliqué
+## Message 3 : partage-tes-victoires -- POSTÉ le 05/11 -- v2 (Cor David 05/11) : autonome, solutions + quand choisir + LIA'M Libre expliqué
 
-Statut : en attente du lien public Chatbase (`{LIEN_CHATBASE_PUBLIC}`). Lien LIA'M en contexte couture demandé par David : pas encore possible, voir note ci-dessous. Description de LIA'M Libre tirée de la fiche v1.0.3 §I à §IV (1 canal, crédits sans abonnement, sans engagement, contreparties non obligatoires).
+Statut : POSTÉ par David le 05/11 dans partage-tes-victoires. Lien Chatbase = lien de prévisualisation publique (Playground > Preview > "Anyone with the link can view", FAQ Chatbase lue le 05/11) : couper l'option coupe le lien. Lien LIA'M en contexte couture demandé par David : pas encore possible, voir note ci-dessous. Description de LIA'M Libre tirée de la fiche v1.0.3 §I à §IV (1 canal, crédits sans abonnement, sans engagement, contreparties non obligatoires).
 
 **Note (05/11)** : `/joignable-partout` passe au widget LIA'M un contexte écrit en dur dans la page (`"contexte":"Visiteur arrivé par la page joignable-partout. Angle : WhatsApp, Telegram et la voix [...]"`, lu dans le HTML servi le 05/11). Aucun paramètre d'URL lu dans ce HTML. Un lien "LIA'M en contexte couture" demande donc du code dans `liam-` (session c) : soit une page de besoin dédiée, soit un paramètre d'URL qui remplace ce contexte.
 
@@ -60,7 +60,7 @@ Petite victoire cette semaine : un assistant qui répond aux mails répétitifs 
 
 1- No-code + IA : Chatbase. Tu lui donnes tes infos comme seule source, tu écris la règle "si ce n'est pas dans la liste, tu transmets", tu testes la question qui fâche. 15 minutes, gratuit pour démarrer.
    -> Choisis-le si ton besoin est une FAQ : des questions qui reviennent, des réponses fixes, un lien de chat à partager.
-   -> Essaie le mien : {LIEN_CHATBASE_PUBLIC}
+   -> Essaie le mien : https://www.chatbase.co/preview/HtF09f9RjvfDFCKFrdllr?channel=chat-widget
 
 2- Code assisté par IA : LIA'M. Même règle (répondre depuis ce qu'on lui a donné, passer la main sinon), mais construit pour vendre : il qualifie tes prospects, les relance et prend les RDV sur WhatsApp ou Telegram.
    -> Choisis-le si la conversation doit mener quelque part : un RDV, une vente, un suivi dans le temps.
