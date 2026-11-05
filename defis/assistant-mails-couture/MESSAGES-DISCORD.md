@@ -24,7 +24,7 @@ Testé en vrai dans Chatbase avec 3 questions, dont une sans réponse dans tes i
 
 Mesuré : 1867 caractères (`LC_ALL=C.UTF-8 wc -m` sur le texte entre les deux `++++++`, lignes vides de bord retirées) -- sous la limite de 2000. À poster avec les 3 fichiers de `captures/` joints (énoncé : captures d'écran, pas de document).
 
-## Message 2 : salon défi-hebdomadaire -- à poster (méthode en texte, Val David 05/11)
+## Message 2 : salon défi-hebdomadaire -- v2 (Cor David 05/11) : d'abord les manières de faire (no-code / code assisté IA), puis renvoi vers la réponse dans le fil
 
 Statut : à poster. Val David 05/11 : méthode écrite dans le message, pas de lien Chatbase (le lien public du bot fusionné ouvrirait aussi la qualification LIA'M). Décision David 02/11 : 2 visions, Chatbase (méthode) + LIA'M Libre (offre, 3 places communauté). Jamais nommer "Alegria"/"défi"/"formation" dans ce message (vocabulaire public, CLAUDE.md IV).
 
@@ -34,36 +34,41 @@ Statut : à poster. Val David 05/11 : méthode écrite dans le message, pas de l
 -> `/joignable-partout` est une page réelle du site (répond aux messages clients sur WhatsApp/Telegram/voix, CTA "Essaie, parle-lui") -- le choix de David est confirmé comme le plus proche du sujet du défi parmi les 6 pages existantes.
 
 ++++++
+Les mails répétitifs auxquels une IA répond sans jamais inventer : ça se résout de plusieurs manières, selon ce que tu veux en faire.
 
-Cette semaine : un assistant qui répond aux mails répétitifs d'une vendeuse de cours en ligne à sa place, sans jamais inventer une réponse fausse -- exactement le risque qu'elle avait vécu avec une autre IA.
+1- En no-code : Chatbase. Un agent conversationnel qui répond depuis la base de connaissance qu'on lui donne, il ne crée pas, il n'invente pas. 15 minutes à configurer, gratuit pour démarrer. La méthode en 3 gestes : a- donne-lui tes infos comme seule source ; b- écris la règle "si ce n'est pas dans la liste, tu dis que tu ne sais pas et tu transmets" ; c- teste-le d'abord sur la question qui fâche (chez moi : un remboursement hors conditions, il a tenu bon).
 
-2 façons de le construire :
+2- En code assisté par IA : LIA'M, le moteur de closing que je construis. Même principe (il répond depuis ce qu'on lui donne et passe la main quand il ne sait pas), mais pensé pour la vente : il qualifie, relance et prend les RDV sur WhatsApp ou Telegram. Teste-le ici : https://www.salescloser.fr/joignable-partout
 
-1- Chatbase (l'outil que pas mal d'entre vous ont déjà croisé) -> agent conversationnel, pas agent de création : il répond depuis une base de connaissance qu'on lui donne, il n'invente pas. 15 minutes à configurer, gratuit pour démarrer.
-   La méthode en 3 gestes : a- donne-lui tes infos comme seule source ; b- écris la règle "si ce n'est pas dans la liste, tu dis que tu ne sais pas et tu transmets" ; c- teste-le d'abord sur la question qui fâche (chez moi : un remboursement hors conditions, il a tenu bon).
-
-2- LIA'M -> même principe, appliqué à tes prospects : il qualifie, relance et prend les RDV sur WhatsApp ou Telegram, et passe la main quand il ne sait pas. Pas d'abonnement, tu paies les crédits que tu consommes. 3 places en LIA'M Libre ouvertes pour la communauté : si ça t'intéresse, teste-le sur https://www.salescloser.fr/joignable-partout, et demande-moi en privé ce que "Libre" veut dire.
-
-Choisis selon où tu en es.
-
+Ma réponse complète, consignes et captures des 3 tests, est dans le fil juste en dessous.
 ++++++
 
 **Correction de fond (05/11, S261105z)** : "chez toi, ton propre moteur" (Message 2) et "la version chez soi [...] ZDR" (Message 3) retirés -- contraires à la fiche LIA'M Libre v1.0.3 §V ("accès à un service hébergé, pas un logiciel à installer chez toi", "pas d'infrastructure dédiée"), qui est aussi la source du bot. Remplacés par le périmètre réel de la fiche (§II-III : 1 canal WhatsApp ou Telegram, qualification, relances, RDV, crédits sans abonnement). Message 3 : "il dit non" remplacé par ce que le bot a réellement répondu.
 
 **Note technique (02/11)** : pas de `?src=` -- vérifié, le site ne lit aucun paramètre de ce genre aujourd'hui. Le suivi de l'origine "Alegria" passe par le texte du message (qui donne le contexte) et par la mention en privé, pas par un lien traqué. Un vrai tracking se construirait en session code, hors périmètre de ce défi.
 
-## Message 3 : partage-tes-victoires -- à poster
+## Message 3 : partage-tes-victoires -- v2 (Cor David 05/11) : autonome, solutions + quand choisir + LIA'M Libre expliqué
 
-Statut : à poster, après le Message 2. Plus aucun élément manquant.
+Statut : en attente du lien public Chatbase (`{LIEN_CHATBASE_PUBLIC}`). Lien LIA'M en contexte couture demandé par David : pas encore possible, voir note ci-dessous. Description de LIA'M Libre tirée de la fiche v1.0.3 §I à §IV (1 canal, crédits sans abonnement, sans engagement, contreparties non obligatoires).
+
+**Note (05/11)** : `/joignable-partout` passe au widget LIA'M un contexte écrit en dur dans la page (`"contexte":"Visiteur arrivé par la page joignable-partout. Angle : WhatsApp, Telegram et la voix [...]"`, lu dans le HTML servi le 05/11). Aucun paramètre d'URL lu dans ce HTML. Un lien "LIA'M en contexte couture" demande donc du code dans `liam-` (session c) : soit une page de besoin dédiée, soit un paramètre d'URL qui remplace ce contexte.
 
 ++++++
+Petite victoire cette semaine : un assistant qui répond aux mails répétitifs d'une vendeuse de cours en ligne, sans jamais inventer. Testé sur le cas qui fâche : une élève a dépassé le quota de modules vus et demande quand même un remboursement. Il refuse de le confirmer et transmet, sans rien promettre.
 
-Petite victoire cette semaine : un assistant mail qui refuse de promettre ce qui n'est pas vrai, testé sur le cas qui fâche (une élève qui a dépassé le quota de modules vus et demande quand même un remboursement -- il refuse de le confirmer et transmet, sans rien promettre).
+2 façons de le construire, selon ton besoin :
 
-Ce que je retiens : un agent qui répond depuis une base de connaissance plutôt que de deviner règle d'office le problème de l'IA qui invente. C'est le même principe qui fait tourner LIA'M côté vente : il répond depuis ce qu'on lui a donné, et passe la main quand il ne sait pas.
+1- No-code + IA : Chatbase. Tu lui donnes tes infos comme seule source, tu écris la règle "si ce n'est pas dans la liste, tu transmets", tu testes la question qui fâche. 15 minutes, gratuit pour démarrer.
+   -> Choisis-le si ton besoin est une FAQ : des questions qui reviennent, des réponses fixes, un lien de chat à partager.
+   -> Essaie le mien : {LIEN_CHATBASE_PUBLIC}
 
-3 places en LIA'M Libre pour la communauté -- demande en privé ce que "Libre" veut dire.
+2- Code assisté par IA : LIA'M. Même règle (répondre depuis ce qu'on lui a donné, passer la main sinon), mais construit pour vendre : il qualifie tes prospects, les relance et prend les RDV sur WhatsApp ou Telegram.
+   -> Choisis-le si la conversation doit mener quelque part : un RDV, une vente, un suivi dans le temps.
+   -> Essaie-le : https://www.salescloser.fr/joignable-partout
 
+LIA'M Libre, c'est quoi ? Un accès réel à LIA'M, pas une démo bridée : 1 canal (WhatsApp ou Telegram), qualification, relances et prise de RDV. Pas d'abonnement : tu paies seulement les crédits que tu consommes, sans engagement. En échange, un coup de main dans l'esprit du libre : un retour sur ton usage, une mise en relation, une mention. Rien d'obligatoire.
+
+3 places ouvertes pour la communauté : écris-moi en privé.
 ++++++
 
 ## Décision tranchée (Cor David 02/11)
