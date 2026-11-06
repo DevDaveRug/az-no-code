@@ -8,14 +8,20 @@
 |---|---|---|---|
 | "Trouver le meilleur outil pour créer cet assistant" | barème | Message 1, section "Outil" | fait |
 | "Écrire les consignes de l'assistant" | barème | Message 1, section "Consignes" + `CONSIGNES.md` | fait |
-| "Le tester avec au moins 3 questions d'élèves, dont une à laquelle les infos ne permettent pas de répondre" | barème | Message 1, section "Test" + annexe `MESSAGES-DISCORD.md` | fait |
+| "Le tester avec au moins 3 questions d'élèves, dont une à laquelle les infos ne permettent pas de répondre" | barème | Message 1, section "Test" (réponses réelles du bot, 05/11) + annexe `MESSAGES-DISCORD.md` + 3 captures | fait |
 | "Il ne doit dire que ce qui est vrai" (crainte du client sur le remboursement inventé) | barème implicite | 1re ligne du Message 1 + question-test 2 (cas limite 4 modules vus) | fait |
-| "Envoie des captures d'écran de ce que tu as fait" / "Aucun document .docx ou présentation" | format | voir Écarts assumés -- captures réelles à prendre par David | sans objet (raison ci-dessous) |
-| "La correction sera disponible ce vendredi" + "Ouvert jusqu'au 06/11/2026 à 17h00. Poste ta réponse dans ce fil" | délai, lieu | à poster par David dans le fil | à poster (David) |
+| "Envoie des captures d'écran de ce que tu as fait" / "Aucun document .docx ou présentation" | format | `captures/` : 3 captures réelles du bot Chatbase (05/11), jointes au Message 1 ; aucun .docx | fait |
+| "La correction sera disponible ce vendredi" + "Ouvert jusqu'au 06/11/2026 à 17h00. Poste ta réponse dans ce fil" | délai, lieu | Message 1 posté par David dans le fil du projet le 05/11, avant l'échéance du 06/11 17h00, 3 captures jointes | fait |
 
 ## Écarts assumés
 
--> **Pas de captures d'écran réelles produites par CC.** L'énoncé demande des captures d'un outil SaaS (Projet Claude, ou GPT personnalisé) configuré avec les consignes. CC n'a pas d'identifiants pour se connecter à un compte claude.ai ou ChatGPT au nom de David ou de Nadia depuis cette session -- impossible de produire une vraie capture d'écran d'une interface qu'il n'a pas ouverte. À la place : les 3 échanges de test sont joués ici même, texte brut, en appliquant exactement les consignes écrites (même rigueur que le protocole "3 exécutions" du défi 6). David reproduit la configuration en 5 minutes (instructions prêtes à coller) et prend les vraies captures avant de poster.
+-> **Captures prises par David, pas par CC (05/11).** CC n'a pas d'accès au compte Chatbase de David : les 3 tests ont été joués par David dans le Playground (conversation neuve à chaque fois), réponses collées dans la session et captures jointes. Écarts constatés entre la simulation du 02/11 et le bot réel : le bot vouvoie (l'élève ne tutoie pas, conforme à la consigne), signe "L'équipe de la formation", et au test 3 ne promet aucun délai ("très vite" de la simulation supprimé). Le bot réel est plus fidèle à la règle anti-invention que la simulation : Message 1 réécrit sur ses vraies réponses, détail en annexe de `MESSAGES-DISCORD.md`.
+
+-> **Messages 2 et 3 postés le 05/11 (v2, Cor David : d'abord les manières de faire, puis quand choisir no-code ou code assisté IA, LIA'M Libre expliqué). Lien LIA'M en contexte couture demandé par David et non livré** : les pages de besoin portent un contexte fixe et ne lisent aucun paramètre d'URL (HTML de `/joignable-partout` lu le 05/11). Le chantier relève de la session c dans `liam-` (tâche suggérée en S261105z) ; les messages renvoient donc vers `/joignable-partout` tel qu'il est.
+
+-> **Messages 2 et 3 corrigés sur le fond avant publication (05/11).** Les brouillons présentaient LIA'M Libre comme "chez toi, ton propre moteur" : faux selon la fiche LIA'M Libre v1.0.3 §V (service hébergé, pas d'infrastructure dédiée), qui est aussi une source du bot. Remplacé par le périmètre réel de la fiche. Méthode Chatbase écrite dans le Message 2 (Val David 05/11) plutôt qu'un lien vers le bot fusionné, qui aurait ouvert aussi la qualification LIA'M au public. Règle des 6 liens de l'Étape 11 : sans objet, l'énoncé ne demande aucune base ni formulaire (Étape 10 bis, voir plus bas).
+
+-> **En-tête des captures : "David Ruggieri IA"**, nom public du widget du bot fusionné (décision David du 02/11), pas un nom de cliente. Rien à flouter : aucune donnée personnelle d'élève dans les tests.
 
 -> **Aucune des deux stacks no-code/NocoDB habituelles, aucun code souverain Next.js.** Le fondamental "deux stacks toujours en miroir" (Airtable/NocoDB) vise les défis CRM/base de données. Cet énoncé ne demande ni table, ni formulaire, ni base : c'est un assistant conversationnel, pas une application de gestion. Construire une base pour cet énoncé serait une page de plus que ce qui est demandé, exactement l'erreur citée dans "Erreurs à éviter" (vouloir tout livrer, ou livrer ce qui n'est pas demandé).
 
@@ -28,3 +34,25 @@
 -> **Décision finale de David (02/11) : bot fusionné, pas séparé.** CC avait recommandé un bot Chatbase dédié plutôt que de toucher "AZen Guide" (qualification B2B en production). David a tranché l'inverse : AZen Guide porte désormais les deux rôles (qualification LIA'M + réponse couture du défi). Pour limiter le risque de ce choix, une règle de garde-fou explicite ("ne jamais mélanger les deux registres dans une même réponse") a été ajoutée dans la section Guardrails de l'agent -- voir `CONSIGNES.md`.
 
 -> **"Tester en vrai" plutôt que des captures, idée de David -- bonus, pas un remplacement.** L'énoncé demande explicitement des captures d'écran ("Envoie des captures d'écran de ce que tu as fait [...] Aucun document .docx ou présentation"). Le lien public du bot Chatbase (une fois créé) permet en plus à Eva et aux membres Alegria de tester l'assistant eux-mêmes -- ajouté en bonus dans la réponse, les captures d'écran restent produites pour respecter l'énoncé à la lettre.
+
+## Auto-check Étape 11 (S261105z-ccweb, 05/11)
+
+-> ATTENDUS : chaque attendu a son "où c'est rendu" et le statut "fait" -- oui.
+
+-> Message 1 livré dans le fil du projet, réponse à la question du client dès la 1re ligne -- oui, posté le 05/11, 1867 caractères.
+
+-> 2 `INTERFACE.md` (Airtable + NocoDB) -- sans objet : l'énoncé ne demande ni base ni formulaire (Étape 10 bis, écart assumé plus haut).
+
+-> Ligne `AZ_Portfolio` -- valeurs données à David dans le tour de clôture de S261105z (titre "Assistant mails sans invention", outil Chatbase, preuve = 3 captures + lien de prévisualisation).
+
+-> Messages défi-hebdomadaire et partage-tes-victoires : règle des 6 liens sans objet (aucune base à partager) ; liens réels fournis à la place : prévisualisation Chatbase publique et `/joignable-partout`, tous deux ouverts sans compte (HTTP 200 vérifié le 05/11). Les 3 messages sont archivés dans `MESSAGES-DISCORD.md`.
+
+-> Noms de salons : `défi-hebdomadaire`, `partage-tes-victoires` -- conformes.
+
+-> Aucune ligne `Val :` portant une action de David -- oui.
+
+-> Messages sous 2000 caractères (`LC_ALL=C.UTF-8 wc -m`) : 1867 / 1007 / 1536.
+
+-> Aucune table créée -- sans objet.
+
+-> Mots "défi", "Eva", "Alegria", "formation" en mot entier : absents des Messages 2 et 3 ; "défi" retiré de `CONSIGNES.md` le 05/11 ; "formation" gardé là où il désigne le produit de la cliente (Message 1, `CONSIGNES.md`, réponses du bot), écart assumé plus haut.

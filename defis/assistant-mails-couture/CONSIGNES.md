@@ -48,7 +48,7 @@ modèle).
 
 Vérifié dans la doc Chatbase (02/11) : l'éditeur `Build > Instructions` a deux sections -- `General` (contexte, rôle, ton) et `Guardrails` (règles non négociables qui s'appliquent à CHAQUE conversation, peu importe ce que dit le visiteur). Attention, ce n'est pas le même objet que l'onglet "Guardrails" des réglages de l'agent, qui lui ne gère que l'anti-abus (limite de débit, anti-spam, blocage pays).
 
-Le bot "AZen Guide" porte désormais deux rôles (qualification B2B LIA'M + réponse couture du défi, décision David 02/11 ci-dessous). Texte à coller dans `Guardrails` pour garder les deux rôles séparés et tenir la règle anti-invention :
+Le bot "AZen Guide" porte désormais deux rôles (qualification B2B LIA'M + réponse FAQ couture, décision David 02/11 ci-dessous). Texte à coller dans `Guardrails` pour garder les deux rôles séparés et tenir la règle anti-invention :
 
 ```
 - Ne jamais inventer une information absente de ce qui t'a ete fourni (modules, remboursement,
@@ -69,13 +69,13 @@ Réglage complémentaire : le curseur de température du modèle (panneau "Model
 
 ## Test -- 3 questions, dont une sans réponse dans les infos
 
-Joué directement avec ces instructions (contexte neuf), transcription brute en annexe de `MESSAGES-DISCORD.md`. Résumé :
+Joué en vrai le 05/11 dans le Playground Chatbase, conversation neuve à chaque question. Réponses exactes en annexe de `MESSAGES-DISCORD.md`, captures dans `captures/`. Résumé :
 
--> 1- "Faut-il une surjeteuse ?" -> répond avec l'info donnée (non, machine d'entrée de gamme).
+-> 1- "Faut-il une surjeteuse ?" -> répond avec l'info donnée (machine d'entrée de gamme, pas de surjeteuse).
 
--> 2- "J'ai regardé 4 modules, je peux être remboursée ?" -> cas limite volontaire : la règle exige moins de 3 modules vus, l'élève en a vu 4. L'assistant refuse et ne cède pas à la tentation de faire une exception -- c'est le test qui répond exactement à la crainte du client ("elle a promis un remboursement alors que ce n'était pas possible").
+-> 2- "J'ai regardé 4 modules, je peux être remboursée ?" -> cas limite volontaire : la règle exige moins de 3 modules vus, l'élève en a vu 4. Le bot écrit "je ne peux pas vous confirmer un remboursement", transmet à la formatrice et ne promet aucune exception -- c'est le test qui répond exactement à la crainte du client ("elle a promis un remboursement alors que ce n'était pas possible").
 
--> 3- "Paiement en plusieurs fois possible ?" -> absent de la liste. L'assistant dit qu'il ne sait pas et transmet, au lieu de deviner.
+-> 3- "Paiement en plusieurs fois possible ?" -> absent de la liste. Le bot répond "je n'ai pas cette information" et transmet, au lieu de deviner.
 
 ## Étape 2 (non demandée, notée pour plus tard)
 
