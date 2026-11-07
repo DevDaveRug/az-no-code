@@ -67,4 +67,16 @@
 
 -> **Leçon reportée dans le skill** `/defi-hebdo-alegria` v1.10.0 (dr-context) : fondamental « la solution vit là où vit le problème », canal et déclencheur lus à l'Étape 1.
 
--> Correction vidéo : https://videos.harmonie.solutions/video/correction-du-defi-assistant-ia-pour-formatrice-gaiah26u (transcription déléguée à une session CCDD z, `/rn-audio`).
+-> Correction vidéo : https://videos.harmonie.solutions/video/correction-du-defi-assistant-ia-pour-formatrice-gaiah26u (transcrite en S261107z-ccdd, synthèse dans dr-context `PeFoIA_Alegria/261107_PeFoIAAl_Defi7-Correction_Synthese-Formation.md`).
+
+### Ce que montre la vidéo de correction (07/11, S261107z-ccdd)
+
+-> **Solution montrée** : scénario Make, Gmail (surveillance des mails entrants, déclencheur à chaque mail reçu, polling toutes les 15 minutes en test) -> module IA (Claude) avec le prompt et le corps du mail -> routeur à deux routes selon que la réponse contient le mot « escalade » : Gmail envoie la réponse à l'élève, ou un mail d'escalade à Nadia. Chatbase est cité en une phrase comme option « classique », puis écarté au profit de Make.
+
+-> **Prompt montré** : identité (assistant de Nadia), base d'infos (12 modules, remboursement 14 jours si moins de 3 modules vus, machine d'entrée de gamme, pas de surjeteuse, FAQ, PDF), règles (répondre uniquement depuis ces infos, ne jamais inventer, ne jamais promettre remboursement, geste commercial ou délai, remonter à Nadia si la réponse n'y est pas), ton (chaleureux, tutoiement, 4 phrases maximum), et le mot ESCALADE comme sortie de secours lisible par la machine.
+
+-> **Critères de réussite** : aucune grille à part. Seuls ceux du brief sont rappelés : l'IA ne promet ni n'invente, bon outil, consignes écrites depuis les infos de la cliente, au moins 3 questions testées. En creux : fonctionnement automatique, escalade vers la formatrice.
+
+-> **Erreurs fréquentes** : aucune liste donnée. Seul signal : le chatbot « classique » est montré comme l'alternative, pas comme la solution.
+
+-> **Points transférables** : filtrer les mails d'entrée (élèves seulement) pour limiter les crédits, une adresse dédiée à l'IA et une autre pour Nadia, tester depuis un autre compte expéditeur, partager le scénario par lien.
