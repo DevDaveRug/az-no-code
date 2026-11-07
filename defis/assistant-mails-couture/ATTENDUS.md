@@ -56,3 +56,15 @@
 -> Aucune table créée -- sans objet.
 
 -> Mots "défi", "Eva", "Alegria", "formation" en mot entier : absents des Messages 2 et 3 ; "défi" retiré de `CONSIGNES.md` le 05/11 ; "formation" gardé là où il désigne le produit de la cliente (Message 1, `CONSIGNES.md`, réponses du bot), écart assumé plus haut.
+
+## Correction officielle (07/11) : défi non réussi
+
+-> **Verdict** : non réussi (1 réussite sur 21 participants). Motif donné par la correctrice : Nadia reçoit ses questions **par mail**, il lui faut une IA qui répond à ses mails, automatiquement et systématiquement. Un chatbot, sur son site ou ailleurs, ou un Projet Claude, ne lui fait pas gagner de temps. Les deux « presque » traitaient les mails, mais sur déclenchement manuel.
+
+-> **Notre écart** : l'attendu implicite « répondre aux mails là où ils arrivent » ne figurait pas dans la grille ci-dessus. La connexion Gmail + n8n existait dans `CONSIGNES.md`, rangée en « Étape 2 (non demandée) » : c'était le cœur de la réponse. L'outil (Chatbase, sans connexion mail) a été choisi sur le critère « il n'invente pas », juste mais secondaire.
+
+-> **Ce qu'il aurait fallu rendre** : déclencheur « nouveau mail reçu » (Make, module Gmail de surveillance des mails) -> agent IA avec les 6 infos et la règle anti-invention -> réponse envoyée, ou brouillon si la question sort des infos, avec transfert à Nadia. Version souveraine : le même flux dans n8n.
+
+-> **Leçon reportée dans le skill** `/defi-hebdo-alegria` v1.10.0 (dr-context) : fondamental « la solution vit là où vit le problème », canal et déclencheur lus à l'Étape 1.
+
+-> Correction vidéo : https://videos.harmonie.solutions/video/correction-du-defi-assistant-ia-pour-formatrice-gaiah26u (transcription déléguée à une session CCDD z, `/rn-audio`).
