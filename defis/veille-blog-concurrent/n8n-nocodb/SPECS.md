@@ -10,6 +10,8 @@ Construite le 13/11/2026, après le rendu du défi, pour la veille de David. Mê
 
 -> Sources au 13/11 : lanutrition.fr (démo) + 9 sources « Publications » ajoutées par la session d (CNIL, Next, Le Monde Pixels, Journal du Net, Korben, Blog n8n, Mistral AI, OpenAI, ZDNet France).
 
+-> **Archives** (Val David 13/11) : les articles publiés avant le 14/10/2026, importés d'un coup au premier relevé des 9 sources, sont en statut « écarté ». Rien n'est supprimé : c'est une réserve de contenu que la session d relit quand elle cherche de la matière, filtre Statut = écarté.
+
 ## Workflow n8n `AZ_Veille_RSS vers NocoDB v1.2.1` (id `9qpzVRdgJMq7vx3M`, actif)
 
 -> **Déclencheurs** : toutes les heures (fuseau Europe/Paris), et un lancement manuel par webhook (adresse gardée hors du dépôt).
