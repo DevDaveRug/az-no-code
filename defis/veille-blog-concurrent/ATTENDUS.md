@@ -16,12 +16,12 @@
 
 | Attendu (citation exacte de l'énoncé) | Points | Où c'est rendu | Statut |
 |---|---|---|---|
-| "Trouver le meilleur outil pour répondre au besoin de Claire" | réussite | Message 1, 1re partie | à faire |
-| "Créer le tableau qui accueille les articles" (titre, date, lien) | réussite | capture du tableau | à faire |
-| "Construire l'automatisation qui ajoute une ligne pour chaque nouvel article d'un blog de ton choix" | réussite | capture du scénario + de la planification + du tableau rempli | à faire |
-| "ses nouveaux articles arrivent tout seuls [...] sans que j'aie à y penser" (implicite : automatique et planifié) | réussite | capture de la planification active | à faire |
-| "Si ça marche bien, j'ajouterai d'autres sites plus tard" (implicite : ajouter un site sans tout refaire) | réussite | colonne Source + phrase dans le Message 1 | à faire |
-| "Envoie des captures d'écran [...] Pas de document, pas de lien" | format | Message 1 + captures | à faire |
+| "Trouver le meilleur outil pour répondre au besoin de Claire" | réussite | Message 1, « Meilleur outil : Make + Airtable » | fait |
+| "Créer le tableau qui accueille les articles" (titre, date, lien) | réussite | table Airtable `AZ_VeilleArticles` (créée par API le 10/11) + capture 03 | fait |
+| "Construire l'automatisation qui ajoute une ligne pour chaque nouvel article d'un blog de ton choix" | réussite | scénario Make « Integration RSS, Airtable » (RSS Watch feed items -> Airtable Create a record), captures 01 à 03, 10 lignes importées | fait |
+| "ses nouveaux articles arrivent tout seuls [...] sans que j'aie à y penser" (implicite : automatique et planifié) | réussite | capture 01 : « Every 1 hour » + « Active » | fait |
+| "Si ça marche bien, j'ajouterai d'autres sites plus tard" (implicite : ajouter un site sans tout refaire) | réussite | colonne Source + dernier paragraphe du Message 1 | fait |
+| "Envoie des captures d'écran [...] Pas de document, pas de lien" | format | Message 1 (1558 caractères) + 3 captures, aucun lien de partage | fait |
 | "Ouvert jusqu'au 13/11/2026 à 17h00. Poste ta réponse dans ce fil" | délai, lieu | fil du projet | à poster (David) |
 
 ## Blog choisi
@@ -32,4 +32,10 @@
 
 ## Écarts assumés
 
--> (à compléter en fin de défi)
+-> **Mapping de la date** : Make ne propose pas de champ « Date published » pour ce flux mais `date`, `Date created` ou `pubdate`. Les deux premiers sont au format ISO (2026-11-02T09:24:06Z) et Airtable les lit directement ; c'est ce qui a été retenu, les dates du tableau sont justes (lues par l'API Airtable le 13/11).
+
+-> **Capture 02** montre le panneau de correspondance pendant le choix de la date : la preuve que la date est bien reliée est la capture 03, où la colonne est remplie.
+
+-> **Un lien dans le Message 1 ?** Non : l'énoncé dit « pas de lien », la seule URL citée est le nom du blog, pas un lien de partage.
+
+-> **Versions n8n + NocoDB et code** : construites après le rendu, pour la veille de David (session d), conformément à sa décision du 10/11. Elles ne changent pas la réponse notée.
