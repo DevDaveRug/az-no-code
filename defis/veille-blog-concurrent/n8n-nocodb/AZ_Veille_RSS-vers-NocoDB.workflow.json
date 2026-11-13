@@ -1,0 +1,231 @@
+{
+    "name": "AZ_Veille_RSS vers NocoDB v1.0.0",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "hoursInterval": 1
+                        }
+                    ]
+                }
+            },
+            "name": "Toutes les heures",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                0,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "path": "az-veille-<JETON>",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "name": "Lancement manuel",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                200
+            ],
+            "webhookId": "az-veille-<JETON>"
+        },
+        {
+            "parameters": {
+                "method": "GET",
+                "url": "https://sb-nocodb.coolify.salescloser.fr/api/v2/tables/mwd0co1ih7zoft3/records?fields=Lien&limit=1000",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "options": {}
+            },
+            "name": "Articles deja connus",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                220,
+                100
+            ],
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "qNJQMZ2OvAyjA4pj",
+                    "name": "NocoDB xc-token (sb)"
+                }
+            },
+            "executeOnce": true
+        },
+        {
+            "parameters": {
+                "method": "GET",
+                "url": "https://sb-nocodb.coolify.salescloser.fr/api/v2/tables/mhc7qvy9wji26ef/records?where=(Actif,checked)&limit=100",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "options": {}
+            },
+            "name": "Sources actives",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                440,
+                100
+            ],
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "qNJQMZ2OvAyjA4pj",
+                    "name": "NocoDB xc-token (sb)"
+                }
+            },
+            "executeOnce": true
+        },
+        {
+            "parameters": {
+                "jsCode": "return $input.first().json.list.map(s => ({ json: { nom: s['Nom'], flux: s['Flux RSS'] } }));"
+            },
+            "name": "Une ligne par source",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                660,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "url": "={{ $json.flux }}",
+                "options": {}
+            },
+            "name": "Lire le flux RSS",
+            "type": "n8n-nodes-base.rssFeedRead",
+            "typeVersion": 1.1,
+            "position": [
+                880,
+                100
+            ],
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "jsCode": "const connus = new Set(($('Articles deja connus').first().json.list || []).map(r => r['Lien']));\nconst sortie = [];\nfor (const item of $input.all()) {\n  const a = item.json;\n  if (!a.link || connus.has(a.link)) continue;\n  connus.add(a.link);\n  const source = $('Une ligne par source').itemMatching(item.pairedItem ? (Array.isArray(item.pairedItem) ? item.pairedItem[0].item : item.pairedItem.item) : 0).json.nom;\n  sortie.push({ json: { 'Titre': (a.title || '').trim(), 'Date de publication': a.isoDate || null, 'Lien': a.link, 'Source': source } });\n}\nreturn sortie;"
+            },
+            "name": "Garder les nouveaux",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1100,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://sb-nocodb.coolify.salescloser.fr/api/v2/tables/mwd0co1ih7zoft3/records",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "options": {},
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify($json) }}"
+            },
+            "name": "Ajouter au tableau",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1320,
+                100
+            ],
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "qNJQMZ2OvAyjA4pj",
+                    "name": "NocoDB xc-token (sb)"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Toutes les heures": {
+            "main": [
+                [
+                    {
+                        "node": "Articles deja connus",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Lancement manuel": {
+            "main": [
+                [
+                    {
+                        "node": "Articles deja connus",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Articles deja connus": {
+            "main": [
+                [
+                    {
+                        "node": "Sources actives",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Sources actives": {
+            "main": [
+                [
+                    {
+                        "node": "Une ligne par source",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Une ligne par source": {
+            "main": [
+                [
+                    {
+                        "node": "Lire le flux RSS",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Lire le flux RSS": {
+            "main": [
+                [
+                    {
+                        "node": "Garder les nouveaux",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Garder les nouveaux": {
+            "main": [
+                [
+                    {
+                        "node": "Ajouter au tableau",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "timezone": "Europe/Paris"
+    }
+}
