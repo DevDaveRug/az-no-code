@@ -22,7 +22,7 @@
 | "ses nouveaux articles arrivent tout seuls [...] sans que j'aie à y penser" (implicite : automatique et planifié) | réussite | capture 01 : « Every 1 hour » + « Active » | fait |
 | "Si ça marche bien, j'ajouterai d'autres sites plus tard" (implicite : ajouter un site sans tout refaire) | réussite | colonne Source + dernier paragraphe du Message 1 | fait |
 | "Envoie des captures d'écran [...] Pas de document, pas de lien" | format | Message 1 (1558 caractères) + 3 captures, aucun lien de partage | fait |
-| "Ouvert jusqu'au 13/11/2026 à 17h00. Poste ta réponse dans ce fil" | délai, lieu | fil du projet | à poster (David) |
+| "Ouvert jusqu'au 13/11/2026 à 17h00. Poste ta réponse dans ce fil" | délai, lieu | fil du projet : Message 1 posté par David le 13/11 | fait |
 
 ## Blog choisi
 
