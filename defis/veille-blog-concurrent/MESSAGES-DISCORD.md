@@ -2,7 +2,7 @@
 
 ## Message 1 : fil du projet (livrable noté, à poster avant le 13/11/2026 17h00, avec les 3 captures)
 
-Statut : à poster. Captures à joindre, dans l'ordre : `captures/261113_AZNcDf_01-Make-Scenario-Actif.png`, `..._02-Make-Mapping-Airtable.png`, `..._03-Airtable-Tableau-Rempli.png`.
+Statut : POSTÉ par David le 13/11/2026 dans le fil du projet, avant 17h, 3 captures jointes. Captures, dans l'ordre : `captures/261113_AZNcDf_01-Make-Scenario-Actif.png`, `..._02-Make-Mapping-Airtable.png`, `..._03-Airtable-Tableau-Rempli.png`.
 
 ++++++
 
