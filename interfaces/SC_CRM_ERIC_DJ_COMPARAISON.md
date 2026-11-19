@@ -83,3 +83,25 @@ Les 4 champs IA (Call Notes Summary, Next Best Action, Call Summary, Next Steps 
 2- CRM vide et copiable pour clients et prospects : même structure, sans données.
 
 3- Adapter les défis précédents, puis les versions Souveraine (NocoDB, n8n) et Code (Next.js), pour que les 3 formats soient alignés d'ici la fin de la semaine du 23/11.
+
+## Mise en place NocoDB (19/11, S261117z-ccdd)
+
+Nom retenu par David : `SC_Suivis` (préfixe `SC_` pour les tables qui rapportent de l'argent, `AZ_` pour les autres).
+
+Airtable : API refusée (`PUBLIC_API_BILLING_LIMIT_EXCEEDED`, quota mensuel atteint). La même table et le même champ restent à créer dans Airtable, à la main dans l'interface ou après le renouvellement du quota.
+
+| Objet | Avant | Après | Retour arrière |
+|---|---|---|---|
+| NocoDB, table `SC_Suivis` (`mjxhpkhjhqotsbg`) : Tache, Description, Echeance, Statut (A faire, En cours, Fait), Priorite (Haute, Moyenne, Basse), NotesCloture, liens vers `SC_Prospects` et `SC_CRs_de_RDV` | absente | créée | `DELETE /api/v2/meta/tables/mjxhpkhjhqotsbg` |
+| NocoDB, `SC_Prospects`, champ `Action` (`cbhn2i3z597g89w`) : Relancer, Repondre, Rien a faire | absent | créé | `DELETE /api/v2/meta/columns/cbhn2i3z597g89w` |
+
+Trace de la création (jeton dans `$TOKEN`, en-tête `xc-token`) :
+
+```
+curl -X POST -H "xc-token: $TOKEN" -H "Content-Type: application/json" https://sb-nocodb.coolify.salescloser.fr/api/v2/meta/bases/phwalskbrftv4o4/tables -d '{"table_name":"SC_Suivis","title":"SC_Suivis","columns":[...6 colonnes...]}'
+curl -X POST ... /api/v2/meta/tables/mjxhpkhjhqotsbg/columns -d '{"title":"Prospect","uidt":"LinkToAnotherRecord","parentId":"mjxhpkhjhqotsbg","childId":"m163jpgx02zhgnc","type":"bt"}'
+curl -X POST ... /api/v2/meta/tables/mjxhpkhjhqotsbg/columns -d '{"title":"RDV","uidt":"LinkToAnotherRecord","parentId":"mjxhpkhjhqotsbg","childId":"mkhq6zt5pv5gz0v","type":"bt"}'
+curl -X POST ... /api/v2/meta/tables/m163jpgx02zhgnc/columns -d '{"title":"Action","uidt":"SingleSelect","dtxp":"'Relancer','Repondre','Rien a faire'"}'
+```
+
+Relu par l'API : les 6 champs et `Action` existent. Les deux liens portent les noms `SC_Prospects` et `SC_CRs_de_RDVs` (NocoDB a ignoré le titre `Prospect` et `RDV`) : à renommer dans l'interface si besoin.
