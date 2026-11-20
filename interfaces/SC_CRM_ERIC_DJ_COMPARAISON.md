@@ -88,7 +88,7 @@ Les 4 champs IA (Call Notes Summary, Next Best Action, Call Summary, Next Steps 
 
 Nom retenu par David : `SC_Suivis` (préfixe `SC_` pour les tables qui rapportent de l'argent, `AZ_` pour les autres).
 
-Airtable : API refusée (`PUBLIC_API_BILLING_LIMIT_EXCEEDED`, quota mensuel atteint). La même table et le même champ restent à créer dans Airtable, à la main dans l'interface ou après le renouvellement du quota.
+Airtable : API refusée (`PUBLIC_API_BILLING_LIMIT_EXCEEDED`, quota mensuel atteint). La table et le champ ont donc été créés à la main par David, guidé pas à pas (9 étapes, 19/11) : `SC_Suivis` (Tache, Description, Echeance, Statut, Priorite, NotesCloture, lien Prospect avec recherche Nom complet, lien RDV avec recherche Date RDV) et le champ `Action` dans `SC_Prospects`. Non relu par l'API (quota), confirmé par David seulement.
 
 | Objet | Avant | Après | Retour arrière |
 |---|---|---|---|
