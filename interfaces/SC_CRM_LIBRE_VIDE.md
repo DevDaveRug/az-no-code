@@ -82,6 +82,6 @@ Base construite à la main par David, guidé pas à pas (21/11, S261117z-ccdd), 
 
 Lien public en lecture seule (bouton « Copier la base » vérifié le 21/11 : la page s'ouvre, 3 tables, 0 ligne, vues Prospects, Pipeline et A relancer) : https://airtable.com/appx78zW91WrDetpq/shrmW2gy5V4xXe7wf
 
-Réserves relevées : la vue « Prospects » par défaut masque 2 champs (à afficher si on veut que le copieur voie tout) ; la vue « Par echeance » de SC_Suivis a été créée mais n'a pas été constatée sur la page publique (onglets SC_RDV et SC_Suivis non ouverts).
+Réserves relevées : la vue « Prospects » par défaut masque 2 champs (à afficher si on veut que le copieur voie tout) . La vue « Par échéance » de SC_Suivis est visible sur la page publique (constaté le 21/11) ; l'onglet SC_RDV n'a pas été ouvert.
 
 À faire ensuite : version NocoDB (export de schéma) et version code.
