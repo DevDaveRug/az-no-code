@@ -78,4 +78,10 @@ Une seule table de personnes (prospects et clients), un rendez-vous et un suivi 
 
 ## État
 
-Les trois fichiers CSV sont prêts. La base Airtable n'est pas encore créée : l'API Airtable est bloquée par le quota mensuel, donc elle se construit à la main (guidage pas à pas). Version NocoDB (export de schéma) et version code : à faire après.
+Base construite à la main par David, guidé pas à pas (21/11, S261117z-ccdd), dans l'espace de travail Airtable « CRM libre », base « CRM Libre (vide) ». L'API Airtable étant bloquée par le quota mensuel, la base n'a pas été relue par l'API.
+
+Lien public en lecture seule (bouton « Copier la base » vérifié le 21/11 : la page s'ouvre, 3 tables, 0 ligne, vues Prospects, Pipeline et A relancer) : https://airtable.com/appx78zW91WrDetpq/shrmW2gy5V4xXe7wf
+
+Réserves relevées : la vue « Prospects » par défaut masque 2 champs (à afficher si on veut que le copieur voie tout) ; la vue « Par echeance » de SC_Suivis a été créée mais n'a pas été constatée sur la page publique (onglets SC_RDV et SC_Suivis non ouverts).
+
+À faire ensuite : version NocoDB (export de schéma) et version code.
