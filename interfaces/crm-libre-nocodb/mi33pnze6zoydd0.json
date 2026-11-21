@@ -1,0 +1,41 @@
+{
+ "table": "SC_RDV",
+ "columns": [
+  {
+   "title": "Titre",
+   "type": "SingleLineText"
+  },
+  {
+   "title": "DateRDV",
+   "type": "Date"
+  },
+  {
+   "title": "Contexte",
+   "type": "SingleSelect",
+   "options": "'Decouverte','Suivi','Closing'"
+  },
+  {
+   "title": "NotesBrutes",
+   "type": "LongText"
+  },
+  {
+   "title": "CompteRendu",
+   "type": "LongText"
+  },
+  {
+   "title": "Statut",
+   "type": "SingleSelect",
+   "options": "'A traiter','Traite'"
+  },
+  {
+   "title": "Prospect",
+   "type": "LinkToAnotherRecord",
+   "link": "bt"
+  },
+  {
+   "title": "Suivis",
+   "type": "LinkToAnotherRecord",
+   "link": "hm"
+  }
+ ]
+}
