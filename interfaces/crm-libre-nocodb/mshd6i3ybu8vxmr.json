@@ -1,0 +1,41 @@
+{
+ "table": "SC_Suivis",
+ "columns": [
+  {
+   "title": "Tache",
+   "type": "SingleLineText"
+  },
+  {
+   "title": "Description",
+   "type": "LongText"
+  },
+  {
+   "title": "Echeance",
+   "type": "Date"
+  },
+  {
+   "title": "Statut",
+   "type": "SingleSelect",
+   "options": "'A faire','En cours','Fait'"
+  },
+  {
+   "title": "Priorite",
+   "type": "SingleSelect",
+   "options": "'Haute','Moyenne','Basse'"
+  },
+  {
+   "title": "NotesCloture",
+   "type": "LongText"
+  },
+  {
+   "title": "Prospect",
+   "type": "LinkToAnotherRecord",
+   "link": "bt"
+  },
+  {
+   "title": "RDV",
+   "type": "LinkToAnotherRecord",
+   "link": "bt"
+  }
+ ]
+}

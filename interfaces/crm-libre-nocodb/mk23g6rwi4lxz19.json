@@ -1,0 +1,76 @@
+{
+ "table": "SC_Prospects",
+ "columns": [
+  {
+   "title": "Prenom",
+   "type": "SingleLineText"
+  },
+  {
+   "title": "Nom",
+   "type": "SingleLineText"
+  },
+  {
+   "title": "Entreprise",
+   "type": "SingleLineText"
+  },
+  {
+   "title": "Email",
+   "type": "Email"
+  },
+  {
+   "title": "Telephone",
+   "type": "PhoneNumber"
+  },
+  {
+   "title": "Statut",
+   "type": "SingleSelect",
+   "options": "'Nouveau','En cours','Gagne','Perdu'"
+  },
+  {
+   "title": "Action",
+   "type": "SingleSelect",
+   "options": "'Relancer','Repondre','Rien a faire'"
+  },
+  {
+   "title": "Source",
+   "type": "SingleSelect",
+   "options": "'LinkedIn','Recommandation','Site','Autre'"
+  },
+  {
+   "title": "DateEntree",
+   "type": "Date"
+  },
+  {
+   "title": "DernierContact",
+   "type": "Date"
+  },
+  {
+   "title": "MontantPotentiel",
+   "type": "Decimal"
+  },
+  {
+   "title": "Notes",
+   "type": "LongText"
+  },
+  {
+   "title": "NomComplet",
+   "type": "Formula",
+   "formula": "CONCAT({Prenom}, \" \", {Nom})"
+  },
+  {
+   "title": "RDV",
+   "type": "LinkToAnotherRecord",
+   "link": "hm"
+  },
+  {
+   "title": "Suivis",
+   "type": "LinkToAnotherRecord",
+   "link": "hm"
+  },
+  {
+   "title": "ProchaineRelance",
+   "type": "Formula",
+   "formula": "DATEADD({DernierContact}, 7, \"day\")"
+  }
+ ]
+}
