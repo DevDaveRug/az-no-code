@@ -31,7 +31,7 @@ Différences avec Airtable (à connaître) :
 
 -> `Prenom` et `Nom` restent visibles dans NocoDB (le champ principal est `Prenom`). Dans la version Airtable, David les a masqués au profit de `Nom complet`.
 
--> Vues (A relancer, Pipeline, Par echeance) : non créées par l'API ici, à régler dans l'interface si besoin.
+-> Vues créées par l'API le 22/11 (voir « Vues » plus bas) : `SC_Prospects` « A relancer » (Statut Nouveau ou En cours, ProchaineRelance jusqu'à aujourd'hui, tri croissant) et « Pipeline » (Kanban par Statut) ; `SC_Suivis` « Par echeance » (Statut différent de Fait, tri par Echeance) et « Par statut » (Kanban). Comportement vérifié avec 3 lignes temporaires, supprimées ensuite : seul l'ancien contact au statut Nouveau apparaît dans « A relancer ».
 
 ## Trace et retour arrière (19/11 au 21/11, API NocoDB, jeton dans `$TOKEN`, en-tête `xc-token`)
 
@@ -45,6 +45,12 @@ Création des tables : `POST /api/v2/meta/bases/ponfsa5y2to4x2g/tables` avec le 
 ## Correction dans la base `Sales Closer Souverain` (même session)
 
 Les liens de `SC_Suivis` posés le 19/11 avec `type: "bt"` étaient à l'envers (un prospect aurait pointé vers un seul suivi, un RDV vers un seul suivi). Corrigé le 21/11 : colonnes inversées supprimées, liens recréés avec `type: "hm"` sur `SC_Prospects` (`cqcq355wcdk8m3u`) et `SC_CRs_de_RDV` (`cvsoqtp48vkm34x`), côté `SC_Suivis` les liens `Prospect` (`cof8tkb554iabg7`) et `RDV` (`cm41aup62tdoazl`) sont en « belongs to ». Retour arrière : `DELETE /api/v2/meta/columns/<id>` de ces colonnes (les anciennes colonnes inversées n'avaient aucune donnée).
+
+## Vues (22/11, API NocoDB)
+
+-> `POST /api/v2/meta/tables/<table>/grids` (A relancer `vw1yye68ff6rdixm`, Par echeance `vwa3hsi0mpg5k6mx`) et `/kanbans` avec `fk_grp_col_id` (Pipeline `vw8obxgkckm7w3ga`, Par statut `vwoctb2tgwj0ye4i`), puis `POST /api/v2/meta/views/<vue>/filters` et `/sorts`.
+
+-> Retour arrière : `DELETE /api/v2/meta/views/<id>` pour chacune des 4 vues.
 
 ## Reste à faire
 
